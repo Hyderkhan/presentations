@@ -1,0 +1,1171 @@
+/* ==== Y Soft / SAFEQ Cloud — TechU Virtual deck ==== */
+
+@font-face {
+  font-family: "YSoft";
+  src: url("fonts/YSoft-Regular.otf") format("opentype");
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "YSoft";
+  src: url("fonts/YSoft-Bold.otf") format("opentype");
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+@import url("https://rsms.me/inter/inter.css");
+
+:root {
+  --orange: #FF6600;
+  --orange-ink: #E55A00;
+  --orange-wash: #FFF1E6;
+  --turq: #009CB6;
+  --turq-ink: #007F95;
+  --turq-wash: #E5F5F8;
+  --grey-circle: #B2B2B2;
+  --off-white: #F2F2F2;
+  --grey-11: #53565A;
+  --grey-7: #97999B;
+  --ink: #000000;
+  --border: #E5E5E5;
+
+  --font-display: "YSoft", "Arial Black", Impact, sans-serif;
+  --font-sans: "Inter", "Lab Grotesque", Arial, system-ui, sans-serif;
+}
+
+/* Deck-stage slides are 1920x1080 */
+.slide {
+  background: #fff;
+  font-family: var(--font-sans);
+  color: var(--ink);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Standard padded frame */
+.frame {
+  position: absolute;
+  inset: 0;
+  padding: 150px 110px 96px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Headlines — YSoft, Bold, UPPERCASE, tight leading */
+.display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin: 0;
+}
+.eyebrow {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 20px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin: 0 0 28px;
+}
+.perex {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 30px;
+  line-height: 1.35;
+  color: var(--grey-11);
+  margin: 0;
+  max-width: 1100px;
+}
+.body {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 28px;
+  line-height: 1.5;
+  color: var(--grey-11);
+  margin: 0;
+}
+.body-lg {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 34px;
+  line-height: 1.45;
+  color: var(--grey-11);
+}
+
+/* Title sizes */
+.h-title    { font-size: 96px; }
+.h-section  { font-size: 72px; }
+.h-display  { font-size: 168px; }
+
+/* Small caption */
+.caption {
+  font-family: var(--font-sans);
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--grey-7);
+}
+
+/* Slide chrome: logo TL, footer BL/BR */
+.logo-tl {
+  position: absolute;
+  top: 56px; left: 110px;
+  height: 52px;
+  z-index: 5;
+}
+.logo-tl.white { filter: brightness(0) invert(1); opacity: 0.95; }
+
+/* HP TechU co-brand logo, top-right — auto-swaps dark/light via .slide--dark class */
+.logo-tr {
+  position: absolute;
+  top: 40px; right: 96px;
+  height: 96px;
+  z-index: 5;
+  pointer-events: none;
+}
+.logo-tr .hp-dark { display: block; }
+.logo-tr .hp-light { display: none; }
+.slide--dark .logo-tr .hp-dark { display: none; }
+.slide--dark .logo-tr .hp-light { display: block; }
+/* stack both at same place */
+.logo-tr img { position: absolute; top: 0; right: 0; height: 96px; }
+.footer {
+  position: absolute;
+  left: 110px; right: 110px;
+  bottom: 42px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-sans);
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--grey-7);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  z-index: 5;
+}
+.footer.on-dark { color: rgba(255,255,255,0.6); }
+
+/* Brand circle — signature motif */
+.circle {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--orange);
+}
+.circle--turq { background: var(--turq); }
+.circle--grey { background: var(--grey-circle); }
+
+/* Number pill (for small stat tiles) */
+.pill-num {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 0.95;
+  color: var(--orange);
+}
+
+/* Dark slide variant */
+.slide--dark { background: var(--ink); color: #fff; }
+.slide--dark .display { color: #fff; }
+.slide--dark .body { color: rgba(255,255,255,0.85); }
+.slide--dark .perex { color: rgba(255,255,255,0.75); }
+.slide--dark .eyebrow { color: var(--orange); }
+
+/* Off-white slide */
+.slide--wash { background: var(--off-white); }
+
+/* Stat display (large number + caption) */
+.stat-big {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 0.92;
+  color: var(--ink);
+  font-size: 180px;
+  letter-spacing: -0.02em;
+}
+.stat-big .unit { font-size: 0.55em; color: var(--orange); margin-left: 8px; }
+.stat-label {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 26px;
+  color: var(--grey-11);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-top: 16px;
+}
+
+/* Card - minimal, no shadow */
+.card {
+  background: #fff;
+  border: 1px solid var(--border);
+  padding: 40px;
+  border-radius: 4px;
+}
+.card--wash { background: var(--off-white); border: 0; }
+.card--orange { background: var(--orange); color: #fff; border: 0; }
+.card--orange .card-title { color: #fff; }
+.card--ink { background: var(--ink); color: #fff; border: 0; }
+.card-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 32px;
+  line-height: 1;
+  color: var(--ink);
+  margin: 0 0 16px;
+  letter-spacing: 0.02em;
+}
+.card-body {
+  font-family: var(--font-sans);
+  font-size: 22px;
+  line-height: 1.45;
+  color: var(--grey-11);
+  margin: 0;
+}
+.card--orange .card-body { color: rgba(255,255,255,0.9); }
+
+/* Step index (used for numbering) */
+.step-num {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 28px;
+  color: var(--orange);
+  letter-spacing: 0;
+}
+
+/* Vertical divider */
+.vrule { width: 1px; background: var(--border); align-self: stretch; }
+
+/* Full-bleed image helper */
+.bleed-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.bleed-veil {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.55) 45%, rgba(0,0,0,0) 75%);
+}
+
+/* Agenda row */
+.agenda-row {
+  display: grid;
+  grid-template-columns: 80px 1fr auto;
+  align-items: baseline;
+  gap: 36px;
+  padding: 28px 0;
+  border-top: 1px solid var(--border);
+}
+.agenda-row:last-child { border-bottom: 1px solid var(--border); }
+.agenda-num {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 36px;
+  color: var(--orange);
+}
+.agenda-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 42px;
+  letter-spacing: 0;
+  color: var(--ink);
+}
+.agenda-meta {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 20px;
+  color: var(--grey-7);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Pillar card (3 across) */
+.pillars { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 36px; }
+.pillar {
+  background: #fff;
+  border: 1px solid var(--border);
+  padding: 44px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.pillar-num {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  background: var(--orange);
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 36px;
+}
+.pillar-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 34px;
+  color: var(--ink);
+  letter-spacing: 0;
+  line-height: 1;
+}
+.pillar ul { margin: 4px 0 0; padding-left: 0; list-style: none; }
+.pillar ul li {
+  font-family: var(--font-sans);
+  font-size: 22px;
+  color: var(--grey-11);
+  padding: 10px 0 10px 26px;
+  position: relative;
+  line-height: 1.35;
+}
+.pillar ul li::before {
+  content: "";
+  position: absolute; left: 0; top: 18px;
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--orange);
+}
+
+/* Table */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-sans);
+}
+.data-table th, .data-table td {
+  padding: 16px 14px;
+  text-align: left;
+  font-size: 22px;
+  border-bottom: 1px solid var(--border);
+}
+.data-table th {
+  font-weight: 600;
+  color: var(--grey-7);
+  font-size: 18px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-bottom: 2px solid var(--ink);
+}
+.data-table tbody tr:last-child td { border-bottom: 2px solid var(--ink); }
+.data-table td.num { font-variant-numeric: tabular-nums; font-weight: 500; color: var(--ink); white-space: nowrap; }
+.data-table tr.total td {
+  font-weight: 700;
+  font-size: 24px;
+  background: var(--orange-wash);
+}
+.data-table tr.total td.num { color: var(--orange); }
+
+/* Page number + section label strip */
+.page-no {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 18px;
+  color: var(--grey-7);
+  letter-spacing: 0.1em;
+}
+
+
+/* ====================================================================
+   CHAPTER PROGRESS RAIL
+   Fixed overlay inside the deck viewport. Scales to sit on top of the
+   deck-stage canvas. Uses the same design language as slide footers.
+   ==================================================================== */
+
+:root { --rail-accent: #FF6600; }
+
+#chapter-rail {
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 2147482500;
+  pointer-events: none;
+  font-family: var(--font-sans);
+  padding: 10px 32px;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(6px);
+}
+#chapter-rail[data-position="top"] { top: 0; }
+#chapter-rail[data-position="bottom"] { bottom: 0; }
+#chapter-rail .rail-chip-label { color: rgba(255,255,255,0.55) !important; }
+#chapter-rail .rail-chip.is-active .rail-chip-label { color: #fff !important; }
+#chapter-rail .rail-chip.is-done .rail-chip-label { color: rgba(255,255,255,0.7) !important; }
+#chapter-rail .rail-chip-bar { background: rgba(255,255,255,0.18) !important; }
+#chapter-rail .rail-chip.is-done .rail-chip-bar-fill { background: rgba(255,255,255,0.5) !important; }
+
+.rail-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 1760px;
+  margin: 0 auto;
+}
+
+/* ---- Chapter chips (default style) ---- */
+.rail-chapters {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 8px;
+  align-items: end;
+}
+.rail-chip {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+.rail-chip-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(0,0,0,0.45);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 200ms ease;
+}
+.rail-chip-bar {
+  height: 3px;
+  background: rgba(0,0,0,0.12);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.rail-chip-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--rail-accent);
+  border-radius: 2px;
+  transition: width 420ms cubic-bezier(.2,.8,.2,1);
+}
+.rail-chip.is-active .rail-chip-label {
+  color: #000;
+}
+.rail-chip.is-done .rail-chip-label {
+  color: rgba(0,0,0,0.55);
+}
+.rail-chip.is-done .rail-chip-bar-fill {
+  background: rgba(0,0,0,0.35);
+}
+.rail-chip.is-active .rail-chip-bar {
+  background: rgba(0,0,0,0.16);
+}
+
+/* ---- On dark slides, invert rail colors via deck-stage active slide ---- */
+/* Detect dark slide by checking if the active section has .slide--dark */
+body:has(section[data-deck-active].slide--dark) #chapter-rail .rail-chip .rail-chip-label {
+  color: rgba(255,255,255,0.45);
+}
+body:has(section[data-deck-active].slide--dark) #chapter-rail .rail-chip.is-active .rail-chip-label {
+  color: #fff !important;
+}
+body:has(section[data-deck-active].slide--dark) #chapter-rail .rail-chip.is-done .rail-chip-label {
+  color: rgba(255,255,255,0.6);
+}
+body:has(section[data-deck-active].slide--dark) #chapter-rail .rail-chip .rail-chip-bar {
+  background: rgba(255,255,255,0.16);
+}
+body:has(section[data-deck-active].slide--dark) #chapter-rail .rail-chip.is-done .rail-chip-bar-fill {
+  background: rgba(255,255,255,0.45);
+}
+
+/* ---- Global progress strip (for 'bar' style) ---- */
+.rail-progress {
+  height: 2px;
+  background: rgba(0,0,0,0.1);
+  overflow: hidden;
+  display: none;
+}
+.rail-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--rail-accent);
+  transition: width 420ms cubic-bezier(.2,.8,.2,1);
+}
+
+/* ---- Style variants ---- */
+#chapter-rail[data-style="bar"] .rail-chapters { display: none; }
+#chapter-rail[data-style="bar"] .rail-progress { display: block; }
+#chapter-rail[data-style="bar"] { padding: 0; }
+#chapter-rail[data-style="bar"] .rail-inner { gap: 0; max-width: none; }
+
+#chapter-rail[data-style="dots"] .rail-chapters {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+#chapter-rail[data-style="dots"] .rail-chip {
+  flex: 0 0 auto;
+}
+#chapter-rail[data-style="dots"] .rail-chip-label { display: none; }
+#chapter-rail[data-style="dots"] .rail-chip-bar {
+  width: 32px;
+  height: 4px;
+  border-radius: 4px;
+}
+body:has(section[data-deck-active].slide--dark) #chapter-rail[data-style="dots"] .rail-chip-bar {
+  background: rgba(255,255,255,0.2);
+}
+
+#chapter-rail[data-labels="off"] .rail-chip-label { display: none; }
+#chapter-rail[data-style="chapters"] .rail-progress { display: none; }
+
+/* ---- Hide old footer when tweak off ---- */
+body.hide-footer .footer { display: none; }
+
+/* ====================================================================
+   TWEAKS PANEL
+   ==================================================================== */
+#tweaks-panel {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 300px;
+  background: #fff;
+  color: #000;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3), 0 2px 6px rgba(0,0,0,0.1);
+  font-family: var(--font-sans, system-ui, sans-serif);
+  z-index: 2147483100;
+  overflow: hidden;
+  border: 1px solid rgba(0,0,0,0.08);
+}
+#tweaks-panel[hidden] { display: none; }
+.tw-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: #000;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+.tw-close {
+  background: transparent;
+  color: #fff;
+  border: 0;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 4px;
+}
+.tw-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.tw-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+}
+.tw-row--switch {
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.tw-label {
+  font-weight: 600;
+  color: #555;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.tw-body select {
+  padding: 8px 10px;
+  border: 1px solid rgba(0,0,0,0.15);
+  border-radius: 6px;
+  font-size: 13px;
+  background: #fafafa;
+  font-family: inherit;
+}
+.tw-swatches { display: flex; gap: 8px; }
+.tw-swatches button {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  padding: 0;
+  transition: transform 120ms ease;
+}
+.tw-swatches button.is-active {
+  border-color: #000;
+  transform: scale(1.1);
+}
+
+/* =========================================================
+   Slide element reveal animations
+   Elements start hidden; the active slide animates them in.
+   Each time a slide becomes active, the attribute is added,
+   so the animation re-runs from the start — no JS required.
+   ========================================================= */
+
+@keyframes deck-rise {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes deck-zoom {
+  from { opacity: 0; transform: scale(0.86); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes deck-drift {
+  from { opacity: 0; transform: translateX(-24px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Rest state for every animatable element — invisible until the slide
+   it lives in gets [data-deck-active], at which point the rules below
+   attach an animation and fill it forwards via `both`. */
+[data-deck-slide] .eyebrow,
+[data-deck-slide] .display,
+[data-deck-slide] .perex,
+[data-deck-slide] .body,
+[data-deck-slide] .body-lg,
+[data-deck-slide] .caption,
+[data-deck-slide] .stat-big,
+[data-deck-slide] .stat-label,
+[data-deck-slide] .card,
+[data-deck-slide] .pillar,
+[data-deck-slide] .agenda-row,
+[data-deck-slide] .data-table,
+[data-deck-slide] .circle,
+[data-deck-slide] .bleed-img,
+[data-deck-slide] svg,
+[data-deck-slide] img.logo-tl,
+[data-deck-slide] .logo-tr {
+  opacity: 0;
+}
+
+/* Typography reveal — staggered rise-up */
+[data-deck-active] .eyebrow   { animation: deck-rise 520ms cubic-bezier(.22,.9,.25,1)  80ms both; }
+[data-deck-active] .display   { animation: deck-rise 640ms cubic-bezier(.22,.9,.25,1) 160ms both; }
+[data-deck-active] .perex     { animation: deck-rise 520ms cubic-bezier(.22,.9,.25,1) 280ms both; }
+[data-deck-active] .body,
+[data-deck-active] .body-lg   { animation: deck-rise 520ms cubic-bezier(.22,.9,.25,1) 340ms both; }
+[data-deck-active] .caption   { animation: deck-rise 420ms cubic-bezier(.22,.9,.25,1) 260ms both; }
+
+/* Stat numbers — big zoom for drama */
+[data-deck-active] .stat-big     { animation: deck-zoom 640ms cubic-bezier(.22,.9,.25,1) 380ms both; }
+[data-deck-active] .stat-label   { animation: deck-rise 420ms cubic-bezier(.22,.9,.25,1) 480ms both; }
+
+/* Chrome — subtle, quick */
+[data-deck-active] .logo-tr,
+[data-deck-active] img.logo-tl   { animation: deck-rise 420ms ease-out 40ms both; }
+
+/* Background motifs — soft zoom in behind the content */
+[data-deck-active] .circle       { animation: deck-zoom 900ms cubic-bezier(.22,.9,.25,1) 0ms both; }
+[data-deck-active] .bleed-img    { animation: deck-rise 700ms ease-out 0ms both; transform-origin: center; }
+
+/* SVG charts/diagrams — fade-slide in after title */
+[data-deck-active] svg           { animation: deck-rise 700ms cubic-bezier(.22,.9,.25,1) 480ms both; }
+
+/* Pillar grid — stagger across 3 columns */
+[data-deck-active] .pillar:nth-child(1) { animation: deck-rise 560ms cubic-bezier(.22,.9,.25,1) 360ms both; }
+[data-deck-active] .pillar:nth-child(2) { animation: deck-rise 560ms cubic-bezier(.22,.9,.25,1) 460ms both; }
+[data-deck-active] .pillar:nth-child(3) { animation: deck-rise 560ms cubic-bezier(.22,.9,.25,1) 560ms both; }
+
+/* Cards — stagger up to 4 */
+[data-deck-active] .card:nth-child(1) { animation: deck-rise 520ms cubic-bezier(.22,.9,.25,1) 340ms both; }
+[data-deck-active] .card:nth-child(2) { animation: deck-rise 520ms cubic-bezier(.22,.9,.25,1) 420ms both; }
+[data-deck-active] .card:nth-child(3) { animation: deck-rise 520ms cubic-bezier(.22,.9,.25,1) 500ms both; }
+[data-deck-active] .card:nth-child(4) { animation: deck-rise 520ms cubic-bezier(.22,.9,.25,1) 580ms both; }
+
+/* Agenda rows — stagger with a horizontal drift */
+[data-deck-active] .agenda-row:nth-child(1) { animation: deck-drift 460ms cubic-bezier(.22,.9,.25,1) 260ms both; }
+[data-deck-active] .agenda-row:nth-child(2) { animation: deck-drift 460ms cubic-bezier(.22,.9,.25,1) 340ms both; }
+[data-deck-active] .agenda-row:nth-child(3) { animation: deck-drift 460ms cubic-bezier(.22,.9,.25,1) 420ms both; }
+[data-deck-active] .agenda-row:nth-child(4) { animation: deck-drift 460ms cubic-bezier(.22,.9,.25,1) 500ms both; }
+[data-deck-active] .agenda-row:nth-child(5) { animation: deck-drift 460ms cubic-bezier(.22,.9,.25,1) 580ms both; }
+
+/* Data tables — fade in as a unit */
+[data-deck-active] .data-table { animation: deck-rise 620ms cubic-bezier(.22,.9,.25,1) 360ms both; }
+
+/* Respect user preference — no animations, no hidden starting state */
+@media (prefers-reduced-motion: reduce) {
+  [data-deck-slide] .eyebrow,
+  [data-deck-slide] .display,
+  [data-deck-slide] .perex,
+  [data-deck-slide] .body,
+  [data-deck-slide] .body-lg,
+  [data-deck-slide] .caption,
+  [data-deck-slide] .stat-big,
+  [data-deck-slide] .stat-label,
+  [data-deck-slide] .card,
+  [data-deck-slide] .pillar,
+  [data-deck-slide] .agenda-row,
+  [data-deck-slide] .data-table,
+  [data-deck-slide] .circle,
+  [data-deck-slide] .bleed-img,
+  [data-deck-slide] svg,
+  [data-deck-slide] img.logo-tl,
+  [data-deck-slide] .logo-tr {
+    opacity: 1;
+    animation: none !important;
+  }
+}
+
+/* =========================================================
+   ENHANCED ANIMATIONS — things HTML/CSS does that PPT can't
+   ========================================================= */
+
+/* === SVG line chart draw-on === */
+/* Lines paint themselves stroke-by-stroke when slide activates */
+[data-deck-slide] svg path[stroke="#FF6600"][fill="none"] {
+  stroke-dasharray: 1600;
+  stroke-dashoffset: 1600;
+}
+[data-deck-active] svg path[stroke="#FF6600"][fill="none"] {
+  animation: deck-line-draw 1900ms cubic-bezier(.65,0,.35,1) 700ms forwards;
+}
+@keyframes deck-line-draw { to { stroke-dashoffset: 0; } }
+
+/* SVG circle dots pop in sequentially on the chart */
+[data-deck-slide] svg g[fill="#FF6600"] circle {
+  transform: scale(0);
+  transform-origin: center;
+  transform-box: fill-box;
+}
+[data-deck-active] svg g[fill="#FF6600"] circle {
+  animation: deck-dot-pop 480ms cubic-bezier(.34,1.56,.64,1) both;
+}
+[data-deck-active] svg g[fill="#FF6600"] circle:nth-child(1) { animation-delay: 1200ms; }
+[data-deck-active] svg g[fill="#FF6600"] circle:nth-child(2) { animation-delay: 1320ms; }
+[data-deck-active] svg g[fill="#FF6600"] circle:nth-child(3) { animation-delay: 1440ms; }
+[data-deck-active] svg g[fill="#FF6600"] circle:nth-child(4) { animation-delay: 1560ms; }
+[data-deck-active] svg g[fill="#FF6600"] circle:nth-child(5) { animation-delay: 1680ms; }
+@keyframes deck-dot-pop { from { transform: scale(0); } to { transform: scale(1); } }
+
+/* === Donut chart sweep === */
+[data-deck-slide] svg circle[stroke-dasharray] {
+  transition: none;
+}
+[data-deck-active] svg circle[stroke="#FF6600"][stroke-dasharray]:not([fill="none"][stroke-width="6"]) {
+  animation: deck-donut-grow 800ms cubic-bezier(.65,0,.35,1) 600ms both;
+}
+[data-deck-active] svg circle[stroke="#009CB6"][stroke-dasharray] {
+  animation: deck-donut-grow 800ms cubic-bezier(.65,0,.35,1) 800ms both;
+}
+[data-deck-active] svg circle[stroke="#000000"][stroke-dasharray] {
+  animation: deck-donut-grow 800ms cubic-bezier(.65,0,.35,1) 1000ms both;
+}
+[data-deck-active] svg circle[stroke="#97999B"][stroke-dasharray] {
+  animation: deck-donut-grow 800ms cubic-bezier(.65,0,.35,1) 1200ms both;
+}
+@keyframes deck-donut-grow { from { opacity: 0; transform: scale(0.86); transform-origin: center; transform-box: fill-box; } to { opacity: 1; transform: scale(1); } }
+
+/* === Reserved card spotlight === */
+/* The recommended card lifts, scales, and glows with overshoot bounce */
+[data-deck-slide] .card--recommended {
+  /* Reset baseline so the keyframe can take over from a clean state */
+  opacity: 0;
+}
+[data-deck-active] .card--recommended {
+  animation: deck-spotlight 1000ms cubic-bezier(.34,1.56,.64,1) 700ms both;
+}
+@keyframes deck-spotlight {
+  0%   { opacity: 0; transform: scale(0.74) translateY(0);  box-shadow: 0 0 0 rgba(255,102,0,0); }
+  55%  { opacity: 1; transform: scale(1.06) translateY(-12px); box-shadow: 0 30px 80px rgba(255,102,0,0.45); }
+  78%  {            transform: scale(0.98) translateY(-12px); box-shadow: 0 18px 50px rgba(255,102,0,0.30); }
+  100% { opacity: 1; transform: scale(1)    translateY(-12px); box-shadow: 0 14px 40px rgba(255,102,0,0.22); }
+}
+
+/* Recommended badge — drops in from above with a snap */
+[data-deck-slide] .badge-recommended {
+  opacity: 0;
+}
+[data-deck-active] .badge-recommended {
+  animation: deck-badge-drop 760ms cubic-bezier(.34,1.56,.64,1) 1500ms both;
+}
+@keyframes deck-badge-drop {
+  0%   { opacity: 0; transform: translate(-50%, -56px) scale(0.92); }
+  60%  { opacity: 1; transform: translate(-50%, 8px)   scale(1.06); }
+  82%  {             transform: translate(-50%, -3px)  scale(0.99); }
+  100% { opacity: 1; transform: translate(-50%, 0)     scale(1); }
+}
+
+/* Subtle ongoing pulse on the recommended badge — only after entry settled */
+[data-deck-active] .badge-recommended::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 6px;
+  background: var(--ink);
+  z-index: -1;
+  opacity: 0;
+  animation: deck-badge-pulse 2400ms ease-in-out 2400ms infinite;
+}
+@keyframes deck-badge-pulse {
+  0%, 100% { transform: scale(1); opacity: 0; }
+  50%      { transform: scale(1.18); opacity: 0.18; }
+}
+
+/* === Per-word title reveal === */
+/* Apply .split-words class on a .display heading; JS wraps each word in
+   a <span class="word" style="--i: N">.  Each word rises with rotateX. */
+[data-deck-slide] .display.split-words { opacity: 1; animation: none !important; }
+[data-deck-slide] .display.split-words .word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(34px) rotateX(-40deg);
+  transform-origin: 50% 100%;
+  perspective: 600px;
+}
+[data-deck-active] .display.split-words .word {
+  animation: deck-word-rise 760ms cubic-bezier(.22,.9,.25,1) calc(var(--i, 0) * 70ms + 220ms) both;
+}
+@keyframes deck-word-rise {
+  from { opacity: 0; transform: translateY(34px) rotateX(-40deg); }
+  to   { opacity: 1; transform: translateY(0)    rotateX(0); }
+}
+
+/* === Counter numbers === */
+/* Elements with [data-count-to] start invisible until the JS counter kicks
+   in.  We animate via CSS to avoid the "jump" before counter starts. */
+[data-deck-slide] [data-count-to] {
+  opacity: 0;
+}
+[data-deck-active] [data-count-to] {
+  animation: deck-counter-fade 320ms ease-out calc(var(--count-delay, 600) * 1ms) both;
+}
+@keyframes deck-counter-fade { from { opacity: 0; } to { opacity: 1; } }
+
+/* Honour the global reduced-motion override for the new effects too */
+@media (prefers-reduced-motion: reduce) {
+  [data-deck-slide] svg path[stroke="#FF6600"][fill="none"] { stroke-dashoffset: 0 !important; }
+  [data-deck-slide] svg g[fill="#FF6600"] circle { transform: scale(1); }
+  [data-deck-slide] .card--recommended,
+  [data-deck-slide] .badge-recommended,
+  [data-deck-slide] .display.split-words .word,
+  [data-deck-slide] [data-count-to] {
+    opacity: 1 !important;
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
+/* =========================================================
+   Team slide entrance: hero pop + grid iris-in + hover lift
+   ========================================================= */
+
+/* Resting state — hidden until slide activates */
+[data-deck-slide] .team-hero-photo,
+[data-deck-slide] .team-hero-name,
+[data-deck-slide] .team-hero-role,
+[data-deck-slide] .team-hero-loc,
+[data-deck-slide] .team-card-photo,
+[data-deck-slide] .team-card-info {
+  opacity: 0;
+}
+
+/* Hero Václav: scale-pop with overshoot, then perpetual halo pulse */
+[data-deck-active] .team-hero-photo {
+  animation:
+    team-hero-pop 900ms cubic-bezier(.34,1.56,.64,1) 200ms both,
+    team-hero-halo 3.6s ease-out 1500ms infinite;
+  transform-origin: center;
+  border-radius: 50%;
+}
+@keyframes team-hero-pop {
+  0%   { opacity: 0; transform: scale(0.45); }
+  60%  { opacity: 1; transform: scale(1.08); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@keyframes team-hero-halo {
+  0%, 100% { box-shadow: 0 0 0 0   rgba(255,102,0,0.45); }
+  60%      { box-shadow: 0 0 0 22px rgba(255,102,0,0); }
+}
+
+[data-deck-active] .team-hero-name { animation: team-rise 600ms cubic-bezier(.22,.9,.25,1)  700ms both; }
+[data-deck-active] .team-hero-role { animation: team-rise 600ms cubic-bezier(.22,.9,.25,1)  820ms both; }
+[data-deck-active] .team-hero-loc  { animation: team-rise 600ms cubic-bezier(.22,.9,.25,1)  940ms both; }
+@keyframes team-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Grid cards — staggered iris-in (scale + slight rotateY for life) */
+[data-deck-active] .team-card { perspective: 800px; }
+[data-deck-active] .team-card-photo {
+  animation: team-card-iris 800ms cubic-bezier(.34,1.56,.64,1) calc(1100ms + var(--i, 0) * 110ms) both;
+  transform-origin: center;
+}
+[data-deck-active] .team-card-info {
+  animation: team-info-slide 600ms cubic-bezier(.22,.9,.25,1) calc(1240ms + var(--i, 0) * 110ms) both;
+}
+@keyframes team-card-iris {
+  0%   { opacity: 0; transform: scale(0.4) rotateY(-30deg); }
+  60%  { opacity: 1; transform: scale(1.06) rotateY(0); }
+  100% { opacity: 1; transform: scale(1) rotateY(0); }
+}
+@keyframes team-info-slide {
+  0%   { opacity: 0; transform: translateX(18px); }
+  100% { opacity: 1; transform: none; }
+}
+
+/* Hover treatment — both hero and grid cards lift with shadow */
+.slide[data-label="Meeting team"] .team-hero-photo,
+.slide[data-label="Meeting team"] .team-card-photo {
+  transition: transform 280ms cubic-bezier(.34,1.56,.64,1), box-shadow 280ms ease;
+  cursor: default;
+}
+.slide[data-label="Meeting team"] .team-hero:hover .team-hero-photo {
+  transform: scale(1.07);
+}
+.slide[data-label="Meeting team"] .team-card:hover .team-card-photo {
+  transform: scale(1.10) translateY(-4px);
+  box-shadow: 0 14px 36px rgba(0,0,0,0.18);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-deck-slide] .team-hero-photo,
+  [data-deck-slide] .team-hero-name,
+  [data-deck-slide] .team-hero-role,
+  [data-deck-slide] .team-hero-loc,
+  [data-deck-slide] .team-card-photo,
+  [data-deck-slide] .team-card-info {
+    opacity: 1 !important;
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
+/* =========================================================
+   Scaling slide world map: staggered pin pop + radar pings
+   ========================================================= */
+
+/* Map silhouette gently fades in */
+[data-deck-slide] .scaling-map-img { opacity: 0; }
+[data-deck-active] .scaling-map-img {
+  animation: map-fade-in 900ms ease-out 200ms both;
+}
+@keyframes map-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Each pin element animates around its own SVG center */
+[data-deck-slide] .map-pin-dot,
+[data-deck-slide] .map-pin-ping,
+[data-deck-slide] .map-pin-label {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* Pin dots pop in with overshoot, staggered */
+[data-deck-slide] .map-pin-dot { opacity: 0; }
+[data-deck-active] .map-pin-dot {
+  animation: map-pin-pop 580ms cubic-bezier(.34,1.6,.64,1) calc(700ms + var(--i, 0) * 110ms) both;
+}
+@keyframes map-pin-pop {
+  0%   { opacity: 0; transform: scale(0); }
+  60%  { opacity: 1; transform: scale(1.55); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* Labels rise in after their pin lands */
+[data-deck-slide] .map-pin-label { opacity: 0; }
+[data-deck-active] .map-pin-label {
+  animation: map-pin-label-in 460ms cubic-bezier(.22,.9,.25,1) calc(880ms + var(--i, 0) * 110ms) both;
+}
+@keyframes map-pin-label-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 0.92; transform: none; }
+}
+
+/* Radar ping rings — perpetual expand-and-fade once entry settled */
+[data-deck-slide] .map-pin-ping { opacity: 0; }
+[data-deck-active] .map-pin-ping {
+  animation: map-pin-ping 2.6s ease-out calc(1700ms + var(--i, 0) * 220ms) infinite;
+  fill: var(--orange);
+}
+@keyframes map-pin-ping {
+  0%   { opacity: 0.55; transform: scale(0.7); }
+  80%  { opacity: 0;    transform: scale(3.6); }
+  100% { opacity: 0;    transform: scale(3.6); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-deck-slide] .scaling-map-img,
+  [data-deck-slide] .map-pin-dot,
+  [data-deck-slide] .map-pin-label {
+    opacity: 1 !important;
+    animation: none !important;
+    transform: none !important;
+  }
+  [data-deck-slide] .map-pin-ping { display: none; }
+}
+
+/* =========================================================
+   Title slide: perpetual breathing orb + ring float
+   ========================================================= */
+[data-deck-active] .title-orb {
+  animation: deck-zoom 900ms cubic-bezier(.22,.9,.25,1) 0ms both,
+             title-orb-breathe 8.5s ease-in-out 1400ms infinite;
+}
+[data-deck-active] .title-ring {
+  animation: deck-zoom 1200ms cubic-bezier(.22,.9,.25,1) 200ms both,
+             title-ring-drift 14s ease-in-out 1500ms infinite;
+}
+@keyframes title-orb-breathe {
+  0%, 100% { transform: scale(1)    translate(0, 0); }
+  50%      { transform: scale(1.04) translate(-12px, -8px); }
+}
+@keyframes title-ring-drift {
+  0%, 100% { transform: translate(0, 0); }
+  50%      { transform: translate(18px, 24px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-deck-active] .title-orb,
+  [data-deck-active] .title-ring {
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
+/* =========================================================
+   Containers in motion — animated stage
+   Live container grid + traffic stream + counters
+   ========================================================= */
+
+.ctn-stage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  min-height: 0;
+}
+
+.ctn-counters {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 32px;
+  border-top: 2px solid var(--ink);
+  padding-top: 16px;
+}
+.ctn-counter { display: flex; flex-direction: column; gap: 6px; }
+.ctn-counter-label { font-size: 16px; }
+.ctn-counter-num {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 72px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+.ctn-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-auto-rows: 1fr;
+  gap: 10px;
+  padding: 22px;
+  background: #FAFAFA;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  flex: 1;
+  min-height: 240px;
+  align-content: stretch;
+}
+
+.ctn-slot {
+  aspect-ratio: 1;
+  border-radius: 6px;
+  background: #E5E5E5;
+  position: relative;
+  transition: background-color 220ms ease, transform 220ms ease;
+}
+.ctn-slot[data-state="healthy"] {
+  background: var(--orange);
+  animation: ctn-pulse 2.4s ease-in-out infinite;
+}
+.ctn-slot[data-state="healing"] {
+  background: var(--turq);
+  animation: ctn-spawn 360ms cubic-bezier(.34,1.56,.64,1);
+}
+.ctn-slot[data-state="failed"] {
+  background: #DC2626;
+  animation: ctn-fail 480ms ease-out;
+}
+
+@keyframes ctn-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255,102,0,0.45); transform: scale(1); }
+  50%      { box-shadow: 0 0 0 6px rgba(255,102,0,0);   transform: scale(0.94); }
+}
+@keyframes ctn-spawn {
+  from { transform: scale(0.4); opacity: 0; }
+  60%  { transform: scale(1.12); opacity: 1; }
+  to   { transform: scale(1); opacity: 1; }
+}
+@keyframes ctn-fail {
+  0%   { transform: scale(1);   box-shadow: 0 0 0 0 rgba(220,38,38,0.6); }
+  35%  { transform: scale(0.82); box-shadow: 0 0 0 18px rgba(220,38,38,0); }
+  100% { transform: scale(1); }
+}
+
+/* Load balance across AZs — three inline bars in a single row */
+.ctn-az-panel {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 32px;
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+}
+.ctn-az-bar {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 12px;
+  align-items: center;
+  font-family: var(--font-sans);
+}
+.ctn-az-name {
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--grey-11);
+  white-space: nowrap;
+}
+.ctn-az-track {
+  height: 8px;
+  background: #ECECEC;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+.ctn-az-fill {
+  position: absolute;
+  inset: 0;
+  width: 0%;
+  background: linear-gradient(90deg, var(--orange), var(--orange-ink));
+  border-radius: 4px;
+  transition: width 480ms cubic-bezier(.22,.9,.25,1);
+}
+.ctn-az-fill[data-az="B"] { background: linear-gradient(90deg, var(--turq), var(--turq-ink)); }
+.ctn-az-fill[data-az="C"] { background: linear-gradient(90deg, var(--ink), #444); }
+.ctn-az-pct {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--ink);
+  min-width: 36px;
+  text-align: right;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ctn-slot, .ctn-event { animation: none !important; }
+  .ctn-slot[data-state="healthy"] { background: var(--orange); }
+}
