@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>NALA May 2026 Kickoff · Agenda</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  :root {
+    --orange: #FF6600;
+    --teal: #009CB6;
+    --ink: #0E1116;
+    --ink-2: #1B1F26;
+    --paper: #F6F4EE;
+    --rule: rgba(255,255,255,0.10);
+    --muted: rgba(255,255,255,0.62);
+    --font-display: "Inter", "Helvetica Neue", Arial, sans-serif;
+    --font-body: "Inter", "Helvetica Neue", Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #000; color: #fff; font-family: var(--font-body); }
+
+  .slide {
+    position: relative;
+    width: 1920px;
+    height: 1080px;
+    margin: 0 auto;
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse 1100px 820px at 92% 6%, rgba(255,102,0,0.42) 0%, rgba(255,102,0,0) 58%),
+      radial-gradient(ellipse 760px 600px at 6% 102%, rgba(0,156,182,0.30) 0%, rgba(0,156,182,0) 55%),
+      linear-gradient(135deg, #0B0E13 0%, #161B23 100%);
+  }
+
+  /* breathing orb */
+  .orb {
+    position: absolute;
+    width: 920px; height: 920px;
+    right: -260px; bottom: -300px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, rgba(255,102,0,0.95), rgba(255,102,0,0.18) 55%, rgba(255,102,0,0) 75%);
+    filter: blur(2px);
+    animation: breathe 9s ease-in-out infinite;
+  }
+  @keyframes breathe {
+    0%,100% { transform: scale(1); opacity: 0.92; }
+    50%     { transform: scale(1.06); opacity: 1; }
+  }
+
+  /* teal ring */
+  .ring {
+    position: absolute;
+    left: -200px; top: -200px;
+    width: 480px; height: 480px;
+    border: 2px solid rgba(0,156,182,0.45);
+    border-radius: 50%;
+  }
+
+  .frame { position: absolute; inset: 0; padding: 80px 110px; display: flex; flex-direction: column; }
+
+  .eyebrow {
+    color: var(--orange);
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  h1.title {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 96px;
+    line-height: 1.0;
+    margin: 0 0 8px;
+    letter-spacing: -0.02em;
+  }
+  .title .accent { color: var(--orange); }
+
+  .sub {
+    font-size: 22px;
+    color: var(--muted);
+    margin: 0 0 36px;
+    letter-spacing: 0.04em;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .day {
+    position: relative;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--rule);
+    border-radius: 16px;
+    padding: 34px 40px 28px;
+    backdrop-filter: blur(8px);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .day-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 22px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .day-tag {
+    color: var(--teal);
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
+  .day-name {
+    font-size: 38px;
+    font-weight: 700;
+    margin: 4px 0 0;
+    letter-spacing: -0.01em;
+  }
+  .day-hours {
+    font-size: 18px;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  ul.agenda { list-style: none; padding: 0; margin: 0; }
+  ul.agenda li {
+    display: grid;
+    grid-template-columns: 150px 1fr 80px;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px dashed rgba(255,255,255,0.07);
+    font-size: 19px;
+  }
+  ul.agenda li:last-child { border-bottom: none; }
+  ul.agenda .time {
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  ul.agenda .topic { color: rgba(255,255,255,0.94); }
+  ul.agenda .dur {
+    text-align: right;
+    color: var(--muted);
+    font-size: 15px;
+    font-variant-numeric: tabular-nums;
+  }
+  ul.agenda li.brk {
+    background: linear-gradient(90deg, rgba(0,156,182,0.10), rgba(0,156,182,0));
+    border-radius: 8px;
+    border-bottom: 1px dashed rgba(0,156,182,0.18);
+  }
+  ul.agenda li.brk .topic { color: var(--teal); font-style: italic; }
+  ul.agenda li.brk .time { color: var(--teal); }
+  ul.agenda li.lunch .topic::before { content: "🍽  "; }
+  ul.agenda li.coffee .topic::before { content: "☕  "; }
+  ul.agenda li.open .topic { font-weight: 600; }
+
+  .footer {
+    margin-top: 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--muted);
+    font-size: 16px;
+    letter-spacing: 0.08em;
+  }
+  .pill {
+    display: inline-block;
+    padding: 6px 14px;
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 999px;
+    font-size: 14px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+
+<section class="slide">
+  <div class="ring"></div>
+  <div class="orb"></div>
+
+  <div class="frame">
+    <div class="eyebrow">Y Soft · Regional Kickoff</div>
+    <h1 class="title"><span class="accent">NALA</span> May 2026 Kickoff</h1>
+    <p class="sub">Two-day agenda &middot; 08:30 – 17:00 daily</p>
+
+    <div class="grid">
+      <!-- ============ DAY 1 ============ -->
+      <div class="day">
+        <div class="day-header">
+          <div>
+            <div class="day-tag">Day 1</div>
+            <div class="day-name">Strategy &amp; Structure</div>
+          </div>
+          <div class="day-hours">08:30 – 17:00</div>
+        </div>
+        <ul class="agenda">
+          <li><span class="time">08:30 – 09:30</span><span class="topic">NALA Retrospective</span><span class="dur">1h</span></li>
+          <li class="brk coffee"><span class="time">09:30 – 09:45</span><span class="topic">Morning coffee</span><span class="dur">15m</span></li>
+          <li><span class="time">09:45 – 11:45</span><span class="topic">Sales Plan FY27 / FY28</span><span class="dur">2h</span></li>
+          <li class="brk lunch"><span class="time">11:45 – 12:45</span><span class="topic">Lunch</span><span class="dur">1h</span></li>
+          <li><span class="time">12:45 – 14:45</span><span class="topic">Team Structure Workshop</span><span class="dur">2h</span></li>
+          <li class="brk coffee"><span class="time">14:45 – 15:00</span><span class="topic">Afternoon coffee</span><span class="dur">15m</span></li>
+          <li><span class="time">15:00 – 17:00</span><span class="topic">Profit Share Workshop</span><span class="dur">2h</span></li>
+        </ul>
+      </div>
+
+      <!-- ============ DAY 2 ============ -->
+      <div class="day">
+        <div class="day-header">
+          <div>
+            <div class="day-tag">Day 2</div>
+            <div class="day-name">Roles, Feedback &amp; Decisions</div>
+          </div>
+          <div class="day-hours">08:30 – 17:00</div>
+        </div>
+        <ul class="agenda">
+          <li><span class="time">08:30 – 10:30</span><span class="topic">Roles &amp; Responsibilities in NALA</span><span class="dur">2h</span></li>
+          <li class="brk coffee"><span class="time">10:30 – 10:45</span><span class="topic">Morning coffee</span><span class="dur">15m</span></li>
+          <li><span class="time">10:45 – 11:45</span><span class="topic">How NALA gives constructive peer feedback</span><span class="dur">1h</span></li>
+          <li class="brk lunch"><span class="time">11:45 – 12:45</span><span class="topic">Lunch</span><span class="dur">1h</span></li>
+          <li><span class="time">12:45 – 13:15</span><span class="topic">Partnering with VARs / Resellers?</span><span class="dur">30m</span></li>
+          <li><span class="time">13:15 – 13:45</span><span class="topic">Switch to USD for FY27</span><span class="dur">30m</span></li>
+          <li><span class="time">13:45 – 14:15</span><span class="topic">Covering GAP for new teams</span><span class="dur">30m</span></li>
+          <li class="brk coffee"><span class="time">14:15 – 14:30</span><span class="topic">Afternoon coffee</span><span class="dur">15m</span></li>
+          <li class="open"><span class="time">14:30 – 17:00</span><span class="topic">Other topics &amp; open discussion</span><span class="dur">2h 30m</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer">
+      <span class="pill">Y Soft · NALA · May 2026</span>
+      <span>Working time per day: 7h &nbsp;·&nbsp; Breaks: 1h 30m</span>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>
