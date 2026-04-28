@@ -22,7 +22,7 @@
   .slide {
     position: relative;
     width: 1920px;
-    height: 1080px;
+    min-height: 1080px;
     margin: 0 auto;
     overflow: hidden;
     background:
@@ -202,6 +202,168 @@
   }
 
   .footer { opacity: 0; animation: fadeUp 0.8s 2.6s ease-out forwards; }
+
+  /* ===== topics collector ===== */
+  .topics-panel {
+    margin-top: 36px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--rule);
+    border-radius: 16px;
+    padding: 30px 36px 26px;
+    backdrop-filter: blur(8px);
+    opacity: 0;
+    animation: fadeUp 0.9s 2.3s ease-out forwards;
+  }
+  .topics-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 16px; margin-bottom: 14px; padding-bottom: 14px;
+    border-bottom: 1px solid var(--rule);
+    flex-wrap: wrap;
+  }
+  .topics-head h2 {
+    margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.01em;
+  }
+  .topics-head .hint {
+    font-size: 14px; color: var(--muted); letter-spacing: 0.04em;
+  }
+  .topics-form {
+    display: flex; gap: 12px; margin: 16px 0 18px;
+  }
+  .topics-form input {
+    flex: 1;
+    background: rgba(0,0,0,0.35);
+    border: 1px solid rgba(255,255,255,0.14);
+    color: #fff;
+    font-size: 18px;
+    padding: 14px 18px;
+    border-radius: 10px;
+    outline: none;
+    font-family: inherit;
+    transition: border-color 180ms, box-shadow 180ms;
+  }
+  .topics-form input::placeholder { color: rgba(255,255,255,0.42); }
+  .topics-form input:focus {
+    border-color: rgba(255,102,0,0.65);
+    box-shadow: 0 0 0 3px rgba(255,102,0,0.18);
+  }
+  .topics-form button, .topics-actions button {
+    background: var(--orange);
+    color: #fff;
+    border: none;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 0 22px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 120ms, background 180ms, box-shadow 180ms;
+    font-family: inherit;
+  }
+  .topics-form button:hover, .topics-actions button:hover {
+    background: #ff7d1a;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(255,102,0,0.32);
+  }
+  .topics-form button:active, .topics-actions button:active {
+    transform: translateY(0);
+  }
+  .topics-actions {
+    display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px;
+  }
+  .topics-actions button.ghost {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.20);
+    color: rgba(255,255,255,0.85);
+    padding: 10px 18px;
+    font-size: 14px;
+    box-shadow: none;
+  }
+  .topics-actions button.ghost:hover {
+    background: rgba(255,255,255,0.06);
+    border-color: rgba(255,255,255,0.35);
+    box-shadow: none;
+  }
+  .topics-list {
+    list-style: none;
+    padding: 0; margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px 16px;
+  }
+  .topics-list li {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px;
+    background: rgba(0,156,182,0.08);
+    border: 1px solid rgba(0,156,182,0.20);
+    border-left: 3px solid var(--teal);
+    padding: 12px 14px 12px 16px;
+    border-radius: 8px;
+    font-size: 17px;
+    color: #fff;
+    animation: itemIn 0.45s cubic-bezier(.2,.8,.2,1);
+    transition: background 180ms, transform 180ms;
+  }
+  .topics-list li:hover {
+    background: rgba(0,156,182,0.14);
+    transform: translateX(2px);
+  }
+  .topics-list li.removing {
+    animation: itemOut 0.32s ease-out forwards;
+  }
+  .topics-list .label {
+    flex: 1; word-break: break-word;
+  }
+  .topics-list .num {
+    color: var(--teal);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    margin-right: 4px;
+    min-width: 28px;
+    display: inline-block;
+  }
+  .topics-list button.del {
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.45);
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: color 150ms, background 150ms, transform 150ms;
+  }
+  .topics-list button.del:hover {
+    color: #ff5c5c;
+    background: rgba(255,80,80,0.10);
+    transform: scale(1.15);
+  }
+  .topics-empty {
+    color: var(--muted);
+    font-style: italic;
+    padding: 18px 4px;
+    font-size: 16px;
+  }
+  @keyframes itemIn {
+    from { opacity: 0; transform: translateY(-6px) scale(0.96); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes itemOut {
+    to { opacity: 0; transform: translateX(20px); height: 0; padding-top: 0; padding-bottom: 0; margin: 0; border-width: 0; }
+  }
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(60px);
+    background: rgba(20,24,32,0.95);
+    border: 1px solid rgba(255,255,255,0.18);
+    color: #fff;
+    padding: 12px 22px;
+    border-radius: 999px;
+    font-size: 15px;
+    z-index: 100;
+    opacity: 0;
+    transition: opacity 220ms, transform 220ms;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
@@ -409,6 +571,23 @@
       </div>
     </div>
 
+    <!-- ============ TOPICS COLLECTOR ============ -->
+    <div class="topics-panel">
+      <div class="topics-head">
+        <h2>📝 Other topics &mdash; open for discussion</h2>
+        <span class="hint">Stored locally on this device · use Copy to share the list</span>
+      </div>
+      <form class="topics-form" id="topic-form" autocomplete="off">
+        <input id="topic-input" type="text" maxlength="140" placeholder="Add a topic for the open discussion (e.g. Marketing budget for FY27)" />
+        <button type="submit">+ Add topic</button>
+      </form>
+      <ul class="topics-list" id="topic-list"></ul>
+      <div class="topics-actions">
+        <button type="button" class="ghost" id="copy-topics">Copy all</button>
+        <button type="button" class="ghost" id="clear-topics">Clear all</button>
+      </div>
+    </div>
+
     <div class="footer">
       <span class="pill">Y Soft · NALA · May 2026</span>
       <span>Lunch at 12:00 &nbsp;·&nbsp; Breaks: 1h 45m / day</span>
@@ -416,7 +595,122 @@
   </div>
 </section>
 
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
 <script>
+  // ----- Topics collector (localStorage) -----
+  (function topics() {
+    const KEY = 'nala-may-2026-topics';
+    const list = document.getElementById('topic-list');
+    const form = document.getElementById('topic-form');
+    const input = document.getElementById('topic-input');
+    const copyBtn = document.getElementById('copy-topics');
+    const clearBtn = document.getElementById('clear-topics');
+    const toast = document.getElementById('toast');
+
+    const showToast = (msg) => {
+      toast.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(() => toast.classList.remove('show'), 1800);
+    };
+
+    const load  = () => { try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch { return []; } };
+    const save  = (arr) => localStorage.setItem(KEY, JSON.stringify(arr));
+
+    const render = () => {
+      const items = load();
+      list.replaceChildren();
+      if (!items.length) {
+        const empty = document.createElement('li');
+        empty.className = 'topics-empty';
+        empty.style.gridColumn = '1 / -1';
+        empty.style.background = 'transparent';
+        empty.style.border = 'none';
+        empty.textContent = 'No topics yet — add the first one above.';
+        list.appendChild(empty);
+        return;
+      }
+      items.forEach((text, i) => {
+        const li = document.createElement('li');
+        li.dataset.idx = i;
+        const label = document.createElement('span');
+        label.className = 'label';
+        const num = document.createElement('span');
+        num.className = 'num';
+        num.textContent = (i + 1) + '.';
+        label.appendChild(num);
+        label.appendChild(document.createTextNode(text));
+        const btn = document.createElement('button');
+        btn.className = 'del';
+        btn.type = 'button';
+        btn.title = 'Remove topic';
+        btn.setAttribute('aria-label', 'Remove topic: ' + text);
+        btn.textContent = '×';
+        btn.addEventListener('click', () => removeAt(i, li));
+        li.appendChild(label);
+        li.appendChild(btn);
+        list.appendChild(li);
+      });
+    };
+
+    const add = (text) => {
+      text = text.trim();
+      if (!text) return;
+      const items = load();
+      if (items.some(t => t.toLowerCase() === text.toLowerCase())) {
+        showToast('Already on the list');
+        return;
+      }
+      items.push(text);
+      save(items);
+      render();
+      showToast('Topic added');
+    };
+
+    const removeAt = (idx, li) => {
+      li.classList.add('removing');
+      setTimeout(() => {
+        const items = load();
+        items.splice(idx, 1);
+        save(items);
+        render();
+      }, 280);
+    };
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      add(input.value);
+      input.value = '';
+      input.focus();
+    });
+
+    copyBtn.addEventListener('click', async () => {
+      const items = load();
+      if (!items.length) { showToast('Nothing to copy'); return; }
+      const text = items.map((t, i) => `${i + 1}. ${t}`).join('\n');
+      try {
+        await navigator.clipboard.writeText(text);
+        showToast('Copied ' + items.length + ' topic' + (items.length === 1 ? '' : 's'));
+      } catch {
+        showToast('Copy failed — select & copy manually');
+      }
+    });
+
+    clearBtn.addEventListener('click', () => {
+      if (!load().length) return;
+      if (!confirm('Clear all topics? This cannot be undone.')) return;
+      save([]);
+      render();
+      showToast('All topics cleared');
+    });
+
+    // refresh if another tab edits the same key
+    window.addEventListener('storage', (e) => { if (e.key === KEY) render(); });
+
+    render();
+  })();
+
   // ----- Letter-by-letter hero title -----
   (function splitTitle() {
     const h1 = document.getElementById('hero-title');
