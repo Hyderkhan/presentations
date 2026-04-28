@@ -223,6 +223,88 @@
     header,.hero,.rule,.decks,footer { padding-left: 20px; padding-right: 20px; }
     .hero { padding-top: 40px; padding-bottom: 32px; }
     .deck-grid { grid-template-columns: 1fr; }
+    .grid-meta { flex-direction: column; align-items: stretch; gap: 12px; }
+    .search { max-width: 100%; }
+    .search-kbd { display: none; }
+  }
+
+  /* Search */
+  .grid-meta { display: flex; align-items: center; justify-content: space-between; gap: 18px; }
+  .search { position: relative; flex: 1; max-width: 360px; }
+  .search input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font: 13px/1.4 Arial, sans-serif;
+    padding: 10px 56px 10px 38px;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  .search input::placeholder { color: var(--muted2); }
+  .search input:focus {
+    border-color: var(--ys-orange);
+    box-shadow: 0 0 0 3px rgba(255,102,0,0.10);
+  }
+  .search input::-webkit-search-cancel-button { display: none; }
+  .search-icon {
+    position: absolute; left: 12px; top: 50%;
+    transform: translateY(-50%);
+    width: 14px; height: 14px;
+    color: var(--muted2);
+    pointer-events: none;
+  }
+  .search-kbd {
+    position: absolute; right: 10px; top: 50%;
+    transform: translateY(-50%);
+    font: 10px/1 ui-monospace, "SF Mono", Menlo, monospace;
+    color: var(--muted2);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 3px 5px;
+    pointer-events: none;
+  }
+  .search-clear {
+    position: absolute; right: 8px; top: 50%;
+    transform: translateY(-50%);
+    width: 22px; height: 22px;
+    border: 0; border-radius: 4px;
+    background: transparent; color: var(--muted);
+    cursor: pointer;
+    display: none;
+    align-items: center; justify-content: center;
+  }
+  .search-clear:hover { color: var(--text); background: var(--border); }
+  .search.has-value .search-kbd { display: none; }
+  .search.has-value .search-clear { display: flex; }
+
+  /* Filter states */
+  .card.is-hidden, .card-placeholder.is-hidden { display: none; }
+
+  .empty-state {
+    display: none;
+    text-align: center;
+    padding: 56px 20px 80px;
+    color: var(--muted);
+  }
+  .empty-state.is-shown { display: block; }
+  .empty-state strong {
+    color: var(--text); display: block;
+    margin-bottom: 6px; font-size: 15px;
+    font-family: 'Arial Black', Arial, sans-serif;
+    letter-spacing: -.2px;
+  }
+  .empty-state em { font-style: normal; color: var(--ys-orange); }
+  .empty-state span { font-size: 12px; color: var(--muted2); }
+
+  /* Highlight matches */
+  .card mark {
+    background: var(--ys-orange-dim);
+    color: var(--ys-orange);
+    padding: 0 2px;
+    border-radius: 2px;
   }
 </style>
 </head>
@@ -252,7 +334,18 @@
 
 <section class="decks">
   <div class="grid-meta">
-    <span class="grid-count"><strong>2</strong> decks available</span>
+    <span class="grid-count"><strong id="count">2</strong> <span id="count-label">decks available</span></span>
+    <div class="search" id="search">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="11" cy="11" r="7"/>
+        <path d="M21 21l-4.35-4.35"/>
+      </svg>
+      <input type="search" id="search-input" placeholder="Search decks…" aria-label="Search decks" autocomplete="off" />
+      <span class="search-kbd" aria-hidden="true">⌘K</span>
+      <button class="search-clear" id="search-clear" type="button" aria-label="Clear search">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
   </div>
 
   <div class="deck-grid">
@@ -343,6 +436,11 @@
     </div>
 
   </div>
+
+  <div class="empty-state" id="empty-state" role="status" aria-live="polite">
+    <strong>No decks match <em id="empty-q"></em></strong>
+    <span>Try a different keyword, or clear the search.</span>
+  </div>
 </section>
 
 <footer>
@@ -353,5 +451,99 @@
 </footer>
 
 <script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
+
+<script>
+(() => {
+  const $ = (s) => document.querySelector(s);
+  const $$ = (s) => Array.from(document.querySelectorAll(s));
+
+  const wrap      = $('#search');
+  const input     = $('#search-input');
+  const clearBtn  = $('#search-clear');
+  const count     = $('#count');
+  const countLbl  = $('#count-label');
+  const empty     = $('#empty-state');
+  const emptyQ    = $('#empty-q');
+
+  const cards = $$('.card[href]');
+  const placeholder = $('.card-placeholder');
+
+  const items = cards.map((el) => ({
+    el,
+    titleEl: el.querySelector('.card-title'),
+    descEl:  el.querySelector('.card-desc'),
+    title:   el.querySelector('.card-title')?.textContent || '',
+    desc:    el.querySelector('.card-desc')?.textContent  || '',
+    tags:    Array.from(el.querySelectorAll('.tag')).map((t) => t.textContent).join(' '),
+  }));
+
+  function escapeRegExp(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+
+  // Replace child nodes safely (no innerHTML); wrap matches in <mark>.
+  function applyHighlight(el, text, q) {
+    if (!el) return;
+    el.replaceChildren();
+    if (!q) { el.appendChild(document.createTextNode(text)); return; }
+    const re = new RegExp('(' + escapeRegExp(q) + ')', 'gi');
+    text.split(re).forEach((part, i) => {
+      if (!part) return;
+      if (i % 2 === 1) {
+        const mark = document.createElement('mark');
+        mark.textContent = part;
+        el.appendChild(mark);
+      } else {
+        el.appendChild(document.createTextNode(part));
+      }
+    });
+  }
+
+  function applyFilter(q) {
+    const needle = q.trim().toLowerCase();
+    let visible = 0;
+    items.forEach((it) => {
+      const hay = (it.title + ' ' + it.desc + ' ' + it.tags).toLowerCase();
+      const match = !needle || hay.includes(needle);
+      it.el.classList.toggle('is-hidden', !match);
+      if (match) visible++;
+      applyHighlight(it.titleEl, it.title, needle);
+      applyHighlight(it.descEl,  it.desc,  needle);
+    });
+
+    if (placeholder) placeholder.classList.toggle('is-hidden', !!needle);
+
+    count.textContent = visible;
+    countLbl.textContent = (visible === 1 ? 'deck' : 'decks') + (needle ? ' found' : ' available');
+
+    const showEmpty = !!needle && visible === 0;
+    empty.classList.toggle('is-shown', showEmpty);
+    if (showEmpty) emptyQ.textContent = '“' + q + '”';
+
+    wrap.classList.toggle('has-value', !!needle);
+
+    const url = new URL(location.href);
+    if (needle) url.searchParams.set('q', q);
+    else url.searchParams.delete('q');
+    history.replaceState(null, '', url.toString());
+  }
+
+  // Init: pick up ?q= on page load
+  const initial = new URLSearchParams(location.search).get('q') || '';
+  if (initial) input.value = initial;
+  applyFilter(input.value);
+
+  input.addEventListener('input', (e) => applyFilter(e.target.value));
+  clearBtn.addEventListener('click', () => { input.value = ''; applyFilter(''); input.focus(); });
+
+  // ⌘/Ctrl + K to focus, Esc to clear
+  window.addEventListener('keydown', (e) => {
+    const isMod = e.metaKey || e.ctrlKey;
+    if (isMod && e.key.toLowerCase() === 'k') {
+      e.preventDefault(); input.focus(); input.select();
+    } else if (e.key === 'Escape' && document.activeElement === input) {
+      input.value = ''; applyFilter(''); input.blur();
+    }
+  });
+})();
+</script>
 </body>
 </html>
