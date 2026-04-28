@@ -46,6 +46,171 @@
     50%     { transform: scale(1.06); opacity: 1; }
   }
 
+  /* ===== drifting bokeh accents ===== */
+  .bokeh {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    mix-blend-mode: screen;
+  }
+  .bokeh.b1 {
+    width: 380px; height: 380px;
+    background: radial-gradient(circle, rgba(255,102,0,0.55), transparent 70%);
+    top: 18%; left: 8%;
+    animation: drift1 22s ease-in-out infinite;
+  }
+  .bokeh.b2 {
+    width: 320px; height: 320px;
+    background: radial-gradient(circle, rgba(0,156,182,0.55), transparent 70%);
+    top: 55%; left: 38%;
+    animation: drift2 28s ease-in-out infinite;
+  }
+  .bokeh.b3 {
+    width: 280px; height: 280px;
+    background: radial-gradient(circle, rgba(255,180,90,0.40), transparent 70%);
+    top: 72%; left: 78%;
+    animation: drift3 26s ease-in-out infinite;
+  }
+  @keyframes drift1 {
+    0%,100% { transform: translate(0,0) scale(1); }
+    50%     { transform: translate(60px,-30px) scale(1.12); }
+  }
+  @keyframes drift2 {
+    0%,100% { transform: translate(0,0) scale(1); }
+    50%     { transform: translate(-80px,40px) scale(1.08); }
+  }
+  @keyframes drift3 {
+    0%,100% { transform: translate(0,0) scale(0.95); }
+    50%     { transform: translate(40px,-50px) scale(1.05); }
+  }
+
+  /* ===== shimmer accent line ===== */
+  .accent-line {
+    position: absolute;
+    left: 110px; right: 110px; top: 240px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,102,0,0.85), rgba(0,156,182,0.65), transparent);
+    background-size: 200% 100%;
+    animation: shimmer 6s linear infinite;
+    opacity: 0;
+    transform: scaleX(0);
+    transform-origin: left center;
+    animation: shimmer 6s linear infinite, lineIn 1.4s 0.5s cubic-bezier(.2,.7,.2,1) forwards;
+  }
+  @keyframes shimmer {
+    0%   { background-position: 0% 0; }
+    100% { background-position: 200% 0; }
+  }
+  @keyframes lineIn {
+    from { opacity: 0; transform: scaleX(0); }
+    to   { opacity: 1; transform: scaleX(1); }
+  }
+
+  /* ===== reveal animations ===== */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeRight {
+    from { opacity: 0; transform: translateX(-32px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes fadeLeft {
+    from { opacity: 0; transform: translateX(32px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes letterIn {
+    from { opacity: 0; transform: translateY(40px) rotateX(-30deg); }
+    to   { opacity: 1; transform: translateY(0)  rotateX(0); }
+  }
+  @keyframes pulseTeal {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(0,156,182,0.45); }
+    50%      { box-shadow: 0 0 0 10px rgba(0,156,182,0);  }
+  }
+  @keyframes glowOrange {
+    0%, 100% { text-shadow: 0 0 18px rgba(255,102,0,0.0); }
+    50%      { text-shadow: 0 0 36px rgba(255,102,0,0.55); }
+  }
+
+  /* hero title — letter-by-letter */
+  .title { perspective: 800px; }
+  .title .word { display: inline-block; }
+  .title .ch {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(40px) rotateX(-30deg);
+    animation: letterIn 0.7s cubic-bezier(.2,.8,.2,1) forwards;
+  }
+  .title .accent { animation: glowOrange 4.5s ease-in-out 2.2s infinite; }
+
+  .eyebrow { opacity: 0; animation: fadeUp 0.8s 0.1s ease-out forwards; }
+  .sub     { opacity: 0; animation: fadeUp 0.8s 1.5s ease-out forwards; }
+
+  .day { opacity: 0; }
+  .day:nth-of-type(1) { animation: fadeRight 0.9s 1.7s cubic-bezier(.2,.7,.2,1) forwards; }
+  .day:nth-of-type(2) { animation: fadeLeft  0.9s 1.9s cubic-bezier(.2,.7,.2,1) forwards; }
+
+  ul.agenda li {
+    opacity: 0;
+    transform: translateX(-12px);
+    animation: rowIn 0.5s cubic-bezier(.2,.7,.2,1) forwards;
+    transition: background 220ms ease, transform 220ms ease;
+  }
+  @keyframes rowIn {
+    to { opacity: 1; transform: translateX(0); }
+  }
+  ul.agenda li:hover {
+    background: rgba(255,255,255,0.04);
+    transform: translateX(4px);
+    border-radius: 6px;
+  }
+
+  /* lunch row gets a soft pulse highlight after reveal */
+  ul.agenda li.lunch {
+    position: relative;
+    overflow: hidden;
+  }
+  ul.agenda li.lunch::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,102,0,0.18), transparent);
+    transform: translateX(-100%);
+    animation: sweep 5s 3.5s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes sweep {
+    0%, 100% { transform: translateX(-100%); }
+    40%      { transform: translateX(100%);  }
+  }
+
+  .day-tag {
+    position: relative;
+    display: inline-block;
+    padding-left: 16px;
+  }
+  .day-tag::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 50%;
+    width: 8px; height: 8px;
+    margin-top: -4px;
+    border-radius: 50%;
+    background: var(--teal);
+    animation: pulseTeal 2.4s ease-in-out infinite;
+  }
+
+  .footer { opacity: 0; animation: fadeUp 0.8s 2.6s ease-out forwards; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001s !important;
+      animation-delay: 0s !important;
+      transition-duration: 0.001s !important;
+    }
+  }
+
   /* teal ring */
   .ring {
     position: absolute;
@@ -190,10 +355,14 @@
 <section class="slide">
   <div class="ring"></div>
   <div class="orb"></div>
+  <div class="bokeh b1"></div>
+  <div class="bokeh b2"></div>
+  <div class="bokeh b3"></div>
+  <div class="accent-line"></div>
 
   <div class="frame">
     <div class="eyebrow">Y Soft · Regional Kickoff</div>
-    <h1 class="title"><span class="accent">NALA</span> May 2026 Kickoff</h1>
+    <h1 class="title" id="hero-title"><span class="accent">NALA</span> May 2026 Kickoff</h1>
     <p class="sub">Two-day agenda &middot; 08:30 – 17:00 daily</p>
 
     <div class="grid">
@@ -246,6 +415,53 @@
     </div>
   </div>
 </section>
+
+<script>
+  // ----- Letter-by-letter hero title -----
+  (function splitTitle() {
+    const h1 = document.getElementById('hero-title');
+    if (!h1) return;
+    const nodes = [...h1.childNodes];
+    h1.replaceChildren();
+    let i = 0;
+    const addLetters = (text, target) => {
+      [...text].forEach(ch => {
+        const s = document.createElement('span');
+        s.className = 'ch';
+        s.textContent = ch === ' ' ? ' ' : ch;
+        s.style.animationDelay = (0.25 + i * 0.045) + 's';
+        i++;
+        target.appendChild(s);
+      });
+    };
+    nodes.forEach(node => {
+      if (node.nodeType === 3) {
+        node.textContent.split(' ').forEach((word, wIdx, arr) => {
+          if (word.length) {
+            const w = document.createElement('span');
+            w.className = 'word';
+            addLetters(word, w);
+            h1.appendChild(w);
+          }
+          if (wIdx < arr.length - 1) h1.appendChild(document.createTextNode(' '));
+        });
+      } else if (node.nodeType === 1) {
+        const wrap = document.createElement('span');
+        wrap.className = 'word ' + node.className;
+        addLetters(node.textContent, wrap);
+        h1.appendChild(wrap);
+      }
+    });
+  })();
+
+  // ----- Stagger agenda rows per day -----
+  document.querySelectorAll('.day').forEach((day, dayIdx) => {
+    const baseDelay = 1.9 + dayIdx * 0.25;
+    day.querySelectorAll('ul.agenda li').forEach((li, i) => {
+      li.style.animationDelay = (baseDelay + i * 0.06) + 's';
+    });
+  });
+</script>
 
 </body>
 </html>
