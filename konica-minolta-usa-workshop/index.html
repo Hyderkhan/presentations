@@ -535,17 +535,19 @@
           <div class="col-meta">Sessions 01 – 03</div>
         </div>
         <ul class="agenda">
-          <li>
+          <li class="linked" onclick="if(event.target.tagName!=='A')location.href='./magic-deployment.html'">
             <span class="num">01</span>
             <div class="body">
-              <div class="topic">KM IWS &middot; Magic Deployment</div>
+              <a class="topic-link" href="./magic-deployment.html">
+                <div class="topic">KM IWS &middot; Magic Deployment <span class="link-arrow">&rarr;</span></div>
+              </a>
               <div class="desc">Frictionless IWS rollout for enterprise printing — where we stand and what's next.</div>
               <div class="tags">
                 <span class="tag">Enterprise customers</span>
                 <span class="tag teal">Healthcare &middot; Epic</span>
               </div>
             </div>
-            <span></span>
+            <span class="chip-link">View flow</span>
           </li>
           <li>
             <span class="num">02</span>
