@@ -13,12 +13,18 @@
 @import url("https://rsms.me/inter/inter.css");
 
 :root {
-  --orange: #FF6600;
-  --orange-ink: #E55A00;
-  --orange-wash: #FFF1E6;
-  --turq: #009CB6;
-  --turq-ink: #007F95;
-  --turq-wash: #E5F5F8;
+  /* HP blue is the canonical accent; legacy --orange / --turq tokens
+     are aliased to blue so all per-element call-sites stay in place. */
+  --hp-blue: #0073E6;
+  --hp-blue-bright: #1F8AFF;
+  --hp-blue-wash: #E5F1FC;
+  --hp-blue-ink: #0058B0;
+  --orange: var(--hp-blue);
+  --orange-ink: var(--hp-blue-ink);
+  --orange-wash: var(--hp-blue-wash);
+  --turq: var(--hp-blue-bright);
+  --turq-ink: var(--hp-blue);
+  --turq-wash: var(--hp-blue-wash);
   --grey-circle: #B2B2B2;
   --off-white: #F2F2F2;
   --grey-11: #53565A;
@@ -190,25 +196,23 @@
   z-index: 1;
   pointer-events: none;
 }
-/* Inner / shorter stripe (closer to centre, sits behind the outer one) */
+/* Inner stripe — thinner, finite parallelogram ending in the lower-left of the slide */
 .slide--hp-stripes::before {
-  width: 110px;
-  height: 1280px;
-  right: 380px;
-  top: -160px;
+  width: 105px;
+  height: 950px;
+  right: 285px;
+  top: 0;
   transform: rotate(20deg);
   transform-origin: top right;
-  box-shadow: 0 12px 32px rgba(0,80,180,0.18);
 }
-/* Outer / taller stripe (bleeds off the right edge) */
+/* Outer stripe — thicker, anchored near the right edge */
 .slide--hp-stripes::after {
-  width: 130px;
-  height: 1480px;
-  right: 60px;
-  top: -240px;
+  width: 150px;
+  height: 970px;
+  right: 45px;
+  top: 0;
   transform: rotate(20deg);
   transform-origin: top right;
-  box-shadow: 0 16px 40px rgba(0,80,180,0.20);
 }
 /* Make sure slide content sits above the stripes */
 .slide--hp-stripes .frame,
@@ -419,7 +423,7 @@
    deck-stage canvas. Uses the same design language as slide footers.
    ==================================================================== */
 
-:root { --rail-accent: #FF6600; }
+:root { --rail-accent: var(--hp-blue); }
 
 #chapter-rail {
   position: fixed;
@@ -736,6 +740,182 @@ body.hide-footer .footer { display: none; }
 
 /* Data tables — fade in as a unit */
 [data-deck-active] .data-table { animation: deck-rise 620ms cubic-bezier(.22,.9,.25,1) 360ms both; }
+
+/* =========================================================
+   Modern card grids — used for FAQ + Hands-On
+   Animated stagger entry, hoverable cards w/ accent stripe,
+   gradient number badges with a subtle ongoing pulse.
+   ========================================================= */
+.faq-grid,
+.step-grid {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  flex: 1;
+  align-content: start;
+}
+.faq-grid {
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 26px;
+}
+.step-grid {
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px;
+}
+
+.faq-card,
+.step-card {
+  position: relative;
+  background: #fff;
+  border: 1px solid rgba(0,115,230,0.08);
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(15,40,80,0.06);
+  overflow: hidden;
+  transition: transform 280ms cubic-bezier(.22,.9,.25,1),
+              box-shadow 280ms cubic-bezier(.22,.9,.25,1),
+              border-color 280ms cubic-bezier(.22,.9,.25,1);
+}
+.faq-card {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding: 18px 24px 18px 22px;
+  min-height: 78px;
+}
+.step-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 26px 24px 24px;
+}
+/* Animated left accent stripe — expands on hover */
+.faq-card::before,
+.step-card::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 4px;
+  background: linear-gradient(180deg, var(--hp-blue) 0%, var(--hp-blue-bright) 100%);
+  transform: scaleY(0.35);
+  transform-origin: top;
+  transition: transform 360ms cubic-bezier(.22,.9,.25,1);
+}
+.faq-card:hover,
+.step-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 22px 48px rgba(15,40,80,0.16);
+  border-color: rgba(0,115,230,0.28);
+}
+.faq-card:hover::before,
+.step-card:hover::before { transform: scaleY(1); }
+
+/* Number badges — gradient fill + soft glow */
+.faq-num,
+.step-num {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--hp-blue) 0%, var(--hp-blue-bright) 100%);
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  box-shadow: 0 6px 16px rgba(0,115,230,0.32);
+  position: relative;
+}
+.faq-num  { width: 50px; height: 50px; font-size: 18px; }
+.step-num { width: 60px; height: 60px; font-size: 22px; }
+/* Glow ring revealed on hover */
+.faq-num::after,
+.step-num::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px solid rgba(31,138,255,0.30);
+  opacity: 0;
+  transition: opacity 280ms ease, transform 280ms ease;
+}
+.faq-card:hover .faq-num::after,
+.step-card:hover .step-num::after { opacity: 1; transform: scale(1.04); }
+
+.faq-q {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.4;
+  color: var(--grey-11);
+  font-weight: 500;
+}
+.step-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 22px;
+  color: var(--ink);
+  text-transform: uppercase;
+  letter-spacing: -0.005em;
+  line-height: 1.05;
+}
+.step-desc {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.4;
+  color: var(--grey-11);
+}
+
+/* Card stagger entry — translateY + scale */
+@keyframes card-rise-3d {
+  from { opacity: 0; transform: translateY(28px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+[data-deck-slide] .faq-card,
+[data-deck-slide] .step-card { opacity: 0; }
+[data-deck-active] .faq-card,
+[data-deck-active] .step-card {
+  animation: card-rise-3d 620ms cubic-bezier(.22,.9,.25,1) both;
+}
+[data-deck-active] .faq-card:nth-child(1)  { animation-delay: 220ms; }
+[data-deck-active] .faq-card:nth-child(2)  { animation-delay: 280ms; }
+[data-deck-active] .faq-card:nth-child(3)  { animation-delay: 340ms; }
+[data-deck-active] .faq-card:nth-child(4)  { animation-delay: 400ms; }
+[data-deck-active] .faq-card:nth-child(5)  { animation-delay: 460ms; }
+[data-deck-active] .faq-card:nth-child(6)  { animation-delay: 520ms; }
+[data-deck-active] .faq-card:nth-child(7)  { animation-delay: 580ms; }
+[data-deck-active] .faq-card:nth-child(8)  { animation-delay: 640ms; }
+[data-deck-active] .faq-card:nth-child(9)  { animation-delay: 700ms; }
+[data-deck-active] .faq-card:nth-child(10) { animation-delay: 760ms; }
+[data-deck-active] .step-card:nth-child(1) { animation-delay: 220ms; }
+[data-deck-active] .step-card:nth-child(2) { animation-delay: 290ms; }
+[data-deck-active] .step-card:nth-child(3) { animation-delay: 360ms; }
+[data-deck-active] .step-card:nth-child(4) { animation-delay: 430ms; }
+[data-deck-active] .step-card:nth-child(5) { animation-delay: 500ms; }
+[data-deck-active] .step-card:nth-child(6) { animation-delay: 570ms; }
+[data-deck-active] .step-card:nth-child(7) { animation-delay: 640ms; }
+[data-deck-active] .step-card:nth-child(8) { animation-delay: 710ms; }
+
+/* Gentle ongoing pulse on number badges */
+@keyframes badge-pulse {
+  0%, 100% { box-shadow: 0 6px 16px rgba(0,115,230,0.32); }
+  50%      { box-shadow: 0 10px 26px rgba(0,115,230,0.50); }
+}
+[data-deck-active] .faq-num,
+[data-deck-active] .step-num {
+  animation: badge-pulse 3.6s ease-in-out infinite;
+  animation-delay: 1700ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-deck-slide] .faq-card,
+  [data-deck-slide] .step-card { opacity: 1; }
+  [data-deck-active] .faq-card,
+  [data-deck-active] .step-card,
+  [data-deck-active] .faq-num,
+  [data-deck-active] .step-num { animation: none !important; }
+}
 
 /* =========================================================
    Slide 01 — Title hero "kick-in"
