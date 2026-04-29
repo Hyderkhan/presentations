@@ -1,0 +1,966 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>SAFEQ Cloud · Cloud &amp; On-Prem Roadmap</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  :root {
+    --orange:  #FF6600;
+    --orange-2:#FFB37A;
+    --teal:    #009CB6;
+    --teal-2:  #67D6E8;
+    --ink:     #0E1116;
+    --rule:    rgba(255,255,255,0.10);
+    --muted:   rgba(255,255,255,0.62);
+    --muted-2: rgba(255,255,255,0.42);
+    --font-display: "Inter", "Helvetica Neue", Arial, sans-serif;
+    --font-body:    "Inter", "Helvetica Neue", Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #000; color: #fff; font-family: var(--font-body); }
+
+  .slide {
+    position: relative;
+    width: 1920px;
+    height: 1080px;
+    margin: 0 auto;
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse 1100px 820px at 92% 6%,  rgba(255,102,0,0.38) 0%, rgba(255,102,0,0) 58%),
+      radial-gradient(ellipse 760px 600px  at 6%  102%, rgba(0,156,182,0.28) 0%, rgba(0,156,182,0) 55%),
+      linear-gradient(135deg, #0B0E13 0%, #161B23 100%);
+  }
+
+  /* breathing orb */
+  .orb {
+    position: absolute;
+    width: 760px; height: 760px;
+    right: -220px; bottom: -240px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, rgba(255,102,0,0.85), rgba(255,102,0,0.16) 55%, rgba(255,102,0,0) 75%);
+    filter: blur(2px);
+    animation: breathe 9s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes breathe {
+    0%,100% { transform: scale(1);    opacity: 0.85; }
+    50%     { transform: scale(1.06); opacity: 1; }
+  }
+
+  /* drifting bokeh */
+  .bokeh {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    mix-blend-mode: screen;
+  }
+  .bokeh.b1 { width: 380px; height: 380px; background: radial-gradient(circle, rgba(255,102,0,0.45), transparent 70%); top: 18%;  left: 8%;  animation: drift1 22s ease-in-out infinite; }
+  .bokeh.b2 { width: 320px; height: 320px; background: radial-gradient(circle, rgba(0,156,182,0.45), transparent 70%); top: 60%; left: 38%; animation: drift2 28s ease-in-out infinite; }
+  .bokeh.b3 { width: 260px; height: 260px; background: radial-gradient(circle, rgba(255,180,90,0.30), transparent 70%); top: 78%; left: 80%; animation: drift3 26s ease-in-out infinite; }
+  @keyframes drift1 { 0%,100% { transform: translate(0,0) scale(1); }    50% { transform: translate(60px,-30px) scale(1.12); } }
+  @keyframes drift2 { 0%,100% { transform: translate(0,0) scale(1); }    50% { transform: translate(-80px,40px) scale(1.08); } }
+  @keyframes drift3 { 0%,100% { transform: translate(0,0) scale(0.95); } 50% { transform: translate(40px,-50px) scale(1.05); } }
+
+  /* teal ring */
+  .ring {
+    position: absolute;
+    left: -200px; top: -200px;
+    width: 480px; height: 480px;
+    border: 2px solid rgba(0,156,182,0.40);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  /* shimmer accent line */
+  .accent-line {
+    position: absolute;
+    left: 60px; right: 60px; top: 220px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,102,0,0.85), rgba(0,156,182,0.65), transparent);
+    background-size: 200% 100%;
+    opacity: 0;
+    transform: scaleX(0);
+    transform-origin: left center;
+    animation: shimmer 6s linear infinite, lineIn 1.4s 0.4s cubic-bezier(.2,.7,.2,1) forwards;
+  }
+  @keyframes shimmer { 0% { background-position: 0% 0; } 100% { background-position: 200% 0; } }
+  @keyframes lineIn  { from { opacity: 0; transform: scaleX(0); } to { opacity: 1; transform: scaleX(1); } }
+
+  /* reveals */
+  @keyframes fadeUp   { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn   { from { opacity: 0; }                              to { opacity: 1; } }
+  @keyframes itemIn   { from { opacity: 0; transform: translateY(8px) scale(0.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  @keyframes pulseOrange { 0%,100% { box-shadow: 0 0 0 0 rgba(255,102,0,0.40); } 50% { box-shadow: 0 0 0 8px rgba(255,102,0,0);  } }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001s !important;
+      animation-delay: 0s !important;
+      transition-duration: 0.001s !important;
+    }
+  }
+
+  /* ============ FRAME / HEADER ============ */
+  .frame { position: absolute; inset: 0; padding: 46px 60px 32px; display: flex; flex-direction: column; }
+
+  .back-link {
+    position: absolute;
+    top: 22px; left: 70px;
+    color: var(--muted);
+    font-size: 13px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: color 0.2s, transform 0.2s;
+    animation: fadeIn 0.6s 0.2s ease-out both;
+  }
+  .back-link:hover { color: var(--orange); transform: translateX(-3px); }
+  .back-link .arr { display: inline-block; transition: transform 0.2s; margin-right: 6px; }
+  .back-link:hover .arr { transform: translateX(-3px); }
+
+  .header-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 32px;
+    margin-top: 12px;
+    margin-bottom: 14px;
+  }
+  .header-row > div:first-child { flex: 1; }
+
+  .eyebrow {
+    color: var(--orange);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.2s ease-out forwards;
+  }
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 48px;
+    line-height: 1.0;
+    margin: 0 0 6px;
+    letter-spacing: -0.02em;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.35s ease-out forwards;
+  }
+  h1 .accent-orange { color: var(--orange); }
+  h1 .accent-teal   { color: var(--teal-2); }
+  .sub {
+    font-size: 17px;
+    color: var(--muted);
+    margin: 0;
+    letter-spacing: 0.04em;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.55s ease-out forwards;
+  }
+  .sub strong { color: #fff; font-weight: 600; }
+
+  .validity-badge {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    padding: 12px 18px;
+    text-align: right;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    line-height: 1.3;
+    backdrop-filter: blur(6px);
+    opacity: 0;
+    animation: fadeUp 0.8s 0.7s ease-out forwards;
+    position: relative;
+    overflow: hidden;
+  }
+  .validity-badge::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg, var(--orange), var(--teal));
+  }
+  .validity-badge span {
+    display: block;
+    margin-top: 4px;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+  }
+
+  /* ============ ROADMAP GRID ============ */
+  .roadmap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    margin-top: 4px;
+  }
+
+  .qheaders {
+    display: grid;
+    grid-template-columns: 220px repeat(5, 1fr);
+    gap: 12px;
+    padding: 0 0 8px 0;
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .qheaders > div:first-child { /* empty corner */ }
+  .qhead {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    text-transform: uppercase;
+    padding: 8px 12px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    text-align: center;
+    opacity: 0;
+    animation: fadeUp 0.6s ease-out forwards;
+  }
+  .qhead .arr { color: var(--orange); margin: 0 4px; }
+
+  .category {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 12px;
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .category:last-of-type { border-bottom: none; }
+
+  .cat-label {
+    font-size: 14px;
+    line-height: 1.35;
+    color: var(--muted);
+    padding: 4px 12px 4px 0;
+    border-left: 3px solid var(--orange);
+    padding-left: 14px;
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+    opacity: 0;
+    animation: fadeUp 0.6s ease-out forwards;
+  }
+  .cat-label strong {
+    color: #fff;
+    font-weight: 700;
+    display: block;
+    font-size: 16px;
+    letter-spacing: -0.005em;
+  }
+  .cat-label .lbl-wrap { display: block; }
+
+  .cat-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+  .cat-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    align-items: stretch;
+  }
+  .cell {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  /* ============ ITEMS ============ */
+  .item {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+    padding: 6px 11px 6px 12px;
+    font-size: 12px;
+    line-height: 1.28;
+    border-radius: 7px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--rule);
+    border-left-width: 3px;
+    color: rgba(255,255,255,0.92);
+    opacity: 0;
+    animation: itemIn 0.5s ease-out forwards;
+    transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+  }
+  .item:hover {
+    transform: translateY(-1px);
+    background: rgba(255,255,255,0.06);
+  }
+  .item .dot {
+    flex: 0 0 6px;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    margin-top: 6px;
+  }
+  .item .body { flex: 1; min-width: 0; }
+  .item .body strong { font-weight: 700; }
+
+  .item.wip {
+    border-left-color: var(--orange);
+    background: linear-gradient(90deg, rgba(255,102,0,0.14), rgba(255,102,0,0.05));
+    color: #FFC79A;
+  }
+  .item.wip .dot {
+    background: var(--orange);
+    animation: pulseOrange 2.6s ease-in-out infinite;
+  }
+  .item.wip .body strong { color: #fff; }
+
+  .item.plan {
+    border-left-color: var(--teal);
+    background: linear-gradient(90deg, rgba(0,156,182,0.14), rgba(0,156,182,0.04));
+    color: var(--teal-2);
+  }
+  .item.plan .dot {
+    background: var(--teal);
+  }
+  .item.plan .body strong { color: #fff; }
+
+  /* badge chips inside items */
+  .chip {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 1px 7px 2px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    border-radius: 4px;
+    color: #fff;
+    vertical-align: middle;
+    line-height: 1.4;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.3);
+  }
+  .chip.breeze { background: var(--teal); }
+  .chip.pro    { background: var(--orange); }
+
+  /* ============ STATUS BAR ============ */
+  .status-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 10px 18px;
+    margin-bottom: 14px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    backdrop-filter: blur(8px);
+    opacity: 0;
+    animation: fadeUp 0.7s 0.85s ease-out forwards;
+  }
+  .counters { display: flex; align-items: center; gap: 14px; }
+  .count-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 14px 6px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    border: 1px solid var(--rule);
+    background: rgba(255,255,255,0.03);
+    transition: opacity 0.4s ease, transform 0.4s ease, color 0.4s ease, background 0.4s ease;
+  }
+  .count-pill .num {
+    font-variant-numeric: tabular-nums;
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+  .count-pill .lbl { color: var(--muted); font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; font-size: 11px; }
+  .count-pill .dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    margin-right: 2px;
+  }
+  .count-pill.wip {
+    color: var(--orange-2);
+    border-color: rgba(255,102,0,0.4);
+    background: linear-gradient(90deg, rgba(255,102,0,0.18), rgba(255,102,0,0.06));
+  }
+  .count-pill.wip .dot { background: var(--orange); animation: pulseOrange 2.4s ease-in-out infinite; }
+  .count-pill.plan {
+    color: var(--teal-2);
+    border-color: rgba(0,156,182,0.40);
+    background: linear-gradient(90deg, rgba(0,156,182,0.18), rgba(0,156,182,0.06));
+  }
+  .count-pill.plan .dot { background: var(--teal); }
+  .count-pill.muted {
+    color: var(--muted);
+    border-color: rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.03);
+  }
+  .count-pill.muted .dot { background: var(--muted); }
+
+  body:not(.show-plan) .count-pill.plan { opacity: 0.55; transform: scale(0.96); filter: grayscale(0.4); }
+  body.show-plan       .count-pill.plan { opacity: 1; transform: scale(1); }
+
+  .total-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #fff;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--rule);
+    opacity: 0;
+    transform: translateX(-6px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  body.show-plan .total-pill { opacity: 1; transform: translateX(0); transition-delay: 1.3s; }
+  .total-pill .num { font-variant-numeric: tabular-nums; font-size: 16px; }
+
+  /* ============ REVEAL BUTTON ============ */
+  .reveal-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 22px 10px 18px;
+    border: 0;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #0DAEC9 0%, var(--teal) 70%);
+    color: #fff;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(0,156,182,0.35), 0 0 0 0 rgba(0,156,182,0.6);
+    animation: btnPulse 2.4s ease-in-out infinite;
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+  }
+  .reveal-btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, transparent, rgba(255,255,255,0.32), transparent);
+    transform: translateX(-100%);
+    animation: btnSheen 3.6s ease-in-out infinite;
+  }
+  .reveal-btn .arr {
+    display: inline-block;
+    transition: transform 0.25s ease;
+    font-size: 16px;
+    line-height: 1;
+  }
+  .reveal-btn:hover { transform: translateY(-2px) scale(1.04); box-shadow: 0 12px 30px rgba(0,156,182,0.55); }
+  .reveal-btn:hover .arr { transform: translateX(5px); }
+  .reveal-btn .count-bubble {
+    background: rgba(0,0,0,0.25);
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-variant-numeric: tabular-nums;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+  }
+  body.show-plan .reveal-btn { animation: btnExit 0.6s cubic-bezier(.6,0,.4,1) forwards; pointer-events: none; }
+
+  @keyframes btnPulse {
+    0%, 100% { box-shadow: 0 8px 24px rgba(0,156,182,0.35), 0 0 0 0 rgba(0,156,182,0.55); }
+    50%      { box-shadow: 0 8px 24px rgba(0,156,182,0.45), 0 0 0 14px rgba(0,156,182,0); }
+  }
+  @keyframes btnSheen {
+    0%   { transform: translateX(-100%); }
+    50%, 100% { transform: translateX(150%); }
+  }
+  @keyframes btnExit {
+    to { opacity: 0; transform: scale(0.85); filter: blur(4px); }
+  }
+
+  /* ============ CLICK RIPPLE ============ */
+  .click-ripple {
+    position: fixed;
+    width: 0; height: 0;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 9999;
+    border: 3px solid var(--teal);
+    animation: ripple 1.2s cubic-bezier(.2,.7,.2,1) forwards;
+    box-shadow: 0 0 24px rgba(0,156,182,0.6);
+  }
+  .click-ripple.r2 { animation-delay: 0.10s; border-color: var(--teal-2); }
+  .click-ripple.r3 { animation-delay: 0.22s; border-color: rgba(0,156,182,0.5); }
+  @keyframes ripple {
+    0%   { width: 0;     height: 0;     opacity: 0.95; border-width: 4px; }
+    70%  { opacity: 0.35; }
+    100% { width: 3600px; height: 3600px; opacity: 0; border-width: 1px; }
+  }
+
+  /* ============ TODAY MARKER on quarter header ============ */
+  .qhead.current {
+    background: linear-gradient(135deg, rgba(255,102,0,0.22), rgba(255,102,0,0.04));
+    border-color: rgba(255,102,0,0.55);
+    color: #fff;
+    position: relative;
+    overflow: visible;
+  }
+  .qhead.current::before {
+    content: "TODAY";
+    position: absolute;
+    top: -8px; left: 50%;
+    transform: translateX(-50%);
+    background: var(--orange);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+    padding: 2px 8px;
+    border-radius: 999px;
+    box-shadow: 0 0 0 0 rgba(255,102,0,0.6), 0 4px 10px rgba(255,102,0,0.4);
+    animation: todayBadge 2.4s ease-in-out infinite;
+  }
+  @keyframes todayBadge {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255,102,0,0.55), 0 4px 10px rgba(255,102,0,0.4); }
+    50%      { box-shadow: 0 0 0 8px rgba(255,102,0,0),    0 4px 10px rgba(255,102,0,0.4); }
+  }
+
+  /* ============ HIDE PLAN ITEMS INITIALLY ============ */
+  body:not(.show-plan) .item.plan {
+    opacity: 0 !important;
+    transform: translateY(14px) scale(0.92);
+    pointer-events: none;
+    filter: blur(4px);
+  }
+  body.show-plan .item.plan {
+    animation: planMaterialize 0.7s cubic-bezier(.2,.8,.2,1) forwards !important;
+  }
+  @keyframes planMaterialize {
+    0%   { opacity: 0;    transform: translateY(14px) scale(0.92) rotateX(-8deg); filter: blur(6px); }
+    55%  { opacity: 1;    transform: translateY(-2px) scale(1.015) rotateX(0); filter: blur(0); box-shadow: 0 0 24px 4px rgba(0,156,182,0.45); }
+    100% { opacity: 1;    transform: translateY(0)    scale(1)     rotateX(0); filter: blur(0); box-shadow: 0 0 0 0 rgba(0,156,182,0); }
+  }
+
+  /* "Empty row" hint shown only before reveal — invisible after */
+  .empty-hint {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 12px;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(0,156,182,0.55);
+    border: 1px dashed rgba(0,156,182,0.30);
+    border-radius: 7px;
+    background: rgba(0,156,182,0.04);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .empty-hint .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); opacity: 0.6; }
+  body.show-plan .empty-hint { opacity: 0; transform: scale(0.85); pointer-events: none; }
+
+  /* WIP entry — emphatic glow burst */
+  .item.wip {
+    animation: itemIn 0.6s cubic-bezier(.2,.7,.2,1) forwards, wipGlow 2.4s ease-out;
+  }
+  @keyframes wipGlow {
+    0%   { box-shadow: 0 0 0 0 rgba(255,102,0,0); }
+    25%  { box-shadow: 0 0 36px 4px rgba(255,102,0,0.55); }
+    100% { box-shadow: 0 0 0 0 rgba(255,102,0,0); }
+  }
+
+  /* ============ LEGEND / FOOTER ============ */
+  .legend {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    color: var(--muted);
+    font-size: 13px;
+    opacity: 0;
+    animation: fadeUp 0.7s 1.6s ease-out forwards;
+  }
+  .legend .note { max-width: 60%; }
+  .legend .note strong { color: #fff; }
+  .legend .keys { display: flex; gap: 22px; }
+  .legend .key { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; letter-spacing: 0.04em; }
+  .legend .key .swatch {
+    width: 12px; height: 12px;
+    border-radius: 3px;
+    display: inline-block;
+  }
+  .legend .key.wip  { color: var(--orange); }
+  .legend .key.wip  .swatch { background: var(--orange); box-shadow: 0 0 10px rgba(255,102,0,0.5); }
+  .legend .key.plan { color: var(--teal-2); }
+  .legend .key.plan .swatch { background: var(--teal); box-shadow: 0 0 10px rgba(0,156,182,0.5); }
+  .legend .key small { color: var(--muted); font-weight: 500; margin-left: 4px; letter-spacing: 0.02em; }
+</style>
+</head>
+<body>
+
+<section class="slide">
+  <div class="ring"></div>
+  <div class="orb"></div>
+  <div class="bokeh b1"></div>
+  <div class="bokeh b2"></div>
+  <div class="bokeh b3"></div>
+  <div class="accent-line"></div>
+
+  <div class="frame">
+    <a class="back-link" href="./"><span class="arr">←</span> Workshop Agenda</a>
+
+    <div class="header-row">
+      <div>
+        <div class="eyebrow">Y Soft &middot; SAFEQ Cloud</div>
+        <h1>Cloud &amp; On-Prem Roadmap</h1>
+        <p class="sub"><span class="accent-orange" style="color:var(--orange);font-weight:700">In Progress</span> &amp; <span class="accent-teal" style="color:var(--teal-2);font-weight:700">Planned</span> items &nbsp;&middot;&nbsp; <strong>Last updated: 24 March 2026</strong></p>
+      </div>
+      <div class="validity-badge">
+        Valid until May 2026
+        <span>Subject to change</span>
+      </div>
+    </div>
+
+    <!-- ===== Status Bar (counters + reveal CTA) ===== -->
+    <div class="status-bar">
+      <div class="counters">
+        <div class="count-pill wip"><span class="dot"></span><span class="num" data-target-wip>0</span><span class="lbl">In Progress</span></div>
+        <div class="count-pill plan"><span class="dot"></span><span class="num" data-target-plan>0</span><span class="lbl">Planned</span></div>
+        <div class="total-pill"><span class="num" data-target-total>0</span> Total items</div>
+      </div>
+      <button class="reveal-btn" id="revealBtn" type="button">
+        Reveal planned items <span class="count-bubble" data-count-bubble>0</span> <span class="arr">&rarr;</span>
+      </button>
+    </div>
+
+    <div class="roadmap">
+
+      <!-- ===== Quarter Headers ===== -->
+      <div class="qheaders">
+        <div></div>
+        <div class="qhead" style="animation-delay:.85s">January 2026 <span class="arr">&rarr;</span> March 2026</div>
+        <div class="qhead current" style="animation-delay:.95s">April 2026 <span class="arr">&rarr;</span> June 2026</div>
+        <div class="qhead" style="animation-delay:1.05s">July 2026 <span class="arr">&rarr;</span> September 2026</div>
+        <div class="qhead" style="animation-delay:1.15s">October 2026 <span class="arr">&rarr;</span> December 2026</div>
+        <div class="qhead" style="animation-delay:1.25s">January 2027 <span class="arr">&rarr;</span> March 2027</div>
+      </div>
+
+      <!-- ===== Cloud Stability and Scalability ===== -->
+      <div class="category">
+        <div class="cat-label" style="animation-delay:1.30s">
+          <span class="lbl-wrap">Cloud<strong>Stability and Scalability</strong></span>
+        </div>
+        <div class="cat-rows">
+          <div class="cat-row">
+            <div class="cell" style="grid-column: 1 / span 5">
+              <div class="item plan"><span class="dot"></span><span class="body">Continued optimization of technology, processes and operations for scalability, performance and stability</span></div>
+            </div>
+          </div>
+          <div class="cat-row">
+            <div class="cell" style="grid-column: 1 / span 3">
+              <div class="item plan"><span class="dot"></span><span class="body">Product support for SOC2 Type 2 continuous audit and continuous security fixes and improvements</span></div>
+            </div>
+            <div class="cell" style="grid-column: 4">
+              <div class="item plan"><span class="dot"></span><span class="body">Continuous security fixes and improvements</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== Cloud Terminals ===== -->
+      <div class="category">
+        <div class="cat-label" style="animation-delay:1.40s">
+          <span class="lbl-wrap">Cloud<strong>Terminals</strong></span>
+        </div>
+        <div class="cat-rows">
+          <div class="cat-row">
+            <div class="cell" style="grid-column: 1">
+              <div class="item wip"><span class="dot"></span><span class="body">KM IWS Magical Deployment</span></div>
+            </div>
+            <div class="cell" style="grid-column: 3">
+              <div class="item plan"><span class="dot"></span><span class="body">Brother Pure Cloud Terminal &mdash; Print and Scan</span></div>
+            </div>
+          </div>
+          <div class="cat-row">
+            <div class="cell" style="grid-column: 1 / span 2">
+              <div class="item wip"><span class="dot"></span><span class="body">Canon Pure Cloud Terminal &mdash; Print, Deployment and Accounting</span></div>
+            </div>
+            <div class="cell" style="grid-column: 3">
+              <div class="item plan"><span class="dot"></span><span class="body">Canon Pure Cloud Terminal &mdash; Scan</span></div>
+            </div>
+            <div class="cell" style="grid-column: 4">
+              <div class="item plan"><span class="dot"></span><span class="body">Canon Pure Cloud Terminal &ndash; ALP Platform</span></div>
+            </div>
+          </div>
+          <div class="cat-row">
+            <div class="cell" style="grid-column: 3">
+              <div class="item plan"><span class="dot"></span><span class="body">Kyocera Pure Cloud Terminal &mdash; Print and Scan</span></div>
+            </div>
+          </div>
+          <div class="cat-row">
+            <div class="cell" style="grid-column: 3">
+              <div class="item plan"><span class="dot"></span><span class="body">Lexmark Pure Cloud Terminal &mdash; Print and Scan</span></div>
+            </div>
+          </div>
+          <div class="cat-row">
+            <div class="cell" style="grid-column: 3">
+              <div class="item plan"><span class="dot"></span><span class="body">Xerox Cloud Terminal locking</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== Partner Experience &amp; Expanded Markets ===== -->
+      <div class="category">
+        <div class="cat-label" style="animation-delay:1.50s">
+          <span class="lbl-wrap">Partner Experience<strong>Expanded Markets</strong></span>
+        </div>
+        <div class="cat-rows">
+          <div class="cat-row">
+            <div class="cell" style="grid-column: 1">
+              <div class="item wip"><span class="dot"></span><span class="body">Simplify Cloud Terminal deployments (Ricoh, Sharp, Fujifilm BI, HP, Xerox, Canon) <span class="chip breeze">Breeze</span></span></div>
+            </div>
+            <div class="cell" style="grid-column: 2">
+              <div class="item wip"><span class="dot"></span><span class="body">Automated Device Discovery</span></div>
+              <div class="item wip"><span class="dot"></span><span class="body">Simplify Cloud Terminal deployments (Ricoh, Sharp, Fujifilm BI, HP, Xerox, Canon) <span class="chip pro">Pro</span></span></div>
+              <div class="item wip"><span class="dot"></span><span class="body">Print &amp; scan access removed on license expiration</span></div>
+            </div>
+            <div class="cell" style="grid-column: 3">
+              <div class="item wip"><span class="dot"></span><span class="body">Improved printing experience when cloud connection is lost</span></div>
+            </div>
+          </div>
+          <div class="cat-row">
+            <div class="cell" style="grid-column: 2">
+              <div class="item plan"><span class="dot"></span><span class="body">Education market MVP &mdash; quotas in cloud including simple 3rd&nbsp;party integration API</span></div>
+            </div>
+            <div class="cell" style="grid-column: 3">
+              <div class="item plan"><span class="dot"></span><span class="body">Education market &mdash; billing codes support</span></div>
+            </div>
+          </div>
+          <div class="cat-row">
+            <div class="cell" style="grid-column: 1 / span 2">
+              <div class="item plan"><span class="dot"></span><span class="body">Updated license view in UI to support multiple license expiration dates for device groups &amp; improved notifications for expirations and tenant deletions</span></div>
+            </div>
+            <div class="cell" style="grid-column: 3">
+              <div class="item plan"><span class="dot"></span><span class="body">Entra ID SCIM user provisioning &amp; de-provisioning in Cloud</span></div>
+            </div>
+            <div class="cell" style="grid-column: 4">
+              <div class="item plan"><span class="dot"></span><span class="body">Education market payment systems integrations</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== Support SAFEQ6 Customer Base ===== -->
+      <div class="category">
+        <div class="cat-label" style="animation-delay:1.60s">
+          <span class="lbl-wrap">Support<strong>SAFEQ6 Customer Base</strong></span>
+        </div>
+        <div class="cat-rows">
+          <div class="cat-row">
+            <div class="cell" style="grid-column: 1 / span 2">
+              <div class="item plan"><span class="dot"></span><span class="body">Enable partners, in Cloud Portal, to see expired SAFEQ&nbsp;6 customers, their vulnerabilities and easily quote transition to cloud and license extensions</span></div>
+            </div>
+          </div>
+          <div class="cat-row">
+            <div class="cell" style="grid-column: 1 / span 2">
+              <div class="item plan"><span class="dot"></span><span class="body">Cloud portal essentials &mdash; Unified login experience (YSoft&nbsp;ID) and seamless integration with quoting toolset</span></div>
+            </div>
+            <div class="cell" style="grid-column: 4">
+              <div class="item plan"><span class="dot"></span><span class="body">Partner portal replacement &mdash; single place for partners and dealers to go to for all YSOFT business</span></div>
+            </div>
+          </div>
+          <div class="cat-row">
+            <div class="cell" style="grid-column: 1">
+              <div class="item plan"><span class="dot"></span><span class="body">SQ6: Support for Cloud Transition license</span></div>
+            </div>
+            <div class="cell" style="grid-column: 4">
+              <div class="item plan"><span class="dot"></span><span class="body">SQ6 non-co-termination license behaviour</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== Bring Added Value to MIF in Cloud ===== -->
+      <div class="category">
+        <div class="cat-label" style="animation-delay:1.70s">
+          <span class="lbl-wrap">Bring Added Value<strong>to MIF in Cloud</strong></span>
+        </div>
+        <div class="cat-rows">
+          <div class="cat-row">
+            <div class="cell" style="grid-column: 1">
+              <div class="item plan"><span class="dot"></span><span class="body">Scan metadata enhancements or extensions</span></div>
+            </div>
+            <div class="cell" style="grid-column: 3">
+              <div class="item plan"><span class="dot"></span><span class="body">Scan in Cloud to SAP repository and initial API</span></div>
+            </div>
+            <div class="cell" style="grid-column: 4">
+              <div class="item plan"><span class="dot"></span><span class="body">Scan to multiple destinations, zonal OCR, data extraction, mobile scanning&hellip;</span></div>
+            </div>
+          </div>
+          <div class="cat-row">
+            <div class="cell" style="grid-column: 1">
+              <div class="item plan"><span class="dot"></span><span class="body">End&#8209;to&#8209;end scan workflows prototype</span></div>
+            </div>
+            <div class="cell" style="grid-column: 3">
+              <div class="item plan"><span class="dot"></span><span class="body">End&#8209;to&#8209;end scan workflows</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="legend">
+      <div class="note"><strong>Note:</strong> Timelines show when R&amp;D work is <strong>expected to start</strong>, not when features will be completed or released.</div>
+      <div class="keys">
+        <span class="key wip"><span class="swatch"></span>Work In Progress<small>(committed delivery)</small></span>
+        <span class="key plan"><span class="swatch"></span>Plan<small>(committed priority)</small></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // ===== Counters =====
+  const wipItems  = document.querySelectorAll('.item.wip');
+  const planItems = document.querySelectorAll('.item.plan');
+  const wipCount  = wipItems.length;
+  const planCount = planItems.length;
+  const totalCount = wipCount + planCount;
+
+  function animateCount(el, target, duration, delay) {
+    duration = duration || 1100; delay = delay || 0;
+    const start = parseInt(el.textContent) || 0;
+    setTimeout(() => {
+      const t0 = Date.now();
+      const tick = setInterval(() => {
+        const t = Math.min(1, (Date.now() - t0) / duration);
+        const e = 1 - Math.pow(1 - t, 3);
+        el.textContent = Math.round(start + (target - start) * e);
+        if (t >= 1) clearInterval(tick);
+      }, 16);
+    }, delay);
+  }
+
+  document.querySelectorAll('[data-target-wip]').forEach(el => animateCount(el, wipCount, 900, 1100));
+  document.querySelectorAll('[data-count-bubble]').forEach(el => { el.textContent = planCount; });
+
+  // ===== Stagger WIP items only initially =====
+  (function staggerWip() {
+    [...wipItems].forEach((it, i) => { it.style.animationDelay = (1.40 + i * 0.07) + 's'; });
+  })();
+
+  // ===== Inject empty-row hints into plan-only categories =====
+  (function emptyRowHints() {
+    document.querySelectorAll('.category').forEach(cat => {
+      const wipInCat = cat.querySelectorAll('.item.wip').length;
+      if (wipInCat > 0) return;
+      const planInCat = cat.querySelectorAll('.item.plan').length;
+      if (!planInCat) return;
+      const rows = cat.querySelector('.cat-rows');
+      const hint = document.createElement('div');
+      hint.className = 'empty-hint-row';
+      Object.assign(hint.style, {
+        gridTemplateColumns: 'repeat(5, 1fr)',
+        display: 'grid', gap: '10px',
+        position: 'absolute', inset: '0', pointerEvents: 'none',
+      });
+      const inner = document.createElement('div');
+      inner.className = 'empty-hint';
+      const dot = document.createElement('span');
+      dot.className = 'dot';
+      const txt = document.createTextNode(planInCat + ' planned items hidden — click reveal');
+      inner.appendChild(dot);
+      inner.appendChild(txt);
+      inner.style.gridColumn = '1 / span 5';
+      inner.style.alignSelf = 'center';
+      hint.appendChild(inner);
+      rows.style.position = 'relative';
+      rows.appendChild(hint);
+
+      const obs = new MutationObserver(() => {
+        if (document.body.classList.contains('show-plan')) {
+          hint.style.opacity = '0';
+          hint.style.transition = 'opacity 0.4s ease';
+          setTimeout(() => hint.remove(), 600);
+          obs.disconnect();
+        }
+      });
+      obs.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+    });
+  })();
+
+  // ===== Reveal button click handler =====
+  const revealBtn = document.getElementById('revealBtn');
+  let revealed = false;
+  revealBtn.addEventListener('click', (e) => {
+    if (revealed) return;
+    revealed = true;
+
+    const rect = revealBtn.getBoundingClientRect();
+    const cx = e.clientX || (rect.left + rect.width / 2);
+    const cy = e.clientY || (rect.top + rect.height / 2);
+    ['', 'r2', 'r3'].forEach((cls) => {
+      const r = document.createElement('div');
+      r.className = 'click-ripple ' + cls;
+      r.style.left = cx + 'px';
+      r.style.top  = cy + 'px';
+      document.body.appendChild(r);
+      setTimeout(() => r.remove(), 1400);
+    });
+
+    [...planItems].forEach((it, i) => {
+      it.style.animationDelay = (0.20 + i * 0.05) + 's';
+    });
+
+    document.body.classList.add('show-plan');
+
+    animateCount(document.querySelector('[data-target-plan]'), planCount, 1100, 350);
+    animateCount(document.querySelector('[data-target-total]'), totalCount, 1300, 700);
+  });
+
+  // ===== Parallax on bokeh blobs =====
+  (function parallax() {
+    const slide = document.querySelector('.slide');
+    const blobs = [...document.querySelectorAll('.bokeh')];
+    if (!slide || !blobs.length) return;
+    let raf = null;
+    slide.addEventListener('mousemove', (e) => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = null;
+        const r = slide.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width  - 0.5;
+        const y = (e.clientY - r.top)  / r.height - 0.5;
+        blobs.forEach((b, i) => {
+          const depth = 12 + i * 6;
+          b.style.transform = 'translate(' + (x * depth) + 'px, ' + (y * depth) + 'px)';
+        });
+      });
+    });
+  })();
+
+  document.querySelectorAll('[data-target-plan], [data-target-total]').forEach(el => el.textContent = '0');
+</script>
+
+</body>
+</html>
