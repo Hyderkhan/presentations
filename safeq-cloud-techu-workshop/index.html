@@ -1,0 +1,1180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>SAFEQ Cloud · TechU Workshop (Class 3)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="styles.css" />
+<script src="deck-stage.js"></script>
+<template id="__bundler_thumbnail">
+  <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+    <rect width="400" height="400" fill="#000"/>
+    <circle cx="320" cy="320" r="200" fill="#0073E6"/>
+    <text x="120" y="180" font-family="Arial Black,sans-serif" font-weight="900" font-size="44" fill="#fff">SAFEQ</text>
+    <text x="120" y="230" font-family="Arial Black,sans-serif" font-weight="900" font-size="44" fill="#0073E6">CLOUD</text>
+    <text x="120" y="280" font-family="Arial,sans-serif" font-size="22" fill="#97999B">TechU Workshop</text>
+  </svg>
+</template>
+</head>
+<body>
+
+<button id="fs-btn" title="Toggle fullscreen (F)" aria-label="Toggle fullscreen"
+  style="position:fixed;top:12px;right:12px;z-index:9999;width:40px;height:40px;
+         border:none;border-radius:8px;background:rgba(0,0,0,0.55);color:#fff;
+         font-size:18px;cursor:pointer;backdrop-filter:blur(6px);
+         display:flex;align-items:center;justify-content:center;opacity:0.55;
+         transition:opacity 120ms ease;">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 9V5a1 1 0 0 1 1-1h4M20 9V5a1 1 0 0 0-1-1h-4M4 15v4a1 1 0 0 0 1 1h4M20 15v4a1 1 0 0 1-1 1h-4"/>
+  </svg>
+</button>
+<script>
+(function(){
+  const btn = document.getElementById('fs-btn');
+  btn.addEventListener('mouseenter', () => btn.style.opacity = '1');
+  btn.addEventListener('mouseleave', () => btn.style.opacity = '0.55');
+  function toggleFs(){
+    const d = document;
+    if (!d.fullscreenElement && !d.webkitFullscreenElement) {
+      const el = d.documentElement;
+      (el.requestFullscreen || el.webkitRequestFullscreen).call(el);
+    } else {
+      (d.exitFullscreen || d.webkitExitFullscreen).call(d);
+    }
+  }
+  btn.addEventListener('click', toggleFs);
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'f' || e.key === 'F') {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      toggleFs();
+    }
+  });
+})();
+</script>
+
+<deck-stage width="1920" height="1080">
+
+  <!-- ============================================================
+       01 · TITLE
+       ============================================================ -->
+  <section class="slide" data-label="Title" style="background: #fff;">
+    <img src="assets/hp-worldcup-hero.jpeg" alt="" class="title-hero-bg" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center center; z-index: 1;" />
+
+    <img src="assets/hp-techu-logo.png" alt="HP TechU 2026 World Cup Edition" style="position: absolute; top: 56px; left: 96px; height: 96px; z-index: 4;" />
+    <img src="assets/safeq-cloud-logo-orange.svg" alt="SAFEQ Cloud" style="position: absolute; top: 64px; right: 96px; height: 36px; z-index: 4;" />
+    <img src="assets/ysoft-logo-orange.svg" alt="Y Soft" style="position: absolute; bottom: 56px; right: 96px; height: 56px; z-index: 4;" />
+
+    <div class="frame" style="justify-content: center; padding: 220px 110px 110px; z-index: 3;">
+      <div class="eyebrow" style="color: var(--orange); margin-bottom: 24px; font-size: 22px; letter-spacing: 0.22em;">CLASS 3 OF 3 · TECHU 2026 · WORLD CUP EDITION</div>
+      <h1 class="display h-display" style="color: var(--orange); max-width: 1100px; font-size: 92px; line-height: 1.0; margin-bottom: 0;">
+        Y Soft &nbsp;SAFEQ Cloud<br/>
+        <span style="color: var(--ink); font-weight: 600;">Technical&nbsp;</span><span style="color: var(--orange);">Workshop</span><span style="color: var(--ink); font-weight: 600;">.</span>
+      </h1>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       02 · Y SOFT TEAM FOR TECHU 2026
+       ============================================================ -->
+  <section class="slide slide--wash" data-label="Y Soft Team for TechU 2026">
+    <div class="logo-tr"><img class="hp-dark" src="assets/hp-techu-logo.png" alt="HP TechU 2026 World Cup Edition" /><img class="hp-light" src="assets/hp-techu-logo-white.png" alt="HP TechU 2026 World Cup Edition" /></div>
+    <img src="assets/ysoft-logo-orange.svg" class="logo-tl" alt="Y Soft" />
+    <div class="frame">
+      <div class="eyebrow">Presenters</div>
+      <h1 class="display h-title" style="margin-bottom: 20px;">Y Soft team for TechU 2026.</h1>
+      <p class="perex" style="margin-bottom: 56px; max-width: 1400px;">
+        The voices behind the workshop &mdash; a mix of product, customer success, and field experience driving the deep dive.
+      </p>
+
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px 56px;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 14px;">
+            <img src="assets/team/javier-gonzalez.jpg" alt="Javier Gonzalez" style="width: 110px; height: 110px; border-radius: 50%; object-fit: cover; flex-shrink: 0; border: 3px solid var(--orange);" />
+            <div>
+              <div style="font-family: var(--font-display); font-weight: 700; text-transform: uppercase; font-size: 26px; line-height: 1.05;">Javier Gonzalez</div>
+              <div style="font-size: 20px; color: var(--grey-11); margin-top: 6px; line-height: 1.3;">Digital Workplace &middot; Managed Scan &amp; Print Services</div>
+            </div>
+          </div>
+          <p style="font-size: 18px; line-height: 1.4; color: var(--grey-7); margin: 0;">Los Corrales de Buelna, Cantabria &middot; Spain</p>
+        </div>
+
+        <div>
+          <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 14px;">
+            <img src="assets/team/jason-lynch.jpg" alt="Jason Lynch" style="width: 110px; height: 110px; border-radius: 50%; object-fit: cover; flex-shrink: 0; border: 3px solid var(--turq);" />
+            <div>
+              <div style="font-family: var(--font-display); font-weight: 700; text-transform: uppercase; font-size: 26px; line-height: 1.05;">Jason Lynch</div>
+              <div style="font-size: 20px; color: var(--grey-11); margin-top: 6px; line-height: 1.3;">Customer Success Consultant</div>
+            </div>
+          </div>
+          <p style="font-size: 18px; line-height: 1.4; color: var(--grey-7); margin: 0;">Charlotte, North Carolina &middot; USA</p>
+        </div>
+
+        <div>
+          <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 14px;">
+            <img src="assets/team/deryk-moore.jpg" alt="Deryk Moore" style="width: 110px; height: 110px; border-radius: 50%; object-fit: cover; flex-shrink: 0; border: 3px solid var(--ink);" />
+            <div>
+              <div style="font-family: var(--font-display); font-weight: 700; text-transform: uppercase; font-size: 26px; line-height: 1.05;">Deryk Moore</div>
+              <div style="font-size: 20px; color: var(--grey-11); margin-top: 6px; line-height: 1.3;">Customer Success Consultant</div>
+            </div>
+          </div>
+          <p style="font-size: 18px; line-height: 1.4; color: var(--grey-7); margin: 0;">Washington, D.C. &middot; USA</p>
+        </div>
+
+        <div>
+          <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 14px;">
+            <img src="assets/team/robert-sages.jpg" alt="Robert T. Sages" style="width: 110px; height: 110px; border-radius: 50%; object-fit: cover; flex-shrink: 0; border: 3px solid var(--orange);" />
+            <div>
+              <div style="font-family: var(--font-display); font-weight: 700; text-transform: uppercase; font-size: 26px; line-height: 1.05;">Robert T. Sages</div>
+              <div style="font-size: 20px; color: var(--grey-11); margin-top: 6px; line-height: 1.3;">Sales &amp; Customer Success Consultant</div>
+            </div>
+          </div>
+          <p style="font-size: 18px; line-height: 1.4; color: var(--grey-7); margin: 0;">Concord, North Carolina &middot; USA</p>
+        </div>
+
+        <div>
+          <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 14px;">
+            <img src="assets/team/chris-laudise.jpg" alt="Chris Laudise" style="width: 110px; height: 110px; border-radius: 50%; object-fit: cover; flex-shrink: 0; border: 3px solid var(--turq);" />
+            <div>
+              <div style="font-family: var(--font-display); font-weight: 700; text-transform: uppercase; font-size: 26px; line-height: 1.05;">Chris Laudise</div>
+              <div style="font-size: 20px; color: var(--grey-11); margin-top: 6px; line-height: 1.3;">Sales &amp; Customer Success Consultant</div>
+            </div>
+          </div>
+          <p style="font-size: 18px; line-height: 1.4; color: var(--grey-7); margin: 0;">McKinney, Texas &middot; USA</p>
+        </div>
+
+        <div>
+          <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 14px;">
+            <img src="assets/team/hyder-mohammed.jpg" alt="Hyder Mohammed" style="width: 110px; height: 110px; border-radius: 50%; object-fit: cover; flex-shrink: 0; border: 3px solid var(--ink);" />
+            <div>
+              <div style="font-family: var(--font-display); font-weight: 700; text-transform: uppercase; font-size: 26px; line-height: 1.05;">Hyder Mohammed</div>
+              <div style="font-size: 20px; color: var(--grey-11); margin-top: 6px; line-height: 1.3;">Managing Director &amp; Frontline Business Owner</div>
+            </div>
+          </div>
+          <p style="font-size: 18px; line-height: 1.4; color: var(--grey-7); margin: 0;">Sydney, New South Wales &middot; Australia</p>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span class="page-no">02 &middot; Presenters</span><span>Y Soft team &middot; TechU 2026</span></div>
+  </section>
+
+  <!-- ============================================================
+       03 · AGENDA (Class 3 — Workshop)
+       ============================================================ -->
+  <section class="slide slide--hp-stripes" data-label="Agenda">
+    <div class="logo-tr"><img class="hp-dark" src="assets/hp-techu-logo.png" alt="HP TechU 2026 World Cup Edition" /><img class="hp-light" src="assets/hp-techu-logo-white.png" alt="HP TechU 2026 World Cup Edition" /></div>
+    <img src="assets/ysoft-logo-orange.svg" class="logo-tl" alt="Y Soft" />
+    <div class="frame">
+      <div class="eyebrow">Agenda</div>
+      <h1 class="display h-title" style="margin-bottom: 56px;">Class 3 &mdash; Technical Workshop.</h1>
+
+      <div style="max-width: 1500px;">
+        <div class="agenda-row">
+          <div class="agenda-num">01</div>
+          <div class="agenda-title">Introductions</div>
+          <div class="agenda-meta">Presenters &amp; Y Soft team</div>
+        </div>
+        <div class="agenda-row">
+          <div class="agenda-num">02</div>
+          <div class="agenda-title">Storage Options</div>
+          <div class="agenda-meta">Local &middot; Cloud &middot; Hybrid &middot; Gateway</div>
+        </div>
+        <div class="agenda-row">
+          <div class="agenda-num">03</div>
+          <div class="agenda-title">Hybrid Architecture</div>
+          <div class="agenda-meta">Five real-world deployment scenarios</div>
+        </div>
+        <div class="agenda-row">
+          <div class="agenda-num">04</div>
+          <div class="agenda-title">Hosting Options</div>
+          <div class="agenda-meta">Public &middot; Reserved &middot; Managed On-Prem</div>
+        </div>
+        <div class="agenda-row">
+          <div class="agenda-num">05</div>
+          <div class="agenda-title">Customer Scenarios</div>
+          <div class="agenda-meta">Open discussion &middot; current &amp; prospective</div>
+        </div>
+        <div class="agenda-row">
+          <div class="agenda-num">06</div>
+          <div class="agenda-title">Creating Tenants &amp; requesting an NFR License</div>
+          <div class="agenda-meta">Walkthrough</div>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span class="page-no">03 &middot; Agenda</span><span>SAFEQ Cloud &middot; Workshop &middot; Class 3</span></div>
+  </section>
+
+  <!-- ============================================================
+       04 · SECTION 01 DIVIDER · STORAGE OPTIONS
+       ============================================================ -->
+  <section class="slide slide--dark slide--hp-stripes" data-label="Storage divider">
+    <div class="logo-tr"><img class="hp-dark" src="assets/hp-techu-logo.png" alt="HP TechU 2026 World Cup Edition" /><img class="hp-light" src="assets/hp-techu-logo-white.png" alt="HP TechU 2026 World Cup Edition" /></div>
+    <div class="circle" style="width: 1100px; height: 1100px; right: -280px; top: -280px; background: var(--hp-blue-bright);"></div>
+    <img src="assets/ysoft-logo-white.svg" alt="" style="position: absolute; top: 64px; left: 110px; height: 56px; z-index: 3;" />
+
+    <div class="frame" style="justify-content: center; z-index: 2;">
+      <div class="eyebrow" style="color: var(--hp-blue-bright);">Section 02 &middot; Storage</div>
+      <h1 class="display" style="color: #fff; font-size: 200px; max-width: 1500px; margin-bottom: 40px; line-height: 0.92;">
+        Storage<br/><span style="color: var(--hp-blue-bright);">Options.</span>
+      </h1>
+      <p class="body-lg" style="color: rgba(255,255,255,0.8); max-width: 1100px;">
+        Where the print job lives &mdash; on the workstation, in the cloud, or somewhere in between. Pick the trade-off you want.
+      </p>
+    </div>
+    <div class="footer on-dark"><span class="page-no">04 &middot; Section</span><span style="color: rgba(255,255,255,0.5);">Storage options</span></div>
+  </section>
+
+  <!-- ============================================================
+       05 · STORAGE — THREE MAIN OPTIONS (intro)
+       ============================================================ -->
+  <section class="slide slide--wash" data-label="Storage three options">
+    <div class="logo-tr"><img class="hp-dark" src="assets/hp-techu-logo.png" alt="HP TechU 2026 World Cup Edition" /><img class="hp-light" src="assets/hp-techu-logo-white.png" alt="HP TechU 2026 World Cup Edition" /></div>
+    <img src="assets/safeq-cloud-logo-orange.svg" class="logo-tl" alt="SAFEQ Cloud" />
+    <div class="frame">
+      <div class="eyebrow">Storage modes &middot; the menu</div>
+      <h1 class="display h-title" style="margin-bottom: 28px;">Three ways to store a print job.</h1>
+      <p class="perex" style="margin-bottom: 56px; max-width: 1600px;">
+        SAFEQ Cloud lets the admin pick where the job sits. Each mode trades cloud egress, sovereignty, and bandwidth differently.
+      </p>
+
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 36px; flex: 1;">
+        <div style="background: #fff; border: 2px solid var(--border); border-top: 6px solid var(--orange); border-radius: 14px; padding: 36px;">
+          <div style="font-family: var(--font-display); font-weight: 700; text-transform: uppercase; color: var(--orange); font-size: 20px; letter-spacing: 0.08em; margin-bottom: 14px;">01 &middot; Local</div>
+          <h3 style="font-family: var(--font-display); font-weight: 700; font-size: 36px; margin: 0 0 16px; line-height: 1.05;">Local Storage</h3>
+          <p style="font-size: 19px; line-height: 1.45; color: var(--grey-11); margin: 0 0 20px;">Job stays on the workstation. Only metadata reaches the cloud. Direct print to the device.</p>
+          <ul style="margin: 0; padding-left: 20px; font-size: 17px; line-height: 1.5; color: var(--grey-7);">
+            <li>Smallest cloud footprint</li>
+            <li>Workstation must be online to release</li>
+            <li>Best fit: data-sovereignty critical</li>
+          </ul>
+        </div>
+
+        <div style="background: #fff; border: 2px solid var(--border); border-top: 6px solid var(--turq); border-radius: 14px; padding: 36px;">
+          <div style="font-family: var(--font-display); font-weight: 700; text-transform: uppercase; color: var(--turq); font-size: 20px; letter-spacing: 0.08em; margin-bottom: 14px;">02 &middot; Cloud</div>
+          <h3 style="font-family: var(--font-display); font-weight: 700; font-size: 36px; margin: 0 0 16px; line-height: 1.05;">Cloud Storage</h3>
+          <p style="font-size: 19px; line-height: 1.45; color: var(--grey-11); margin: 0 0 20px;">Job and metadata both ride to SAFEQ Cloud. Pull-print from any device, any time.</p>
+          <ul style="margin: 0; padding-left: 20px; font-size: 17px; line-height: 1.5; color: var(--grey-7);">
+            <li>True roaming pull-print</li>
+            <li>Workstation can sleep / shut down</li>
+            <li>Best fit: standard cloud-first office</li>
+          </ul>
+        </div>
+
+        <div style="background: #fff; border: 2px solid var(--border); border-top: 6px solid var(--ink); border-radius: 14px; padding: 36px;">
+          <div style="font-family: var(--font-display); font-weight: 700; text-transform: uppercase; color: var(--ink); font-size: 20px; letter-spacing: 0.08em; margin-bottom: 14px;">03 &middot; Hybrid</div>
+          <h3 style="font-family: var(--font-display); font-weight: 700; font-size: 36px; margin: 0 0 16px; line-height: 1.05;">Hybrid Storage</h3>
+          <p style="font-size: 19px; line-height: 1.45; color: var(--grey-11); margin: 0 0 20px;">Direct print local, secure pull-print to cloud. Per-driver decision based on the workflow.</p>
+          <ul style="margin: 0; padding-left: 20px; font-size: 17px; line-height: 1.5; color: var(--grey-7);">
+            <li>Best of both worlds</li>
+            <li>One client, two destinations</li>
+            <li>Best fit: mixed user populations</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span class="page-no">05 &middot; Storage</span><span>Three storage modes &middot; trade-offs</span></div>
+  </section>
+
+  <!-- ============================================================
+       06 · LOCAL STORAGE
+       ============================================================ -->
+  <section class="slide" data-label="Local storage">
+    <div class="logo-tr"><img class="hp-dark" src="assets/hp-techu-logo.png" alt="HP TechU 2026 World Cup Edition" /></div>
+    <img src="assets/safeq-cloud-logo-orange.svg" class="logo-tl" alt="SAFEQ Cloud" />
+    <div class="frame">
+      <div class="eyebrow">Storage mode 01</div>
+      <h1 class="display h-title" style="margin-bottom: 16px;">Local Storage.</h1>
+      <p class="perex" style="margin-bottom: 36px; max-width: 1600px;">
+        The job stays on the workstation. Only the metadata &mdash; what was printed, by whom, where &mdash; lands in SAFEQ Cloud.
+      </p>
+
+      <div style="display: grid; grid-template-columns: 1.6fr 1fr; gap: 56px; flex: 1; align-items: center;">
+        <div style="background: #fff; border: 2px solid var(--border); border-radius: 14px; padding: 28px; box-shadow: 0 16px 50px rgba(0,0,0,0.06);">
+          <img src="assets/storage-local.png" alt="Local storage diagram" style="width: 100%; height: auto; display: block;" />
+        </div>
+
+        <div>
+          <ul class="bullet-list" style="font-size: 22px; line-height: 1.55;">
+            <li><strong>Job lives on the PC.</strong> Print spool remains local, never leaves the network.</li>
+            <li><strong>Metadata to cloud.</strong> Job ID, owner, page count, cost, target device — that's it.</li>
+            <li><strong>Direct print path.</strong> PC ➜ MFP, with SAFEQ Cloud auditing the transaction.</li>
+            <li><strong>Bandwidth-cheap.</strong> No job egress; ideal for branches with constrained links.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span class="page-no">06 &middot; Storage</span><span>Local storage &middot; Job stays on the PC</span></div>
+  </section>
+
+  <!-- ============================================================
+       07 · CLOUD STORAGE
+       ============================================================ -->
+  <section class="slide slide--wash" data-label="Cloud storage">
+    <div class="logo-tr"><img class="hp-dark" src="assets/hp-techu-logo.png" alt="HP TechU 2026 World Cup Edition" /><img class="hp-light" src="assets/hp-techu-logo-white.png" alt="HP TechU 2026 World Cup Edition" /></div>
+    <img src="assets/safeq-cloud-logo-orange.svg" class="logo-tl" alt="SAFEQ Cloud" />
+    <div class="frame">
+      <div class="eyebrow">Storage mode 02</div>
+      <h1 class="display h-title" style="margin-bottom: 16px;">Cloud Storage.</h1>
+      <p class="perex" style="margin-bottom: 36px; max-width: 1600px;">
+        Both job and metadata ride to SAFEQ Cloud. Pull-print from any registered device, regardless of workstation state.
+      </p>
+
+      <div style="display: grid; grid-template-columns: 1.6fr 1fr; gap: 56px; flex: 1; align-items: center;">
+        <div style="background: #fff; border: 2px solid var(--border); border-radius: 14px; padding: 28px; box-shadow: 0 16px 50px rgba(0,0,0,0.06);">
+          <img src="assets/storage-cloud.png" alt="Cloud storage diagram" style="width: 100%; height: auto; display: block;" />
+        </div>
+
+        <div>
+          <ul class="bullet-list" style="font-size: 22px; line-height: 1.55;">
+            <li><strong>Job rides to the cloud.</strong> Encrypted in transit and at rest in the SAFEQ Cloud region you chose.</li>
+            <li><strong>True roaming pull-print.</strong> Release at any printer the user is entitled to.</li>
+            <li><strong>Workstation can sleep.</strong> No need for the originating PC to stay awake.</li>
+            <li><strong>Cleanest user experience.</strong> The default for cloud-first organisations.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span class="page-no">07 &middot; Storage</span><span>Cloud storage &middot; Job + metadata in cloud</span></div>
+  </section>
+
+  <!-- ============================================================
+       08 · HYBRID STORAGE
+       ============================================================ -->
+  <section class="slide" data-label="Hybrid storage">
+    <div class="logo-tr"><img class="hp-dark" src="assets/hp-techu-logo.png" alt="HP TechU 2026 World Cup Edition" /></div>
+    <img src="assets/safeq-cloud-logo-orange.svg" class="logo-tl" alt="SAFEQ Cloud" />
+    <div class="frame">
+      <div class="eyebrow">Storage mode 03</div>
+      <h1 class="display h-title" style="margin-bottom: 16px;">Hybrid Storage.</h1>
+      <p class="perex" style="margin-bottom: 28px; max-width: 1600px;">
+        One client, two destinations. <strong>Direct Print</strong> stays local for fast walk-up. <strong>Secure Print</strong> rides to the cloud for pull-print from anywhere.
+      </p>
+
+      <div style="background: #fff; border: 2px solid var(--border); border-radius: 14px; padding: 22px; margin-bottom: 18px; box-shadow: 0 16px 50px rgba(0,0,0,0.06); flex: 1; display: flex; align-items: center; justify-content: center; min-height: 0;">
+        <img src="assets/storage-hybrid.png" alt="Hybrid storage diagram — Secure Print to cloud, Direct Print local" style="width: 100%; max-height: 460px; height: auto; object-fit: contain; display: block;" />
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+        <div style="border-left: 4px solid var(--turq); padding: 0 20px;">
+          <div style="font-family: var(--font-display); font-weight: 700; text-transform: uppercase; color: var(--turq); font-size: 18px; margin-bottom: 6px;">Secure Print</div>
+          <p style="font-size: 19px; line-height: 1.45; color: var(--grey-11); margin: 0;">Job to cloud, release at any registered device. The cloud-first default.</p>
+        </div>
+        <div style="border-left: 4px solid var(--orange); padding: 0 20px;">
+          <div style="font-family: var(--font-display); font-weight: 700; text-transform: uppercase; color: var(--orange); font-size: 18px; margin-bottom: 6px;">Direct Print</div>
+          <p style="font-size: 19px; line-height: 1.45; color: var(--grey-11); margin: 0;">Job stays local, prints to the named device. Only metadata leaves the network.</p>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span class="page-no">08 &middot; Storage</span><span>Hybrid &middot; Secure to cloud, Direct local</span></div>
+  </section>
+
+  <!-- ============================================================
+       09 · PRINT USING A GATEWAY
+       ============================================================ -->
+  <section class="slide slide--wash" data-label="Print via gateway">
+    <div class="logo-tr"><img class="hp-dark" src="assets/hp-techu-logo.png" alt="HP TechU 2026 World Cup Edition" /><img class="hp-light" src="assets/hp-techu-logo-white.png" alt="HP TechU 2026 World Cup Edition" /></div>
+    <img src="assets/safeq-cloud-logo-orange.svg" class="logo-tl" alt="SAFEQ Cloud" />
+    <div class="frame">
+      <div class="eyebrow">Storage mode 04</div>
+      <h1 class="display h-title" style="margin-bottom: 16px;">Print using a Gateway.</h1>
+      <p class="perex" style="margin-bottom: 36px; max-width: 1600px;">
+        The gateway holds the job on-prem. Workstations don't need to stay awake &mdash; the gateway plays the role of cloud, locally.
+      </p>
+
+      <div style="display: grid; grid-template-columns: 1.6fr 1fr; gap: 56px; flex: 1; align-items: center;">
+        <div style="background: #fff; border: 2px solid var(--border); border-radius: 14px; padding: 28px; box-shadow: 0 16px 50px rgba(0,0,0,0.06);">
+          <img src="assets/storage-gateway.png" alt="Print via gateway diagram" style="width: 100%; height: auto; display: block;" />
+        </div>
+
+        <div>
+          <ul class="bullet-list" style="font-size: 22px; line-height: 1.55;">
+            <li><strong>Gateway acts as the spool.</strong> Holds the job locally, fully managed from the cloud.</li>
+            <li><strong>Print job metadata only</strong> leaves the network &mdash; sovereignty preserved.</li>
+            <li><strong>Workstations can sleep.</strong> The gateway is always available to release.</li>
+            <li><strong>Single managed appliance.</strong> Software VM <em>or</em> Y Soft OMNI Bridge hardware.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span class="page-no">09 &middot; Storage</span><span>Gateway &middot; The local spool, cloud-managed</span></div>
+  </section>
+
+  <!-- ============================================================
+       10 · HOW TO CONFIGURE STORAGE MODE
+       ============================================================ -->
+  <section class="slide" data-label="How to configure storage">
+    <div class="logo-tr"><img class="hp-dark" src="assets/hp-techu-logo.png" alt="HP TechU 2026 World Cup Edition" /></div>
+    <img src="assets/safeq-cloud-logo-orange.svg" class="logo-tl" alt="SAFEQ Cloud" />
+    <div class="frame">
+      <div class="eyebrow">Configuration &middot; Client installer</div>
+      <h1 class="display h-title" style="margin-bottom: 16px;">How to configure: storage mode.</h1>
+      <p class="perex" style="margin-bottom: 32px; max-width: 1600px;">
+        One dropdown, picked at install time on the SAFEQ Cloud Client. Switch later by repushing the MSI.
+      </p>
+
+      <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 56px; flex: 1; align-items: center;">
+        <div style="background: #fff; border: 2px solid var(--border); border-radius: 14px; padding: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.10);">
+          <img src="assets/configure-storage-mode.png" alt="SAFEQ Cloud Client installer — storage mode dropdown" style="width: 100%; height: auto; display: block;" />
+        </div>
+
+        <div>
+          <ul class="step-list" style="margin: 0; padding: 0; list-style: none;">
+            <li style="display: flex; gap: 20px; margin-bottom: 22px;">
+              <span style="flex-shrink: 0; width: 48px; height: 48px; border-radius: 50%; background: var(--orange); color: #fff; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 700; font-size: 20px;">1</span>
+              <div><div style="font-family: var(--font-display); font-weight: 700; font-size: 22px;">Server host &amp; account domain</div><div style="font-size: 19px; color: var(--grey-11); line-height: 1.4;">Point the client at the tenant's SAFEQ Cloud endpoint.</div></div>
+            </li>
+            <li style="display: flex; gap: 20px; margin-bottom: 22px;">
+              <span style="flex-shrink: 0; width: 48px; height: 48px; border-radius: 50%; background: var(--orange); color: #fff; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 700; font-size: 20px;">2</span>
+              <div><div style="font-family: var(--font-display); font-weight: 700; font-size: 22px;">Authentication mode</div><div style="font-size: 19px; color: var(--grey-11); line-height: 1.4;">SAFEQ Cloud OAuth2 login &mdash; Entra ID or local IdP.</div></div>
+            </li>
+            <li style="display: flex; gap: 20px; margin-bottom: 22px;">
+              <span style="flex-shrink: 0; width: 48px; height: 48px; border-radius: 50%; background: var(--orange); color: #fff; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 700; font-size: 20px;">3</span>
+              <div><div style="font-family: var(--font-display); font-weight: 700; font-size: 22px;">Storage mode dropdown</div><div style="font-size: 19px; color: var(--grey-11); line-height: 1.4;">Local &middot; Cloud &middot; Hybrid (direct local, secure to cloud).</div></div>
+            </li>
+            <li style="display: flex; gap: 20px;">
+              <span style="flex-shrink: 0; width: 48px; height: 48px; border-radius: 50%; background: var(--orange); color: #fff; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 700; font-size: 20px;">4</span>
+              <div><div style="font-family: var(--font-display); font-weight: 700; font-size: 22px;">Secure login + offline install</div><div style="font-size: 19px; color: var(--grey-11); line-height: 1.4;">Toggle session auth and offline-capable installs as needed.</div></div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span class="page-no">10 &middot; Storage</span><span>Configure storage mode &middot; one dropdown</span></div>
+  </section>
+
+  <!-- ============================================================
+       11 · SECTION 02 DIVIDER · HYBRID ARCHITECTURE
+       ============================================================ -->
+  <section class="slide slide--dark slide--hp-stripes" data-label="Hybrid divider">
+    <div class="logo-tr"><img class="hp-dark" src="assets/hp-techu-logo.png" alt="HP TechU 2026 World Cup Edition" /><img class="hp-light" src="assets/hp-techu-logo-white.png" alt="HP TechU 2026 World Cup Edition" /></div>
+    <div class="circle" style="width: 1100px; height: 1100px; right: -280px; top: -280px; background: var(--hp-blue-bright);"></div>
+    <img src="assets/ysoft-logo-white.svg" alt="" style="position: absolute; top: 64px; left: 110px; height: 56px; z-index: 3;" />
+
+    <div class="frame" style="justify-content: center; z-index: 2;">
+      <div class="eyebrow" style="color: var(--hp-blue-bright);">Section 03 &middot; Hybrid</div>
+      <h1 class="display" style="color: #fff; font-size: 200px; max-width: 1500px; margin-bottom: 40px; line-height: 0.92;">
+        Hybrid<br/><span style="color: var(--hp-blue-bright);">Architecture.</span>
+      </h1>
+      <p class="body-lg" style="color: rgba(255,255,255,0.8); max-width: 1100px;">
+        Optional gateways, fully managed from the cloud. Five concrete scenarios where on-prem meets cloud.
+      </p>
+    </div>
+    <div class="footer on-dark"><span class="page-no">11 &middot; Section</span><span style="color: rgba(255,255,255,0.5);">Hybrid architecture</span></div>
+  </section>
+
+  <!-- ============================================================
+       12 · HYBRID ARCHITECTURE OVERVIEW
+       ============================================================ -->
+  <section class="slide" data-label="Hybrid overview">
+    <div class="logo-tr"><img class="hp-dark" src="assets/hp-techu-logo.png" alt="HP TechU 2026 World Cup Edition" /></div>
+    <img src="assets/safeq-cloud-logo-orange.svg" class="logo-tl" alt="SAFEQ Cloud" />
+    <div class="frame">
+      <div class="eyebrow">SAFEQ Cloud Pro &middot; Hybrid architecture</div>
+      <h1 class="display h-title" style="margin-bottom: 14px;">Optional gateways, fully managed from the cloud.</h1>
+      <p class="perex" style="margin-bottom: 32px; max-width: 1600px;">
+        Designed to <strong>connect cloud services with on-premise infrastructure</strong> when necessary &mdash; and deliver maximum data sovereignty.
+      </p>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 64px; flex: 1; align-items: center;">
+        <div style="text-align: center;">
+          <div style="background: var(--turq); color: #fff; font-family: var(--font-display); font-weight: 700; text-transform: uppercase; font-size: 28px; padding: 16px 32px; border-radius: 80px; display: inline-block; margin-bottom: 28px;">Software appliance</div>
+          <div style="border: 2px solid var(--border); background: #FAFAFA; border-radius: 16px; padding: 36px; display: flex; flex-direction: column; align-items: center; gap: 18px;">
+            <svg width="220" height="160" viewBox="0 0 220 160" xmlns="http://www.w3.org/2000/svg">
+              <rect x="20" y="14" width="180" height="118" rx="8" fill="#fff" stroke="#97999B" stroke-width="3"/>
+              <rect x="34" y="28" width="152" height="86" fill="#F2F2F2"/>
+              <rect x="74" y="44" width="72" height="54" fill="#0073E6" opacity="0.85"/>
+              <text x="110" y="78" font-family="Arial Black, sans-serif" font-size="14" fill="#fff" text-anchor="middle">VIRTUAL</text>
+              <text x="110" y="94" font-family="Arial Black, sans-serif" font-size="14" fill="#fff" text-anchor="middle">MACHINE</text>
+              <rect x="92" y="132" width="36" height="14" fill="#97999B"/>
+              <rect x="80" y="146" width="60" height="6" fill="#97999B"/>
+            </svg>
+            <div style="font-family: var(--font-display); font-weight: 700; text-transform: uppercase; font-size: 22px; line-height: 1.1; margin-top: 8px;">Software Virtual Machine<br/>with Gateway</div>
+            <p style="font-size: 17px; line-height: 1.45; color: var(--grey-7); margin: 12px 0 0; max-width: 320px;">Drop into any hypervisor. Auto-provisioned, auto-updated, no on-prem ops to learn.</p>
+          </div>
+        </div>
+
+        <div style="text-align: center;">
+          <div style="background: var(--turq); color: #fff; font-family: var(--font-display); font-weight: 700; text-transform: uppercase; font-size: 28px; padding: 16px 32px; border-radius: 80px; display: inline-block; margin-bottom: 28px;">Hardware appliance</div>
+          <div style="border: 2px solid var(--border); background: #FAFAFA; border-radius: 16px; padding: 36px; display: flex; flex-direction: column; align-items: center; gap: 18px;">
+            <svg width="220" height="160" viewBox="0 0 220 160" xmlns="http://www.w3.org/2000/svg">
+              <rect x="14" y="36" width="192" height="100" rx="8" fill="#3A3F44"/>
+              <rect x="40" y="52" width="140" height="50" fill="#F2F2F2" rx="3"/>
+              <text x="110" y="74" font-family="Arial Black, sans-serif" font-size="13" fill="#000" text-anchor="middle">YSOFT</text>
+              <text x="110" y="92" font-family="Arial Black, sans-serif" font-size="13" fill="#000" text-anchor="middle">OMNI BRIDGE</text>
+              <rect x="40" y="112" width="140" height="6" fill="#1F8AFF"/>
+              <circle cx="180" cy="48" r="3" fill="#1F8AFF"/>
+              <circle cx="170" cy="48" r="3" fill="#FF6600"/>
+            </svg>
+            <div style="font-family: var(--font-display); font-weight: 700; text-transform: uppercase; font-size: 22px; line-height: 1.1; margin-top: 8px;">Y Soft OMNI Bridge<br/>with Gateway</div>
+            <p style="font-size: 17px; line-height: 1.45; color: var(--grey-7); margin: 12px 0 0; max-width: 320px;">Pre-built hardware Y Soft ships, racks, and operates &mdash; no VM platform required.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span class="page-no">12 &middot; Hybrid</span><span>Software vs Hardware appliance</span></div>
+  </section>
+
+  <!-- ============================================================
+       13 · SCENARIO I · DATA SOVEREIGNTY
+       ============================================================ -->
+  <section class="slide slide--wash" data-label="Scenario I — Data sovereignty">
+    <div class="logo-tr"><img class="hp-dark" src="assets/hp-techu-logo.png" alt="HP TechU 2026 World Cup Edition" /><img class="hp-light" src="assets/hp-techu-logo-white.png" alt="HP TechU 2026 World Cup Edition" /></div>
+    <img src="assets/safeq-cloud-logo-orange.svg" class="logo-tl" alt="SAFEQ Cloud" />
+    <div class="frame">
+      <div class="eyebrow">Scenario I &middot; Data sovereignty</div>
+      <h1 class="display h-title" style="margin-bottom: 24px;">Print job content never leaves the network.</h1>
+
+      <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 48px; flex: 1; align-items: center;">
+        <div style="background: #fff; border: 2px solid var(--border); border-radius: 14px; padding: 28px; box-shadow: 0 16px 50px rgba(0,0,0,0.06);">
+          <img src="assets/hybrid-scenario-1.png" alt="Scenario I — gateway holds jobs, only metadata to cloud" style="width: 100%; height: auto; display: block;" />
+        </div>
+        <div>
+          <ul class="bullet-list" style="font-size: 22px; line-height: 1.55;">
+            <li><strong>Gateway fully managed from the cloud.</strong> Patching, telemetry, lifecycle &mdash; Y Soft.</li>
+            <li><strong>Print job metadata only</strong> traverses the firewall.</li>
+            <li><strong>Minimal IT workload.</strong> No on-prem print server to patch, monitor, or back up.</li>
+            <li><strong>Sovereignty preserved.</strong> Content lives where the regulator wants it.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span class="page-no">13 &middot; Hybrid</span><span>Scenario I &middot; Data sovereignty</span></div>
+  </section>
+
+  <!-- ============================================================
+       14 · SCENARIO II · REMOTE BRANCHES
+       ============================================================ -->
+  <section class="slide" data-label="Scenario II — Remote branches">
+    <div class="logo-tr"><img class="hp-dark" src="assets/hp-techu-logo.png" alt="HP TechU 2026 World Cup Edition" /></div>
+    <img src="assets/safeq-cloud-logo-orange.svg" class="logo-tl" alt="SAFEQ Cloud" />
+    <div class="frame">
+      <div class="eyebrow">Scenario II &middot; Remote branches</div>
+      <h1 class="display h-title" style="margin-bottom: 24px;">Branch offices on thin pipes &mdash; without losing print.</h1>
+
+      <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 48px; flex: 1; align-items: center;">
+        <div style="background: #fff; border: 2px solid var(--border); border-radius: 14px; padding: 28px; box-shadow: 0 16px 50px rgba(0,0,0,0.06);">
+          <img src="assets/hybrid-scenario-2.png" alt="Scenario II — gateway per branch, OCR in cloud" style="width: 100%; height: auto; display: block;" />
+        </div>
+        <div>
+          <ul class="bullet-list" style="font-size: 22px; line-height: 1.55;">
+            <li><strong>Gateway per branch.</strong> Job stays inside the branch LAN; the link doesn't carry print.</li>
+            <li><strong>OCR processing in cloud.</strong> Heavy lift moves to SAFEQ Cloud, results back over thin metadata.</li>
+            <li><strong>Zero-trust regular office</strong> coexists with constrained remote sites in the same tenant.</li>
+            <li><strong>Resilient by design.</strong> Branch keeps printing if the WAN drops.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span class="page-no">14 &middot; Hybrid</span><span>Scenario II &middot; Remote branches</span></div>
+  </section>
+
+  <!-- ============================================================
+       15 · SCENARIO III · LEGACY SYSTEMS
+       ============================================================ -->
+  <section class="slide slide--wash" data-label="Scenario III — Legacy systems">
+    <div class="logo-tr"><img class="hp-dark" src="assets/hp-techu-logo.png" alt="HP TechU 2026 World Cup Edition" /><img class="hp-light" src="assets/hp-techu-logo-white.png" alt="HP TechU 2026 World Cup Edition" /></div>
+    <img src="assets/safeq-cloud-logo-orange.svg" class="logo-tl" alt="SAFEQ Cloud" />
+    <div class="frame">
+      <div class="eyebrow">Scenario III &middot; Legacy systems integration</div>
+      <h1 class="display h-title" style="margin-bottom: 24px;">AS/400 and friends &mdash; brought into zero-trust.</h1>
+
+      <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 48px; flex: 1; align-items: center;">
+        <div style="background: #fff; border: 2px solid var(--border); border-radius: 14px; padding: 28px; box-shadow: 0 16px 50px rgba(0,0,0,0.06);">
+          <img src="assets/hybrid-scenario-3.png" alt="Scenario III — gateway intermediates legacy LPR sources" style="width: 100%; height: auto; display: block;" />
+        </div>
+        <div>
+          <ul class="bullet-list" style="font-size: 22px; line-height: 1.55;">
+            <li><strong>Legacy systems on-premise.</strong> Mainframes, AS/400, ERP modules without modern auth.</li>
+            <li><strong>No end-point authentication, no encryption</strong> &mdash; or only LPR with no IPP support.</li>
+            <li><strong>Gateway as the bridge.</strong> Accepts legacy traffic locally, presents zero-trust upstream.</li>
+            <li><strong>Zero-trust badge release</strong> at the device, even when the source can't speak it.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span class="page-no">15 &middot; Hybrid</span><span>Scenario III &middot; Legacy systems</span></div>
+  </section>
+
+  <!-- ============================================================
+       16 · SCENARIO IV · LEGACY DEVICES
+       ============================================================ -->
+  <section class="slide" data-label="Scenario IV — Legacy devices">
+    <div class="logo-tr"><img class="hp-dark" src="assets/hp-techu-logo.png" alt="HP TechU 2026 World Cup Edition" /></div>
+    <img src="assets/safeq-cloud-logo-orange.svg" class="logo-tl" alt="SAFEQ Cloud" />
+    <div class="frame">
+      <div class="eyebrow">Scenario IV &middot; Legacy devices</div>
+      <h1 class="display h-title" style="margin-bottom: 24px;">Older printers &amp; MFPs &mdash; no rip-and-replace.</h1>
+
+      <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 48px; flex: 1; align-items: center;">
+        <div style="background: #fff; border: 2px solid var(--border); border-radius: 14px; padding: 28px; box-shadow: 0 16px 50px rgba(0,0,0,0.06);">
+          <img src="assets/hybrid-scenario-4.png" alt="Scenario IV — gateway brokers print to legacy printers" style="width: 100%; height: auto; display: block;" />
+        </div>
+        <div>
+          <ul class="bullet-list" style="font-size: 22px; line-height: 1.55;">
+            <li><strong>No capability for secure cloud authentication</strong> on the device itself.</li>
+            <li><strong>No capability to "download" print jobs</strong> from the cloud directly.</li>
+            <li><strong>Applies to printers and older MFP APIs</strong> &mdash; HP OXPD, Konica Minolta Open API.</li>
+            <li><strong>Note:</strong> HP WorkPath and KM IWS already support zero-trust natively.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span class="page-no">16 &middot; Hybrid</span><span>Scenario IV &middot; Legacy devices</span></div>
+  </section>
+
+  <!-- ============================================================
+       17 · SCENARIO V · DIRECT MOBILE PRINTING
+       ============================================================ -->
+  <section class="slide slide--wash" data-label="Scenario V — Direct mobile printing">
+    <div class="logo-tr"><img class="hp-dark" src="assets/hp-techu-logo.png" alt="HP TechU 2026 World Cup Edition" /><img class="hp-light" src="assets/hp-techu-logo-white.png" alt="HP TechU 2026 World Cup Edition" /></div>
+    <img src="assets/safeq-cloud-logo-orange.svg" class="logo-tl" alt="SAFEQ Cloud" />
+    <div class="frame">
+      <div class="eyebrow">Scenario V &middot; Direct mobile printing</div>
+      <h1 class="display h-title" style="margin-bottom: 24px;">AirPrint &amp; mobile workflows, governed by SAFEQ Cloud.</h1>
+
+      <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 48px; flex: 1; align-items: center;">
+        <div style="background: #fff; border: 2px solid var(--border); border-radius: 14px; padding: 28px; box-shadow: 0 16px 50px rgba(0,0,0,0.06);">
+          <img src="assets/hybrid-scenario-5.png" alt="Scenario V — AirPrint via gateway" style="width: 100%; height: auto; display: block;" />
+        </div>
+        <div>
+          <ul class="bullet-list" style="font-size: 22px; line-height: 1.55;">
+            <li><strong>AirPrint / IPP everywhere</strong> &mdash; the gateway advertises devices to mobile clients.</li>
+            <li><strong>Secure Print path</strong> for sensitive jobs &mdash; release at any device after auth.</li>
+            <li><strong>Direct Print path</strong> for walk-up convenience &mdash; queue to the named device.</li>
+            <li><strong>Same audit trail</strong> as wired clients. The cloud sees every job, regardless of source.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span class="page-no">17 &middot; Hybrid</span><span>Scenario V &middot; Direct mobile printing</span></div>
+  </section>
+
+  <!-- ============================================================
+       18 · SECTION 03 DIVIDER · HOSTING OPTIONS
+       ============================================================ -->
+  <section class="slide slide--dark slide--hp-stripes" data-label="Hosting divider">
+    <div class="logo-tr"><img class="hp-dark" src="assets/hp-techu-logo.png" alt="HP TechU 2026 World Cup Edition" /><img class="hp-light" src="assets/hp-techu-logo-white.png" alt="HP TechU 2026 World Cup Edition" /></div>
+    <div class="circle" style="width: 1100px; height: 1100px; right: -280px; top: -280px; background: var(--hp-blue-bright);"></div>
+    <img src="assets/ysoft-logo-white.svg" alt="" style="position: absolute; top: 64px; left: 110px; height: 56px; z-index: 3;" />
+
+    <div class="frame" style="justify-content: center; z-index: 2;">
+      <div class="eyebrow" style="color: var(--hp-blue-bright);">Section 04 &middot; Hosting</div>
+      <h1 class="display" style="color: #fff; font-size: 200px; max-width: 1500px; margin-bottom: 40px; line-height: 0.92;">
+        Hosting<br/><span style="color: var(--hp-blue-bright);">Options.</span>
+      </h1>
+      <p class="body-lg" style="color: rgba(255,255,255,0.8); max-width: 1100px;">
+        Public hosted by Y Soft, reserved infrastructure, or fully managed on-premise &mdash; the same product, three operating models.
+      </p>
+    </div>
+    <div class="footer on-dark"><span class="page-no">18 &middot; Section</span><span style="color: rgba(255,255,255,0.5);">Hosting options</span></div>
+  </section>
+
+  <!-- ============================================================
+       19 · PUBLIC HOSTING — DATA SOVEREIGNTY MAP
+       ============================================================ -->
+  <section class="slide slide--wash" data-label="Public hosting map">
+    <div class="logo-tr"><img class="hp-dark" src="assets/hp-techu-logo.png" alt="HP TechU 2026 World Cup Edition" /><img class="hp-light" src="assets/hp-techu-logo-white.png" alt="HP TechU 2026 World Cup Edition" /></div>
+    <img src="assets/safeq-cloud-logo-orange.svg" class="logo-tl" alt="SAFEQ Cloud" />
+    <div class="frame">
+      <div class="eyebrow">Hosting option 01 &middot; Public hosted by Y Soft</div>
+      <h1 class="display h-title" style="margin-bottom: 14px;">Data sovereignty &amp; residency, by region.</h1>
+      <p class="perex" style="margin-bottom: 24px; max-width: 1600px;">
+        Many jurisdictions and public-sector frameworks require data to remain within national borders or under direct control. Pick the region; we host the tenant there.
+      </p>
+
+      <div style="background: #fff; border: 2px solid var(--border); border-radius: 14px; padding: 18px; flex: 1; min-height: 0; box-shadow: 0 16px 50px rgba(0,0,0,0.06); display: flex; align-items: center; justify-content: center;">
+        <img src="assets/public-hosting-map.png" alt="Y Soft public hosting regions worldwide" style="width: 100%; height: 100%; max-height: 620px; object-fit: contain; display: block;" />
+      </div>
+
+      <div style="display: flex; gap: 32px; margin-top: 20px; font-size: 18px; color: var(--grey-11);">
+        <div style="display: inline-flex; gap: 12px; align-items: center;"><span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:var(--orange);"></span><strong>Live regions</strong> &middot; Dublin, London, Frankfurt (AWS &amp; EU Sovereign), Stockholm, Montreal, Virginia, Singapore, Sydney</div>
+        <div style="display: inline-flex; gap: 12px; align-items: center;"><span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:#FFC93C;"></span><strong>In consideration</strong> &middot; Brazil, Saudi Arabia, Japan, China</div>
+      </div>
+    </div>
+    <div class="footer"><span class="page-no">19 &middot; Hosting</span><span>Public hosting &middot; data residency</span></div>
+  </section>
+
+  <!-- ============================================================
+       20 · RESERVED HOSTING
+       ============================================================ -->
+  <section class="slide" data-label="Reserved hosting">
+    <div class="logo-tr"><img class="hp-dark" src="assets/hp-techu-logo.png" alt="HP TechU 2026 World Cup Edition" /></div>
+    <img src="assets/safeq-cloud-logo-orange.svg" class="logo-tl" alt="SAFEQ Cloud" />
+    <div class="frame">
+      <div class="eyebrow">Hosting option 02 &middot; Reserved infrastructure</div>
+      <h1 class="display h-title" style="margin-bottom: 16px;">Reserved Hosting.</h1>
+      <p class="perex" style="margin-bottom: 32px; max-width: 1600px;">
+        Dedicated virtual machines in a dual-zone setup. The customer owns the residency choice; Y Soft owns the operations.
+      </p>
+
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; flex: 1;">
+        <div style="background: #fff; border: 2px solid var(--border); border-top: 6px solid var(--turq); border-radius: 14px; padding: 28px;">
+          <div style="font-family: var(--font-display); font-weight: 700; text-transform: uppercase; color: var(--turq); font-size: 18px; letter-spacing: 0.06em; margin-bottom: 14px;">High control over data residency</div>
+          <ul style="margin: 0; padding-left: 20px; font-size: 19px; line-height: 1.5; color: var(--grey-11);">
+            <li>Dedicated virtual servers per customer</li>
+            <li>Dual-zone, geographical separation</li>
+            <li>Y Soft-operated data centers, customer's choice</li>
+            <li>Full observability and uptime guarantee</li>
+          </ul>
+        </div>
+        <div style="background: #fff; border: 2px solid var(--border); border-top: 6px solid var(--turq); border-radius: 14px; padding: 28px;">
+          <div style="font-family: var(--font-display); font-weight: 700; text-transform: uppercase; color: var(--turq); font-size: 18px; letter-spacing: 0.06em; margin-bottom: 14px;">Fully managed security</div>
+          <ul style="margin: 0; padding-left: 20px; font-size: 19px; line-height: 1.5; color: var(--grey-11);">
+            <li>Automated updates and rollbacks</li>
+            <li>MXDR with 24/7 monitoring</li>
+            <li>Automated vulnerability scanning</li>
+            <li>SOC 2 access controls</li>
+            <li><span style="color: var(--grey-7);">Pen-testing remains the customer's responsibility</span></li>
+          </ul>
+        </div>
+        <div style="background: #fff; border: 2px solid var(--border); border-top: 6px solid var(--turq); border-radius: 14px; padding: 28px;">
+          <div style="font-family: var(--font-display); font-weight: 700; text-transform: uppercase; color: var(--turq); font-size: 18px; letter-spacing: 0.06em; margin-bottom: 14px;">Licensing</div>
+          <ul style="margin: 0; padding-left: 20px; font-size: 19px; line-height: 1.5; color: var(--grey-11);">
+            <li>Fee charged per customer per year</li>
+            <li>No relation to device or user counts</li>
+            <li>Premium SLA always required</li>
+          </ul>
+          <p style="margin: 24px 0 0; padding: 16px 18px; background: rgba(0,168,168,0.08); border-left: 4px solid var(--turq); border-radius: 4px; font-size: 17px; line-height: 1.5; color: var(--grey-11);">
+            Y Soft deploys and operates dedicated VMs in a <strong>dual-zone setup</strong> &mdash; Zone A &amp; Zone B.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span class="page-no">20 &middot; Hosting</span><span>Reserved hosting &middot; dedicated, dual-zone</span></div>
+  </section>
+
+  <!-- ============================================================
+       21 · MANAGED ON-PREM
+       ============================================================ -->
+  <section class="slide slide--wash" data-label="Managed on-prem">
+    <div class="logo-tr"><img class="hp-dark" src="assets/hp-techu-logo.png" alt="HP TechU 2026 World Cup Edition" /><img class="hp-light" src="assets/hp-techu-logo-white.png" alt="HP TechU 2026 World Cup Edition" /></div>
+    <img src="assets/safeq-cloud-logo-orange.svg" class="logo-tl" alt="SAFEQ Cloud" />
+    <div class="frame">
+      <div class="eyebrow">Hosting option 03 &middot; Managed on-prem</div>
+      <h1 class="display h-title" style="margin-bottom: 16px;">Managed On-Prem Deployment.</h1>
+      <p class="perex" style="margin-bottom: 32px; max-width: 1600px;">
+        Containerized for simple deployment, load balancing, and self-healing. Customer owns the metal; Y Soft owns the application.
+      </p>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; flex: 1;">
+        <div>
+          <div style="background: #fff; border: 2px solid var(--border); border-left: 6px solid var(--turq); border-radius: 14px; padding: 28px; margin-bottom: 24px;">
+            <div style="font-family: var(--font-display); font-weight: 700; text-transform: uppercase; color: var(--turq); font-size: 18px; letter-spacing: 0.06em; margin-bottom: 12px;">Managed service</div>
+            <ul style="margin: 0; padding-left: 20px; font-size: 19px; line-height: 1.5; color: var(--grey-11);">
+              <li>Application-level deployment managed by Y Soft</li>
+              <li>Automated updates and rollbacks</li>
+              <li>Y Soft access operated under SOC 2 compliance</li>
+              <li>Customer VPN, certificates, bastions, dedicated approved personnel</li>
+              <li>Full observability, integration with customer tools and processes</li>
+            </ul>
+          </div>
+          <div style="background: #fff; border: 2px solid var(--border); border-left: 6px solid var(--orange); border-radius: 14px; padding: 28px;">
+            <div style="font-family: var(--font-display); font-weight: 700; text-transform: uppercase; color: var(--orange); font-size: 18px; letter-spacing: 0.06em; margin-bottom: 12px;">Containerization</div>
+            <p style="margin: 0; font-size: 19px; line-height: 1.5; color: var(--grey-11);">Same architecture as the public service &mdash; <strong>load balancing</strong>, <strong>self-healing workflows</strong>, simple deployment.</p>
+          </div>
+        </div>
+        <div>
+          <div style="background: #fff; border: 2px solid var(--border); border-left: 6px solid #DA1B6E; border-radius: 14px; padding: 28px; margin-bottom: 24px;">
+            <div style="font-family: var(--font-display); font-weight: 700; text-transform: uppercase; color: #DA1B6E; font-size: 18px; letter-spacing: 0.06em; margin-bottom: 12px;">Customer responsibilities &amp; on-premise caveats</div>
+            <ul style="margin: 0; padding-left: 20px; font-size: 19px; line-height: 1.5; color: var(--grey-11);">
+              <li>Depending on access level, uptime guarantee may not be available</li>
+              <li>Customer manages the hardware and operating system</li>
+              <li>MXDR and penetration testing are customer responsibilities</li>
+            </ul>
+          </div>
+          <div style="background: rgba(255,102,0,0.06); border: 2px solid rgba(255,102,0,0.18); border-radius: 14px; padding: 28px;">
+            <div style="font-family: var(--font-display); font-weight: 700; font-size: 28px; line-height: 1.15; color: var(--ink);">SAFEQ Cloud<span style="color: #DA1B6E; font-family: 'Arial Black', sans-serif; padding: 0 8px;">&ne;</span>SAFEQ in cloud.</div>
+            <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.5; color: var(--grey-7);">Same product, deployed on the customer's metal &mdash; with the same containerized DNA.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span class="page-no">21 &middot; Hosting</span><span>Managed on-prem &middot; data control comparable to on-premise</span></div>
+  </section>
+
+  <!-- ============================================================
+       22 · SECTION 04 DIVIDER · CUSTOMER SCENARIOS
+       ============================================================ -->
+  <section class="slide slide--dark slide--hp-stripes" data-label="Scenarios divider">
+    <div class="logo-tr"><img class="hp-dark" src="assets/hp-techu-logo.png" alt="HP TechU 2026 World Cup Edition" /><img class="hp-light" src="assets/hp-techu-logo-white.png" alt="HP TechU 2026 World Cup Edition" /></div>
+    <div class="circle" style="width: 1100px; height: 1100px; right: -280px; top: -280px; background: var(--hp-blue-bright);"></div>
+    <img src="assets/ysoft-logo-white.svg" alt="" style="position: absolute; top: 64px; left: 110px; height: 56px; z-index: 3;" />
+
+    <div class="frame" style="justify-content: center; z-index: 2;">
+      <div class="eyebrow" style="color: var(--hp-blue-bright);">Section 05 &middot; Open discussion</div>
+      <h1 class="display" style="color: #fff; font-size: 200px; max-width: 1500px; margin-bottom: 40px; line-height: 0.92;">
+        Customer<br/><span style="color: var(--hp-blue-bright);">Scenarios.</span>
+      </h1>
+      <p class="body-lg" style="color: rgba(255,255,255,0.8); max-width: 1100px;">
+        Real deployments and live opportunities &mdash; what's working, what's tricky, where the room can help.
+      </p>
+    </div>
+    <div class="footer on-dark"><span class="page-no">22 &middot; Section</span><span style="color: rgba(255,255,255,0.5);">Customer scenarios</span></div>
+  </section>
+
+  <!-- ============================================================
+       23 · CUSTOMER SCENARIOS — BOARD
+       ============================================================ -->
+  <section class="slide" data-label="Customer scenarios">
+    <div class="logo-tr"><img class="hp-dark" src="assets/hp-techu-logo.png" alt="HP TechU 2026 World Cup Edition" /></div>
+    <img src="assets/safeq-cloud-logo-orange.svg" class="logo-tl" alt="SAFEQ Cloud" />
+    <div class="frame">
+      <div class="eyebrow">Open discussion</div>
+      <h1 class="display h-title" style="margin-bottom: 16px;">Customer scenarios &mdash; on the table.</h1>
+      <p class="perex" style="margin-bottom: 36px; max-width: 1600px;">
+        Three live deployments, two in flight, plus whatever the room brings. Each one stresses a different mode of the platform.
+      </p>
+
+      <div style="display: grid; grid-template-columns: 2fr 1.4fr; gap: 40px; flex: 1;">
+        <div>
+          <div style="font-family: var(--font-display); font-weight: 700; text-transform: uppercase; color: var(--orange); font-size: 18px; letter-spacing: 0.08em; margin-bottom: 18px;">Current customers</div>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+            <div style="background: #fff; border: 2px solid var(--border); border-radius: 14px; padding: 24px;">
+              <div style="font-family: var(--font-display); font-weight: 700; font-size: 28px; line-height: 1.05; margin-bottom: 8px;">Sysco Foods</div>
+              <p style="font-size: 17px; line-height: 1.45; color: var(--grey-7); margin: 0;">Foodservice distribution &middot; multi-site rollout</p>
+            </div>
+            <div style="background: #fff; border: 2px solid var(--border); border-radius: 14px; padding: 24px;">
+              <div style="font-family: var(--font-display); font-weight: 700; font-size: 28px; line-height: 1.05; margin-bottom: 8px;">Subaru</div>
+              <p style="font-size: 17px; line-height: 1.45; color: var(--grey-7); margin: 0;">Automotive &middot; manufacturing &amp; corporate</p>
+            </div>
+            <div style="background: #fff; border: 2px solid var(--border); border-radius: 14px; padding: 24px;">
+              <div style="font-family: var(--font-display); font-weight: 700; font-size: 28px; line-height: 1.05; margin-bottom: 8px;">Erickson Senior Living</div>
+              <p style="font-size: 17px; line-height: 1.45; color: var(--grey-7); margin: 0;">Senior living communities &middot; distributed campuses</p>
+            </div>
+          </div>
+
+          <div style="font-family: var(--font-display); font-weight: 700; text-transform: uppercase; color: var(--turq); font-size: 18px; letter-spacing: 0.08em; margin: 40px 0 18px;">Prospective customers</div>
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+            <div style="background: #fff; border: 2px solid var(--border); border-left: 6px solid var(--turq); border-radius: 14px; padding: 24px;">
+              <div style="font-family: var(--font-display); font-weight: 700; font-size: 28px; line-height: 1.05; margin-bottom: 8px;">HCA Healthcare</div>
+              <p style="font-size: 17px; line-height: 1.45; color: var(--grey-7); margin: 0;">182 hospitals &middot; 2,400+ care sites</p>
+            </div>
+            <div style="background: #fff; border: 2px solid var(--border); border-left: 6px solid var(--turq); border-radius: 14px; padding: 24px;">
+              <div style="font-family: var(--font-display); font-weight: 700; font-size: 28px; line-height: 1.05; margin-bottom: 8px;">American Airlines</div>
+              <p style="font-size: 17px; line-height: 1.45; color: var(--grey-7); margin: 0;">Major US carrier &middot; HQ &amp; airport fleet</p>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div style="background: var(--hp-blue-bright); color: #fff; border-radius: 16px; padding: 32px; height: 100%; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center;">
+            <div style="font-family: var(--font-display); font-weight: 700; text-transform: uppercase; font-size: 20px; letter-spacing: 0.08em; margin-bottom: 16px; opacity: 0.85;">Attendee input</div>
+            <h2 style="font-family: var(--font-display); font-weight: 700; font-size: 56px; line-height: 1.0; margin: 0 0 20px;">What's on your roadmap?</h2>
+            <p style="font-size: 22px; line-height: 1.4; margin: 0; opacity: 0.92;">Bring your own scenario &mdash; we'll map it to a storage mode, a hosting model, and a hybrid pattern from the deck.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span class="page-no">23 &middot; Scenarios</span><span>Open discussion &middot; current &amp; prospective</span></div>
+  </section>
+
+  <!-- ============================================================
+       24 · TENANT CREATION & NFR DIVIDER
+       ============================================================ -->
+  <section class="slide slide--dark slide--hp-stripes" data-label="Tenant creation divider">
+    <div class="logo-tr"><img class="hp-dark" src="assets/hp-techu-logo.png" alt="HP TechU 2026 World Cup Edition" /><img class="hp-light" src="assets/hp-techu-logo-white.png" alt="HP TechU 2026 World Cup Edition" /></div>
+    <div class="circle" style="width: 1100px; height: 1100px; right: -280px; top: -280px; background: var(--hp-blue-bright);"></div>
+    <img src="assets/ysoft-logo-white.svg" alt="" style="position: absolute; top: 64px; left: 110px; height: 56px; z-index: 3;" />
+
+    <div class="frame" style="justify-content: center; z-index: 2;">
+      <div class="eyebrow" style="color: var(--hp-blue-bright);">Section 06 &middot; Hands on</div>
+      <h1 class="display" style="color: #fff; font-size: 200px; max-width: 1500px; margin-bottom: 40px; line-height: 0.95;">
+        Creating a tenant<br/>&amp; requesting<br/>an <span style="color: var(--hp-blue-bright);">NFR license.</span>
+      </h1>
+      <p class="body-lg" style="color: rgba(255,255,255,0.8); max-width: 1100px;">
+        Step-by-step walkthrough &mdash; from new partner / customer onboarding to NFR provisioning.
+      </p>
+    </div>
+    <div class="footer on-dark"><span class="page-no">24 &middot; Section</span><span style="color: rgba(255,255,255,0.5);">Tenant creation &amp; NFR</span></div>
+  </section>
+
+  <!-- ============================================================
+       25 · THANK YOU + QR
+       ============================================================ -->
+  <section class="slide slide--dark slide--hp-stripes" data-label="Thank you">
+    <div class="logo-tr"><img class="hp-dark" src="assets/hp-techu-logo.png" alt="HP TechU 2026 World Cup Edition" /><img class="hp-light" src="assets/hp-techu-logo-white.png" alt="HP TechU 2026 World Cup Edition" /></div>
+    <img src="assets/woman-laptop.jpg" class="bleed-img" style="object-position: center right; opacity: 0.35;" alt="" />
+    <div class="bleed-veil"></div>
+
+    <div class="circle" style="width: 720px; height: 720px; right: -180px; top: -180px; background: var(--hp-blue-bright); opacity: 0.92;"></div>
+    <div class="circle" style="width: 360px; height: 360px; left: 120px; bottom: -120px; background: var(--hp-blue-bright); opacity: 0.55;"></div>
+
+    <img src="assets/ysoft-logo-white.svg" class="logo-tl white" alt="Y Soft" />
+
+    <div class="frame" style="justify-content: center; z-index: 2;">
+      <div class="eyebrow" style="color: var(--hp-blue-bright); margin-bottom: 32px;">Thank you</div>
+
+      <div style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 80px; align-items: center;">
+        <div>
+          <h1 class="display" style="color: #fff; font-size: 120px; margin-bottom: 40px; line-height: 0.95;">
+            Thank you for<br/>attending the<br/><span style="color: var(--hp-blue-bright);">workshop.</span>
+          </h1>
+          <p class="body-lg" style="color: rgba(255,255,255,0.88); max-width: 900px; font-size: 30px; line-height: 1.4;">
+            Scan the QR code to finalise your NFR and get your local technical contacts.
+          </p>
+        </div>
+
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+          <div class="qr-card" style="width: 440px; height: 440px; background: #fff; border-radius: 20px; box-shadow: 0 28px 70px rgba(0,0,0,0.36); display: flex; align-items: center; justify-content: center; padding: 24px; box-sizing: border-box; position: relative;">
+            <img src="assets/qr-techu.png" alt="Scan to finalise NFR"
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+                 style="width: 100%; height: 100%; object-fit: contain; display: block;" />
+            <svg viewBox="0 0 21 21" shape-rendering="crispEdges" aria-hidden="true" style="display:none; width:100%; height:100%;">
+              <rect width="21" height="21" fill="#fff"/>
+              <g fill="#000">
+                <rect x="0"  y="0"  width="7" height="7"/>
+                <rect x="14" y="0"  width="7" height="7"/>
+                <rect x="0"  y="14" width="7" height="7"/>
+              </g>
+              <g fill="#fff">
+                <rect x="1"  y="1"  width="5" height="5"/>
+                <rect x="15" y="1"  width="5" height="5"/>
+                <rect x="1"  y="15" width="5" height="5"/>
+              </g>
+              <g fill="#000">
+                <rect x="2"  y="2"  width="3" height="3"/>
+                <rect x="16" y="2"  width="3" height="3"/>
+                <rect x="2"  y="16" width="3" height="3"/>
+              </g>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer on-dark"><span class="page-no" style="color: rgba(255,255,255,0.6);">25 / 25</span><span style="color: rgba(255,255,255,0.5);">SAFEQ Cloud &middot; TechU Workshop</span></div>
+  </section>
+
+</deck-stage>
+
+<!-- ============================================================
+     CHAPTER PROGRESS RAIL
+     ============================================================ -->
+<div id="chapter-rail" aria-hidden="true">
+  <div class="rail-inner">
+    <div class="rail-chapters"></div>
+    <div class="rail-progress">
+      <div class="rail-progress-fill"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     TWEAKS PANEL
+     ============================================================ -->
+<div id="tweaks-panel" hidden>
+  <div class="tw-head">
+    <span>Tweaks</span>
+    <button class="tw-close" type="button" aria-label="Close">×</button>
+  </div>
+  <div class="tw-body">
+    <label class="tw-row">
+      <span class="tw-label">Progress rail style</span>
+      <select id="tw-rail-style">
+        <option value="chapters">Chapters + fill bar</option>
+        <option value="bar">Thin top bar only</option>
+        <option value="dots">Dot row</option>
+        <option value="off">Off</option>
+      </select>
+    </label>
+    <label class="tw-row">
+      <span class="tw-label">Position</span>
+      <select id="tw-rail-position">
+        <option value="top">Top</option>
+        <option value="bottom">Bottom</option>
+      </select>
+    </label>
+    <label class="tw-row">
+      <span class="tw-label">Accent color</span>
+      <div class="tw-swatches" id="tw-accent">
+        <button data-c="#0073E6" style="background:#0073E6" aria-label="Blue"></button>
+        <button data-c="#1F8AFF" style="background:#1F8AFF" aria-label="Bright blue"></button>
+        <button data-c="#000000" style="background:#000000" aria-label="Black"></button>
+        <button data-c="#ffffff" style="background:#ffffff;border:1px solid #ccc" aria-label="White"></button>
+      </div>
+    </label>
+    <label class="tw-row tw-row--switch">
+      <span class="tw-label">Show chapter labels</span>
+      <input type="checkbox" id="tw-show-labels" checked />
+    </label>
+    <label class="tw-row tw-row--switch">
+      <span class="tw-label">Show old slide footer</span>
+      <input type="checkbox" id="tw-show-footer" />
+    </label>
+  </div>
+</div>
+
+<script>
+(() => {
+  const TWEAKS = /*EDITMODE-BEGIN*/{
+    "railStyle": "chapters",
+    "railPosition": "bottom",
+    "accent": "#0073E6",
+    "showLabels": true,
+    "showFooter": false
+  }/*EDITMODE-END*/;
+
+  // Slide count = 24. Indices 0-based.
+  // 0 Title, 1 Team, 2 Agenda, 3 Y Soft Glance (recap)
+  // 4 Pillar 1 div, 5 Cost Analysis (recap), 6 Onboarding, 7 DCs, 8 Options, 9 Hybrid, 10 Storage
+  // 11 Pillar 2 div, 12 Zero Trust, 13 HA, 14 Auth
+  // 15 Feature Parity intro, 16 Badge Release, 17 ABBYY, 18 Mobile, 19 Reporting, 20 Traveling
+  // 21 Hands On, 22 Tenant divider
+  // 23 Thank you
+  const CHAPTERS = [
+    { name: 'Intro',           range: [0, 3] },
+    { name: 'Infrastructure',  range: [4, 10] },
+    { name: 'Security',        range: [11, 14] },
+    { name: 'Feature parity',  range: [15, 20] },
+    { name: 'Hands on',        range: [21, 22] },
+    { name: 'Close',           range: [23, 23] },
+  ];
+
+  const rail = document.getElementById('chapter-rail');
+  const chaptersWrap = rail.querySelector('.rail-chapters');
+  const fillEl = rail.querySelector('.rail-progress-fill');
+  const totalSlides = 24;
+
+  function patchDeckScale() {
+    const stage = document.querySelector('deck-stage');
+    if (!stage || !stage._fit) { requestAnimationFrame(patchDeckScale); return; }
+    const orig = stage._fit.bind(stage);
+    stage._fit = function() {
+      if (this.hasAttribute('noscale')) { return orig(); }
+      const railH = rail.offsetHeight || 0;
+      const vw = window.innerWidth;
+      const vh = window.innerHeight - railH;
+      const s = Math.min(vw / this.designWidth, vh / this.designHeight);
+      const pos = rail.getAttribute('data-position') || 'bottom';
+      const ty = pos === 'bottom' ? -railH / 2 : railH / 2;
+      this._canvas.style.transform = `translateY(${ty}px) scale(${s})`;
+      const overlay = this.shadowRoot && this.shadowRoot.querySelector('.overlay');
+      if (overlay) {
+        overlay.style.bottom = pos === 'bottom' ? (railH + 16) + 'px' : '22px';
+        overlay.style.top = pos === 'top' ? (railH + 16) + 'px' : '';
+      }
+    };
+    stage._fit();
+    if (window.ResizeObserver) {
+      new ResizeObserver(() => stage._fit()).observe(rail);
+    }
+  }
+  patchDeckScale();
+  window.addEventListener('resize', () => {
+    const stage = document.querySelector('deck-stage');
+    if (stage && stage._fit) stage._fit();
+  });
+
+  function buildChapterChips() {
+    while (chaptersWrap.firstChild) chaptersWrap.removeChild(chaptersWrap.firstChild);
+    CHAPTERS.forEach((c, i) => {
+      const chip = document.createElement('div');
+      chip.className = 'rail-chip';
+      chip.dataset.idx = i;
+      const label = document.createElement('span');
+      label.className = 'rail-chip-label';
+      label.textContent = c.name;
+      const bar = document.createElement('div');
+      bar.className = 'rail-chip-bar';
+      const barFill = document.createElement('div');
+      barFill.className = 'rail-chip-bar-fill';
+      bar.appendChild(barFill);
+      chip.append(label, bar);
+      chaptersWrap.appendChild(chip);
+    });
+  }
+
+  function currentChapter(slideIdx) {
+    for (let i = 0; i < CHAPTERS.length; i++) {
+      const [a, b] = CHAPTERS[i].range;
+      if (slideIdx >= a && slideIdx <= b) return i;
+    }
+    return 0;
+  }
+
+  function update(slideIdx) {
+    const curr = currentChapter(slideIdx);
+    const chips = chaptersWrap.querySelectorAll('.rail-chip');
+    chips.forEach((chip, i) => {
+      const [a, b] = CHAPTERS[i].range;
+      const span = b - a + 1;
+      const progressed = Math.min(Math.max(slideIdx - a + 1, 0), span);
+      const pct = (progressed / span) * 100;
+      const fill = chip.querySelector('.rail-chip-bar-fill');
+      fill.style.width = pct + '%';
+      chip.classList.toggle('is-active', i === curr);
+      chip.classList.toggle('is-done', i < curr);
+      chip.classList.toggle('is-upcoming', i > curr);
+    });
+    const overall = ((slideIdx + 1) / totalSlides) * 100;
+    fillEl.style.width = overall + '%';
+  }
+
+  function applyTweaks() {
+    rail.dataset.style = TWEAKS.railStyle;
+    rail.dataset.position = TWEAKS.railPosition;
+    rail.dataset.labels = TWEAKS.showLabels ? 'on' : 'off';
+    document.documentElement.style.setProperty('--rail-accent', TWEAKS.accent);
+    document.body.classList.toggle('hide-footer', !TWEAKS.showFooter);
+    rail.style.display = TWEAKS.railStyle === 'off' ? 'none' : '';
+  }
+
+  buildChapterChips();
+  applyTweaks();
+  const deck = document.querySelector('deck-stage');
+  deck.addEventListener('slidechange', (e) => update(e.detail.index));
+  setTimeout(() => update(deck.index || 0), 50);
+
+  const panel = document.getElementById('tweaks-panel');
+  const $style = document.getElementById('tw-rail-style');
+  const $pos = document.getElementById('tw-rail-position');
+  const $labels = document.getElementById('tw-show-labels');
+  const $footer = document.getElementById('tw-show-footer');
+
+  function syncControls() {
+    $style.value = TWEAKS.railStyle;
+    $pos.value = TWEAKS.railPosition;
+    $labels.checked = TWEAKS.showLabels;
+    $footer.checked = TWEAKS.showFooter;
+    document.querySelectorAll('#tw-accent button').forEach(b => {
+      b.classList.toggle('is-active', b.dataset.c === TWEAKS.accent);
+    });
+  }
+
+  function setKeys(edits) {
+    Object.assign(TWEAKS, edits);
+    applyTweaks();
+    syncControls();
+    try {
+      window.parent.postMessage({ type: '__edit_mode_set_keys', edits }, '*');
+    } catch (e) {}
+  }
+
+  $style.addEventListener('change', e => setKeys({ railStyle: e.target.value }));
+  $pos.addEventListener('change', e => setKeys({ railPosition: e.target.value }));
+  $labels.addEventListener('change', e => setKeys({ showLabels: e.target.checked }));
+  $footer.addEventListener('change', e => setKeys({ showFooter: e.target.checked }));
+  document.querySelectorAll('#tw-accent button').forEach(b => {
+    b.addEventListener('click', () => setKeys({ accent: b.dataset.c }));
+  });
+  panel.querySelector('.tw-close').addEventListener('click', () => {
+    panel.hidden = true;
+  });
+
+  window.addEventListener('message', (e) => {
+    const d = e.data || {};
+    if (d.type === '__activate_edit_mode') {
+      panel.hidden = false;
+      syncControls();
+    } else if (d.type === '__deactivate_edit_mode') {
+      panel.hidden = true;
+    }
+  });
+  try {
+    window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+  } catch (e) {}
+
+  syncControls();
+})();
+</script>
+
+</body>
+</html>
