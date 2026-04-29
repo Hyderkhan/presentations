@@ -813,7 +813,7 @@ body.hide-footer .footer { display: none; }
 
 /* Number badges — gradient fill + soft glow */
 .faq-num,
-.step-num {
+.step-card .step-num {
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
@@ -828,10 +828,10 @@ body.hide-footer .footer { display: none; }
   position: relative;
 }
 .faq-num  { width: 50px; height: 50px; font-size: 18px; }
-.step-num { width: 60px; height: 60px; font-size: 22px; }
+.step-card .step-num { width: 60px; height: 60px; font-size: 22px; }
 /* Glow ring revealed on hover */
 .faq-num::after,
-.step-num::after {
+.step-card .step-num::after {
   content: "";
   position: absolute;
   inset: -6px;
@@ -903,7 +903,7 @@ body.hide-footer .footer { display: none; }
   50%      { box-shadow: 0 10px 26px rgba(0,115,230,0.50); }
 }
 [data-deck-active] .faq-num,
-[data-deck-active] .step-num {
+[data-deck-active] .step-card .step-num {
   animation: badge-pulse 3.6s ease-in-out infinite;
   animation-delay: 1700ms;
 }
@@ -914,7 +914,7 @@ body.hide-footer .footer { display: none; }
   [data-deck-active] .faq-card,
   [data-deck-active] .step-card,
   [data-deck-active] .faq-num,
-  [data-deck-active] .step-num { animation: none !important; }
+  [data-deck-active] .step-card .step-num { animation: none !important; }
 }
 
 /* =========================================================
