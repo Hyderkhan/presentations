@@ -1,0 +1,545 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Konica Minolta USA · Onsite Workshop · Agenda</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  :root {
+    --orange: #FF6600;
+    --teal: #009CB6;
+    --ink: #0E1116;
+    --ink-2: #1B1F26;
+    --paper: #F6F4EE;
+    --rule: rgba(255,255,255,0.10);
+    --muted: rgba(255,255,255,0.62);
+    --font-display: "Inter", "Helvetica Neue", Arial, sans-serif;
+    --font-body: "Inter", "Helvetica Neue", Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #000; color: #fff; font-family: var(--font-body); }
+
+  .slide {
+    position: relative;
+    width: 1920px;
+    height: 1080px;
+    margin: 0 auto;
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse 1100px 820px at 92% 6%, rgba(255,102,0,0.42) 0%, rgba(255,102,0,0) 58%),
+      radial-gradient(ellipse 760px 600px at 6% 102%, rgba(0,156,182,0.30) 0%, rgba(0,156,182,0) 55%),
+      linear-gradient(135deg, #0B0E13 0%, #161B23 100%);
+  }
+
+  /* breathing orb */
+  .orb {
+    position: absolute;
+    width: 920px; height: 920px;
+    right: -260px; bottom: -300px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, rgba(255,102,0,0.95), rgba(255,102,0,0.18) 55%, rgba(255,102,0,0) 75%);
+    filter: blur(2px);
+    animation: breathe 9s ease-in-out infinite;
+  }
+  @keyframes breathe {
+    0%,100% { transform: scale(1); opacity: 0.92; }
+    50%     { transform: scale(1.06); opacity: 1; }
+  }
+
+  /* drifting bokeh */
+  .bokeh {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    mix-blend-mode: screen;
+  }
+  .bokeh.b1 { width: 380px; height: 380px; background: radial-gradient(circle, rgba(255,102,0,0.55), transparent 70%); top: 18%; left: 8%;  animation: drift1 22s ease-in-out infinite; }
+  .bokeh.b2 { width: 320px; height: 320px; background: radial-gradient(circle, rgba(0,156,182,0.55), transparent 70%); top: 55%; left: 38%; animation: drift2 28s ease-in-out infinite; }
+  .bokeh.b3 { width: 280px; height: 280px; background: radial-gradient(circle, rgba(255,180,90,0.40), transparent 70%); top: 72%; left: 78%; animation: drift3 26s ease-in-out infinite; }
+  @keyframes drift1 { 0%,100% { transform: translate(0,0) scale(1); }     50% { transform: translate(60px,-30px) scale(1.12); } }
+  @keyframes drift2 { 0%,100% { transform: translate(0,0) scale(1); }     50% { transform: translate(-80px,40px) scale(1.08); } }
+  @keyframes drift3 { 0%,100% { transform: translate(0,0) scale(0.95); }  50% { transform: translate(40px,-50px) scale(1.05); } }
+
+  /* shimmer accent line */
+  .accent-line {
+    position: absolute;
+    left: 110px; right: 110px; top: 240px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,102,0,0.85), rgba(0,156,182,0.65), transparent);
+    background-size: 200% 100%;
+    opacity: 0;
+    transform: scaleX(0);
+    transform-origin: left center;
+    animation: shimmer 6s linear infinite, lineIn 1.4s 0.5s cubic-bezier(.2,.7,.2,1) forwards;
+  }
+  @keyframes shimmer { 0% { background-position: 0% 0; } 100% { background-position: 200% 0; } }
+  @keyframes lineIn  { from { opacity: 0; transform: scaleX(0); } to { opacity: 1; transform: scaleX(1); } }
+
+  /* reveal animations */
+  @keyframes fadeUp    { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeRight { from { opacity: 0; transform: translateX(-32px); } to { opacity: 1; transform: translateX(0); } }
+  @keyframes fadeLeft  { from { opacity: 0; transform: translateX(32px); }  to { opacity: 1; transform: translateX(0); } }
+  @keyframes letterIn  { from { opacity: 0; transform: translateY(40px) rotateX(-30deg); } to { opacity: 1; transform: translateY(0) rotateX(0); } }
+  @keyframes pulseTeal { 0%,100% { box-shadow: 0 0 0 0 rgba(0,156,182,0.45); } 50% { box-shadow: 0 0 0 10px rgba(0,156,182,0); } }
+  @keyframes glowOrange{ 0%,100% { text-shadow: 0 0 18px rgba(255,102,0,0.0); } 50% { text-shadow: 0 0 36px rgba(255,102,0,0.55); } }
+
+  /* hero title — letter-by-letter */
+  .title { perspective: 800px; }
+  .title .word { display: inline-block; }
+  .title .ch {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(40px) rotateX(-30deg);
+    animation: letterIn 0.7s cubic-bezier(.2,.8,.2,1) forwards;
+  }
+  .title .accent { animation: glowOrange 4.5s ease-in-out 2.2s infinite; }
+
+  .eyebrow { opacity: 0; animation: fadeUp 0.8s 0.1s ease-out forwards; }
+  .sub     { opacity: 0; animation: fadeUp 0.8s 1.5s ease-out forwards; }
+
+  .col { opacity: 0; }
+  .col:nth-of-type(1) { animation: fadeRight 0.9s 1.7s cubic-bezier(.2,.7,.2,1) forwards; }
+  .col:nth-of-type(2) { animation: fadeLeft  0.9s 1.9s cubic-bezier(.2,.7,.2,1) forwards; }
+
+  ul.agenda li {
+    opacity: 0;
+    transform: translateX(-12px);
+    animation: rowIn 0.5s cubic-bezier(.2,.7,.2,1) forwards;
+    transition: background 220ms ease, transform 220ms ease;
+  }
+  @keyframes rowIn { to { opacity: 1; transform: translateX(0); } }
+  ul.agenda li:hover {
+    background: rgba(255,255,255,0.04);
+    transform: translateX(4px);
+    border-radius: 10px;
+  }
+
+  /* demo row gets a soft pulse highlight after reveal */
+  ul.agenda li.demo {
+    position: relative;
+    overflow: hidden;
+  }
+  ul.agenda li.demo::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,102,0,0.18), transparent);
+    transform: translateX(-100%);
+    animation: sweep 5s 3.5s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes sweep { 0%,100% { transform: translateX(-100%); } 40% { transform: translateX(100%); } }
+
+  .col-tag {
+    position: relative;
+    display: inline-block;
+    padding-left: 16px;
+  }
+  .col-tag::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 50%;
+    width: 8px; height: 8px;
+    margin-top: -4px;
+    border-radius: 50%;
+    background: var(--teal);
+    animation: pulseTeal 2.4s ease-in-out infinite;
+  }
+
+  .footer { opacity: 0; animation: fadeUp 0.8s 2.6s ease-out forwards; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001s !important;
+      animation-delay: 0s !important;
+      transition-duration: 0.001s !important;
+    }
+  }
+
+  /* teal ring */
+  .ring {
+    position: absolute;
+    left: -200px; top: -200px;
+    width: 480px; height: 480px;
+    border: 2px solid rgba(0,156,182,0.45);
+    border-radius: 50%;
+  }
+
+  .frame { position: absolute; inset: 0; padding: 80px 110px; display: flex; flex-direction: column; }
+
+  .eyebrow {
+    color: var(--orange);
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  h1.title {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 92px;
+    line-height: 1.0;
+    margin: 0 0 8px;
+    letter-spacing: -0.02em;
+  }
+  .title .accent { color: var(--orange); }
+
+  .sub {
+    font-size: 22px;
+    color: var(--muted);
+    margin: 0 0 36px;
+    letter-spacing: 0.04em;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .col {
+    position: relative;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--rule);
+    border-radius: 16px;
+    padding: 34px 40px 28px;
+    backdrop-filter: blur(8px);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .col-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .col-tag {
+    color: var(--teal);
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
+  .col-name {
+    font-size: 36px;
+    font-weight: 700;
+    margin: 4px 0 0;
+    letter-spacing: -0.01em;
+  }
+  .col-meta {
+    font-size: 16px;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  ul.agenda { list-style: none; padding: 0; margin: 0; flex: 1; }
+  ul.agenda li {
+    display: grid;
+    grid-template-columns: 64px 1fr auto;
+    column-gap: 22px;
+    align-items: start;
+    padding: 16px 10px;
+    border-bottom: 1px dashed rgba(255,255,255,0.07);
+  }
+  ul.agenda li:last-child { border-bottom: none; }
+
+  .num {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 30px;
+    color: var(--orange);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  .body .topic {
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.2;
+    letter-spacing: -0.005em;
+  }
+  .body .desc {
+    margin-top: 6px;
+    font-size: 15px;
+    color: var(--muted);
+    line-height: 1.45;
+  }
+  .body .tags {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .body .tag {
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.18);
+    color: rgba(255,255,255,0.82);
+    background: rgba(255,255,255,0.03);
+  }
+  .body .tag.orange {
+    border-color: rgba(255,102,0,0.55);
+    color: #FFB37A;
+    background: rgba(255,102,0,0.08);
+  }
+  .body .tag.teal {
+    border-color: rgba(0,156,182,0.55);
+    color: #67D6E8;
+    background: rgba(0,156,182,0.10);
+  }
+  .chip-demo {
+    align-self: start;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #fff;
+    background: var(--orange);
+    padding: 6px 12px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .chip-link {
+    align-self: start;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--teal);
+    background: rgba(0,156,182,0.10);
+    border: 1px solid rgba(0,156,182,0.55);
+    padding: 5px 12px;
+    border-radius: 999px;
+    white-space: nowrap;
+    transition: background 0.2s, color 0.2s, transform 0.2s;
+  }
+  ul.agenda li.linked { cursor: pointer; }
+  ul.agenda li.linked:hover .chip-link {
+    background: var(--teal);
+    color: #fff;
+    transform: translateX(2px);
+  }
+  .topic-link { text-decoration: none; color: inherit; display: inline-block; }
+  .topic-link .topic { display: inline-flex; align-items: center; }
+  .link-arrow {
+    color: var(--orange);
+    margin-left: 10px;
+    transition: transform 0.2s ease;
+    display: inline-block;
+    font-weight: 800;
+  }
+  ul.agenda li.linked:hover .link-arrow { transform: translateX(4px); }
+
+  .footer {
+    margin-top: 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--muted);
+    font-size: 16px;
+    letter-spacing: 0.08em;
+  }
+  .pill {
+    display: inline-block;
+    padding: 6px 14px;
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 999px;
+    font-size: 14px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+
+<section class="slide">
+  <div class="ring"></div>
+  <div class="orb"></div>
+  <div class="bokeh b1"></div>
+  <div class="bokeh b2"></div>
+  <div class="bokeh b3"></div>
+  <div class="accent-line"></div>
+
+  <div class="frame">
+    <div class="eyebrow">Y Soft &middot; Konica Minolta USA &middot; Onsite Workshop</div>
+    <h1 class="title" id="hero-title"><span class="accent">KM</span> USA &times; Y Soft Workshop</h1>
+    <p class="sub">Strategic working session &middot; IWS deployment, roadmap, scanning, and the future of printing</p>
+
+    <div class="grid">
+      <!-- ============ MORNING ============ -->
+      <div class="col">
+        <div class="col-header">
+          <div>
+            <div class="col-tag">Morning</div>
+            <div class="col-name">Strategy &amp; Roadmap</div>
+          </div>
+          <div class="col-meta">Sessions 01 – 03</div>
+        </div>
+        <ul class="agenda">
+          <li>
+            <span class="num">01</span>
+            <div class="body">
+              <div class="topic">KM IWS &middot; Magic Deployment</div>
+              <div class="desc">Frictionless IWS rollout for enterprise printing — where we stand and what's next.</div>
+              <div class="tags">
+                <span class="tag">Enterprise customers</span>
+                <span class="tag teal">Healthcare &middot; Epic</span>
+              </div>
+            </div>
+            <span></span>
+          </li>
+          <li>
+            <span class="num">02</span>
+            <div class="body">
+              <div class="topic">Vertical Discussions</div>
+              <div class="desc">Where IWS resonates by vertical — compliance, security priorities, and the workflow patterns we keep seeing.</div>
+              <div class="tags">
+                <span class="tag">Industry priorities</span>
+                <span class="tag">Workflow patterns</span>
+                <span class="tag">Joint motion</span>
+              </div>
+            </div>
+            <span></span>
+          </li>
+          <li class="linked" onclick="if(event.target.tagName!=='A')location.href='./roadmap.html'">
+            <span class="num">03</span>
+            <div class="body">
+              <a class="topic-link" href="./roadmap.html">
+                <div class="topic">Roadmap Update <span class="link-arrow">&rarr;</span></div>
+              </a>
+              <div class="desc">What's shipping, what's planned, where we're investing — and why healthcare is our number one focus.</div>
+              <div class="tags">
+                <span class="tag orange">Healthcare = #1 focus</span>
+                <span class="tag">Security &amp; compliance</span>
+                <span class="tag">Deployment velocity</span>
+              </div>
+            </div>
+            <span class="chip-link">View roadmap</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- ============ AFTERNOON ============ -->
+      <div class="col">
+        <div class="col-header">
+          <div>
+            <div class="col-tag">Afternoon</div>
+            <div class="col-name">Demo &amp; Print Modernization</div>
+          </div>
+          <div class="col-meta">Sessions 04 – 06</div>
+        </div>
+        <ul class="agenda">
+          <li class="demo">
+            <span class="num">04</span>
+            <div class="body">
+              <div class="topic">E2E Scanning</div>
+              <div class="desc">End-to-end secure capture from MFP to destination — authenticate, process, encrypt, route.</div>
+              <div class="tags">
+                <span class="tag">OCR &amp; classification</span>
+                <span class="tag">Encrypted in transit</span>
+                <span class="tag">Audit trail</span>
+              </div>
+            </div>
+            <span class="chip-demo">Live demo</span>
+          </li>
+          <li>
+            <span class="num">05</span>
+            <div class="body">
+              <div class="topic">Universal Print</div>
+              <div class="desc">Windows Protected Print and Microsoft's print driver direction — what it means for KM customers.</div>
+              <div class="tags">
+                <span class="tag">Windows Protected Print</span>
+                <span class="tag">MS driver changes</span>
+                <span class="tag">IPP / Mopria</span>
+              </div>
+            </div>
+            <span></span>
+          </li>
+          <li>
+            <span class="num">06</span>
+            <div class="body">
+              <div class="topic">Discussion &amp; Next Steps</div>
+              <div class="desc">Open Q&amp;A, prioritization, follow-ups, and owners for the joint motion.</div>
+              <div class="tags">
+                <span class="tag">Q&amp;A</span>
+                <span class="tag">Action items</span>
+                <span class="tag">Owners &amp; dates</span>
+              </div>
+            </div>
+            <span></span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer">
+      <span class="pill">Y Soft &middot; SAFEQ Cloud &middot; 2026</span>
+      <span>6 sessions &nbsp;&middot;&nbsp; 1 live demo &nbsp;&middot;&nbsp; Onsite at Konica Minolta USA</span>
+    </div>
+  </div>
+</section>
+
+<script>
+  // ----- Letter-by-letter hero title -----
+  (function splitTitle() {
+    const h1 = document.getElementById('hero-title');
+    if (!h1) return;
+    const nodes = [...h1.childNodes];
+    h1.replaceChildren();
+    let i = 0;
+    const addLetters = (text, target) => {
+      [...text].forEach(ch => {
+        const s = document.createElement('span');
+        s.className = 'ch';
+        s.textContent = ch === ' ' ? ' ' : ch;
+        s.style.animationDelay = (0.25 + i * 0.045) + 's';
+        i++;
+        target.appendChild(s);
+      });
+    };
+    nodes.forEach(node => {
+      if (node.nodeType === 3) {
+        node.textContent.split(' ').forEach((word, wIdx, arr) => {
+          if (word.length) {
+            const w = document.createElement('span');
+            w.className = 'word';
+            addLetters(word, w);
+            h1.appendChild(w);
+          }
+          if (wIdx < arr.length - 1) h1.appendChild(document.createTextNode(' '));
+        });
+      } else if (node.nodeType === 1) {
+        const wrap = document.createElement('span');
+        wrap.className = 'word ' + node.className;
+        addLetters(node.textContent, wrap);
+        h1.appendChild(wrap);
+      }
+    });
+  })();
+
+  // ----- Stagger agenda rows per column -----
+  document.querySelectorAll('.col').forEach((col, colIdx) => {
+    const baseDelay = 1.9 + colIdx * 0.25;
+    col.querySelectorAll('ul.agenda li').forEach((li, i) => {
+      li.style.animationDelay = (baseDelay + i * 0.08) + 's';
+    });
+  });
+</script>
+
+</body>
+</html>
