@@ -269,12 +269,56 @@
   .flow.cols-7 { grid-template-columns: repeat(7, 1fr); }
   .flow.cols-5 { grid-template-columns: repeat(5, 1fr); }
 
+  /* ========== VIEW TOGGLE (mockups <> screenshots) ========== */
+  .view-toggle {
+    display: inline-flex;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    padding: 3px;
+    gap: 0;
+    align-items: center;
+  }
+  .view-toggle button {
+    padding: 7px 14px;
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    font-family: inherit;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .view-toggle button svg { width: 14px; height: 14px; flex-shrink: 0; }
+  .view-toggle button.active {
+    background: linear-gradient(135deg, var(--orange) 0%, #FF7A1A 100%);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(255,102,0,0.40);
+  }
+  .view-toggle button:hover:not(.active) { color: #fff; background: rgba(255,255,255,0.04); }
+
   /* ========== STEP CARD (mockup) ========== */
   .step {
     position: relative;
     display: flex; flex-direction: column;
     gap: 14px;
   }
+  .step .canvas {
+    position: relative;
+    height: 220px;
+  }
+  .step .canvas .mockup,
+  .step .canvas .screenshot {
+    position: absolute;
+    inset: 0;
+    transition: opacity 0.45s cubic-bezier(.2,.8,.2,1), transform 0.45s cubic-bezier(.2,.8,.2,1);
+  }
+  .step .canvas .mockup     { opacity: 1; transform: scale(1); pointer-events: auto; }
+  .step .canvas .screenshot { opacity: 0; transform: scale(0.97); pointer-events: none; }
+  body[data-view="screenshots"] .step .canvas .mockup     { opacity: 0; transform: scale(0.97); pointer-events: none; }
+  body[data-view="screenshots"] .step .canvas .screenshot { opacity: 1; transform: scale(1); pointer-events: auto; }
   .step .badge {
     position: absolute; top: -8px; left: -8px;
     width: 36px; height: 36px;
@@ -289,18 +333,37 @@
     letter-spacing: -0.01em;
   }
   .mockup {
-    height: 220px;
     border-radius: 12px;
     border: 1px solid var(--rule);
     background: linear-gradient(180deg, #1A1F28 0%, #11151D 100%);
     overflow: hidden;
     display: flex; flex-direction: column;
-    position: relative;
     box-shadow: 0 10px 28px rgba(0,0,0,0.30);
-    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
   }
-  .step:hover .mockup {
+  .screenshot {
+    border-radius: 12px;
+    border: 1px solid var(--rule);
+    background: #FAFAFA;
+    overflow: hidden;
+    box-shadow: 0 10px 28px rgba(0,0,0,0.30);
+    display: flex; align-items: stretch; justify-content: stretch;
+  }
+  .screenshot img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+  }
+  .canvas {
+    position: relative;
+    height: 220px;
+    transition: transform 0.3s ease;
+  }
+  .step:hover .canvas {
     transform: translateY(-3px);
+  }
+  .step:hover .canvas .mockup,
+  .step:hover .canvas .screenshot {
     border-color: rgba(255,102,0,0.45);
     box-shadow: 0 16px 36px rgba(255,102,0,0.18), 0 8px 20px rgba(0,0,0,0.40);
   }
@@ -571,6 +634,17 @@
   [data-theme="light"] .step-cap { color: rgba(14,17,22,0.82); }
   [data-theme="light"] .mock-btn.ghost { border-color: rgba(14,17,22,0.20); color: rgba(14,17,22,0.85); }
 
+  [data-theme="light"] .view-toggle { background: rgba(14,17,22,0.04); border-color: rgba(14,17,22,0.10); }
+  [data-theme="light"] .view-toggle button { color: rgba(14,17,22,0.55); }
+  [data-theme="light"] .view-toggle button.active { color: #fff; }
+  [data-theme="light"] .view-toggle button:hover:not(.active) { color: #0E1116; background: rgba(14,17,22,0.04); }
+
+  [data-theme="light"] .screenshot {
+    background: #fff;
+    border-color: rgba(14,17,22,0.12);
+    box-shadow: 0 10px 28px rgba(14,17,22,0.10);
+  }
+
   [data-theme="light"] footer { color: rgba(14,17,22,0.45); border-top-color: rgba(14,17,22,0.10); }
   [data-theme="light"] footer a { color: rgba(14,17,22,0.55); }
 
@@ -683,14 +757,25 @@
           <p class="sub-line">Seven-step flow to link a customer's Marketplace account to SAFEQ Cloud and authorize device management.</p>
         </div>
       </div>
-      <div class="right">7 steps &middot; UI/UX mock-ups</div>
+      <div class="right">
+        <div class="view-toggle" data-toggle>
+          <button type="button" data-view="mockups" class="active" title="Show interactive mock-ups">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg>
+            Mock-ups
+          </button>
+          <button type="button" data-view="screenshots" title="Show actual screenshots from the deck">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+            Screenshots
+          </button>
+        </div>
+      </div>
     </div>
 
     <div class="flow cols-7">
       <!-- Step 01 -->
       <div class="step reveal">
         <div class="badge">01</div>
-        <div class="mockup">
+        <div class="canvas"><div class="mockup">
           <div class="titlebar">
             <div class="traffic"><span class="r"></span><span class="y"></span><span class="g"></span></div>
             <div class="url">safeq.cloud/customer/connect</div>
@@ -700,14 +785,14 @@
             <div class="mock-p">No account linked yet for this customer.</div>
             <button class="mock-btn">Connect</button>
           </div>
-        </div>
+        </div><div class="screenshot"><img src="assets/screenshots/mp-01.jpg" alt="Marketplace setup · Connect" loading="lazy"></div></div>
         <div class="step-cap"><span class="label">Step 01</span>Customer admin or KM technician clicks <strong>Connect</strong>.</div>
       </div>
 
       <!-- Step 02 -->
       <div class="step reveal">
         <div class="badge">02</div>
-        <div class="mockup">
+        <div class="canvas"><div class="mockup">
           <div class="titlebar">
             <div class="traffic"><span class="r"></span><span class="y"></span><span class="g"></span></div>
             <div class="url">safeq.cloud/customer/connect</div>
@@ -717,14 +802,14 @@
             <div class="mock-input focused">admin@customer.com</div>
             <button class="mock-btn">Send invitation</button>
           </div>
-        </div>
+        </div><div class="screenshot"><img src="assets/screenshots/mp-02.jpg" alt="Marketplace setup · Customer email" loading="lazy"></div></div>
         <div class="step-cap"><span class="label">Step 02</span>Enter the customer's email address.</div>
       </div>
 
       <!-- Step 03 -->
       <div class="step reveal">
         <div class="badge">03</div>
-        <div class="mockup">
+        <div class="canvas"><div class="mockup">
           <div class="titlebar">
             <div class="traffic"><span class="r"></span><span class="y"></span><span class="g"></span></div>
             <div class="url">safeq.cloud/customer/invitation</div>
@@ -738,14 +823,14 @@
             <div class="mock-h" style="text-align:center;">Invitation sent</div>
             <div class="mock-p" style="text-align:center;">We emailed admin@customer.com</div>
           </div>
-        </div>
+        </div><div class="screenshot"><img src="assets/screenshots/mp-03.jpg" alt="Marketplace setup · Invitation sent" loading="lazy"></div></div>
         <div class="step-cap"><span class="label">Step 03</span>Invitation email is sent and waiting on approval.</div>
       </div>
 
       <!-- Step 04 -->
       <div class="step reveal">
         <div class="badge">04</div>
-        <div class="mockup">
+        <div class="canvas"><div class="mockup">
           <div class="titlebar">
             <div class="traffic"><span class="r"></span><span class="y"></span><span class="g"></span></div>
             <div class="url">marketplace.konicaminolta.com</div>
@@ -759,14 +844,14 @@
             <div class="mock-h" style="text-align:center;">Marketplace account created</div>
             <div class="mock-p" style="text-align:center;">Customer approved &middot; account live</div>
           </div>
-        </div>
+        </div><div class="screenshot"><img src="assets/screenshots/mp-04.jpg" alt="Marketplace setup · Account created" loading="lazy"></div></div>
         <div class="step-cap"><span class="label">Step 04</span>When email is approved, the Marketplace account is created.</div>
       </div>
 
       <!-- Step 05 -->
       <div class="step reveal">
         <div class="badge">05</div>
-        <div class="mockup">
+        <div class="canvas"><div class="mockup">
           <div class="titlebar">
             <div class="traffic"><span class="r"></span><span class="y"></span><span class="g"></span></div>
             <div class="url">marketplace.konicaminolta.com/consent</div>
@@ -779,14 +864,14 @@
               <button class="mock-btn ghost">Deny</button>
             </div>
           </div>
-        </div>
+        </div><div class="screenshot"><img src="assets/screenshots/mp-05.jpg" alt="Marketplace setup · Allow management" loading="lazy"></div></div>
         <div class="step-cap"><span class="label">Step 05</span>Authorize SAFEQ Cloud to manage the customer's devices.</div>
       </div>
 
       <!-- Step 06 -->
       <div class="step reveal">
         <div class="badge">06</div>
-        <div class="mockup">
+        <div class="canvas"><div class="mockup">
           <div class="titlebar">
             <div class="traffic"><span class="r"></span><span class="y"></span><span class="g"></span></div>
             <div class="url">safeq.cloud/customer/setup</div>
@@ -801,14 +886,14 @@
             <div class="mock-p">Next up: configure the customer's printers.</div>
             <button class="mock-btn">Configure printers</button>
           </div>
-        </div>
+        </div><div class="screenshot"><img src="assets/screenshots/mp-06.jpg" alt="Marketplace setup · Setup complete" loading="lazy"></div></div>
         <div class="step-cap"><span class="label">Step 06</span>Setup complete &mdash; on to the printer configuration.</div>
       </div>
 
       <!-- Step 07 -->
       <div class="step reveal">
         <div class="badge">07</div>
-        <div class="mockup">
+        <div class="canvas"><div class="mockup">
           <div class="titlebar">
             <div class="traffic"><span class="r"></span><span class="y"></span><span class="g"></span></div>
             <div class="url">safeq.cloud/customer/dashboard</div>
@@ -822,7 +907,7 @@
             </div>
             <div class="mock-p">Glanceable connection status across services.</div>
           </div>
-        </div>
+        </div><div class="screenshot"><img src="assets/screenshots/mp-07.jpg" alt="Marketplace setup · Connection status" loading="lazy"></div></div>
         <div class="step-cap"><span class="label">Step 07</span>Easy visuals to confirm if the account is connected successfully or not.</div>
       </div>
     </div>
@@ -840,14 +925,25 @@
           <p class="sub-line">Five-step flow to discover a printer on the network (or add it manually) and install the embedded SAFEQ Cloud apps.</p>
         </div>
       </div>
-      <div class="right">5 steps &middot; UI/UX mock-ups</div>
+      <div class="right">
+        <div class="view-toggle" data-toggle>
+          <button type="button" data-view="mockups" class="active" title="Show interactive mock-ups">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg>
+            Mock-ups
+          </button>
+          <button type="button" data-view="screenshots" title="Show actual screenshots from the deck">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+            Screenshots
+          </button>
+        </div>
+      </div>
     </div>
 
     <div class="flow cols-5">
       <!-- Step 01 -->
       <div class="step reveal">
         <div class="badge">01</div>
-        <div class="mockup">
+        <div class="canvas"><div class="mockup">
           <div class="titlebar">
             <div class="traffic"><span class="r"></span><span class="y"></span><span class="g"></span></div>
             <div class="url">safeq.cloud/printers</div>
@@ -857,14 +953,14 @@
             <div class="mock-p">No printers added yet for this site.</div>
             <button class="mock-btn">+ Add printer</button>
           </div>
-        </div>
+        </div><div class="screenshot"><img src="assets/screenshots/ad-01.jpg" alt="Add device · Add printer" loading="lazy"></div></div>
         <div class="step-cap"><span class="label">Step 01</span>User clicks <strong>Add printer</strong>.</div>
       </div>
 
       <!-- Step 02 -->
       <div class="step reveal">
         <div class="badge">02</div>
-        <div class="mockup">
+        <div class="canvas"><div class="mockup">
           <div class="titlebar">
             <div class="traffic"><span class="r"></span><span class="y"></span><span class="g"></span></div>
             <div class="url">PC client &middot; network scan</div>
@@ -878,14 +974,14 @@
               <div class="mock-printer-row">bizhub C360i <span class="ip">192.168.1.51</span></div>
             </div>
           </div>
-        </div>
+        </div><div class="screenshot"><img src="assets/screenshots/ad-02.jpg" alt="Add device · Network scan" loading="lazy"></div></div>
         <div class="step-cap"><span class="label">Step 02</span>The PC client scans the network for printers.</div>
       </div>
 
       <!-- Step 03 -->
       <div class="step reveal">
         <div class="badge">03</div>
-        <div class="mockup">
+        <div class="canvas"><div class="mockup">
           <div class="titlebar">
             <div class="traffic"><span class="r"></span><span class="y"></span><span class="g"></span></div>
             <div class="url">safeq.cloud/printers/add</div>
@@ -896,14 +992,14 @@
             <div class="mock-input focused">192.168.1.55</div>
             <button class="mock-btn">Continue</button>
           </div>
-        </div>
+        </div><div class="screenshot"><img src="assets/screenshots/ad-03.jpg" alt="Add device · Manual add" loading="lazy"></div></div>
         <div class="step-cap"><span class="label">Step 03</span>Or manually add a printer that didn't show up.</div>
       </div>
 
       <!-- Step 04 -->
       <div class="step reveal">
         <div class="badge">04</div>
-        <div class="mockup">
+        <div class="canvas"><div class="mockup">
           <div class="titlebar">
             <div class="traffic"><span class="r"></span><span class="y"></span><span class="g"></span></div>
             <div class="url">safeq.cloud/printers/add</div>
@@ -914,14 +1010,14 @@
             <div class="mock-input focused">Admin password &nbsp; •••••••••••</div>
             <button class="mock-btn">Install</button>
           </div>
-        </div>
+        </div><div class="screenshot"><img src="assets/screenshots/ad-04.jpg" alt="Add device · Serial & password" loading="lazy"></div></div>
         <div class="step-cap"><span class="label">Step 04</span>Enter serial number and device admin password.</div>
       </div>
 
       <!-- Step 05 -->
       <div class="step reveal">
         <div class="badge">05</div>
-        <div class="mockup">
+        <div class="canvas"><div class="mockup">
           <div class="titlebar">
             <div class="traffic"><span class="r"></span><span class="y"></span><span class="g"></span></div>
             <div class="url">safeq.cloud/printers/installing</div>
@@ -936,7 +1032,7 @@
               <div class="item-line"><span class="check pending">·</span>Register with cloud</div>
             </div>
           </div>
-        </div>
+        </div><div class="screenshot"><img src="assets/screenshots/ad-05.jpg" alt="Add device · Installing apps" loading="lazy"></div></div>
         <div class="step-cap"><span class="label">Step 05</span>Embedded apps install with realtime progress.</div>
       </div>
     </div>
@@ -1009,6 +1105,43 @@
     });
     document.addEventListener('fullscreenchange', function() {
       btn.classList.toggle('is-fs', !!document.fullscreenElement);
+    });
+  })();
+
+  // ===== View toggle: Mock-ups <> Screenshots =====
+  (function viewToggle() {
+    const toggles = [...document.querySelectorAll('[data-toggle]')];
+    if (!toggles.length) return;
+    function setView(view) {
+      if (view !== 'mockups' && view !== 'screenshots') view = 'mockups';
+      if (view === 'screenshots') document.body.setAttribute('data-view', 'screenshots');
+      else document.body.removeAttribute('data-view');
+      toggles.forEach(group => {
+        group.querySelectorAll('button').forEach(b => {
+          b.classList.toggle('active', b.getAttribute('data-view') === view);
+        });
+      });
+      try { localStorage.setItem('magicDeployView', view); } catch (e) {}
+    }
+    toggles.forEach(group => {
+      group.addEventListener('click', (e) => {
+        const btn = e.target.closest('button[data-view]');
+        if (!btn) return;
+        setView(btn.getAttribute('data-view'));
+      });
+    });
+    try {
+      const saved = localStorage.getItem('magicDeployView');
+      if (saved) setView(saved);
+    } catch (e) {}
+    document.addEventListener('keydown', function(e) {
+      const tag = (e.target && e.target.tagName) || '';
+      if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+      if ((e.key === 'm' || e.key === 'M') && !e.metaKey && !e.ctrlKey && !e.altKey) {
+        e.preventDefault();
+        const cur = document.body.getAttribute('data-view') === 'screenshots' ? 'screenshots' : 'mockups';
+        setView(cur === 'mockups' ? 'screenshots' : 'mockups');
+      }
     });
   })();
 
