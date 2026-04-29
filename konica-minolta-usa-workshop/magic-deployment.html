@@ -667,6 +667,165 @@
     .actions { top: 10px; right: 10px; }
     .back-link { top: 14px; left: 14px; font-size: 11px; padding: 7px 12px; }
   }
+
+  /* ========== LIGHTBOX (screenshots view) ========== */
+  body[data-view="screenshots"] .step .canvas { cursor: zoom-in; }
+
+  .lightbox {
+    position: fixed; inset: 0;
+    background: rgba(8, 11, 16, 0.86);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.28s cubic-bezier(.2,.8,.2,1);
+    z-index: 1000;
+    padding: 28px;
+  }
+  .lightbox.open { opacity: 1; pointer-events: auto; }
+  .lightbox::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(800px 600px at 50% 30%, rgba(255,102,0,0.10), transparent 70%);
+    pointer-events: none;
+  }
+
+  .lb-content {
+    position: relative;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 22px;
+    max-width: 1200px;
+    width: 100%;
+    transform: scale(0.96) translateY(8px);
+    opacity: 0;
+    transition: transform 0.36s cubic-bezier(.2,.8,.2,1), opacity 0.28s ease;
+  }
+  .lightbox.open .lb-content { transform: scale(1) translateY(0); opacity: 1; }
+
+  .lb-image-wrap {
+    background: #fff;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow:
+      0 30px 80px rgba(0,0,0,0.55),
+      0 0 0 1px rgba(255,102,0,0.18),
+      0 12px 40px rgba(255,102,0,0.10);
+    padding: 14px;
+    width: 100%;
+    max-height: 72vh;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .lb-image {
+    display: block;
+    width: auto; height: auto;
+    max-width: 100%;
+    max-height: calc(72vh - 28px);
+    border-radius: 6px;
+  }
+
+  .lb-meta {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 10px;
+    text-align: center;
+    color: #fff;
+    max-width: 820px;
+    padding: 0 12px;
+  }
+  .lb-section {
+    font-family: var(--font-display);
+    font-size: 11px; font-weight: 700; letter-spacing: 0.20em; text-transform: uppercase;
+    color: var(--orange);
+    margin: 0;
+  }
+  .lb-step-row {
+    display: inline-flex; align-items: center; gap: 14px;
+  }
+  .lb-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--orange);
+    color: #fff;
+    font-family: var(--font-display);
+    font-weight: 800; font-size: 14px;
+    box-shadow: 0 6px 14px rgba(255,102,0,0.45);
+  }
+  .lb-counter {
+    font-family: var(--font-display);
+    font-size: 12px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+  }
+  .lb-caption {
+    font-size: 17px; line-height: 1.55;
+    color: rgba(255,255,255,0.88);
+    margin: 0;
+  }
+  .lb-caption strong { color: #fff; font-weight: 700; }
+
+  .lb-close, .lb-nav {
+    position: absolute;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.18);
+    color: #fff;
+    border-radius: 50%;
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: background 0.20s ease, border-color 0.20s ease, color 0.20s ease, transform 0.20s ease;
+    font-family: inherit;
+    -webkit-appearance: none; appearance: none;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+  .lb-close { top: 24px; right: 24px; width: 44px; height: 44px; }
+  .lb-close svg { width: 18px; height: 18px; }
+  .lb-nav { top: 50%; width: 56px; height: 56px; transform: translateY(-50%); }
+  .lb-nav svg { width: 22px; height: 22px; }
+  .lb-prev { left: 24px; }
+  .lb-next { right: 24px; }
+  .lb-close:hover, .lb-nav:hover {
+    background: var(--orange);
+    border-color: var(--orange);
+    color: #fff;
+  }
+  .lb-close:hover { transform: scale(1.08); }
+  .lb-nav:hover { transform: translateY(-50%) scale(1.08); }
+  .lb-nav[aria-disabled="true"] { opacity: 0.28; pointer-events: none; }
+
+  /* Light-theme lightbox */
+  [data-theme="light"] .lightbox { background: rgba(245, 247, 250, 0.92); }
+  [data-theme="light"] .lightbox::after {
+    background: radial-gradient(800px 600px at 50% 30%, rgba(255,102,0,0.06), transparent 70%);
+  }
+  [data-theme="light"] .lb-image-wrap {
+    background: #fff;
+    border-color: rgba(14,17,22,0.10);
+    box-shadow:
+      0 30px 80px rgba(14,17,22,0.20),
+      0 0 0 1px rgba(255,102,0,0.22),
+      0 12px 40px rgba(255,102,0,0.10);
+  }
+  [data-theme="light"] .lb-meta { color: #0E1116; }
+  [data-theme="light"] .lb-counter { color: rgba(14,17,22,0.55); }
+  [data-theme="light"] .lb-caption { color: rgba(14,17,22,0.82); }
+  [data-theme="light"] .lb-caption strong { color: #0E1116; }
+  [data-theme="light"] .lb-close,
+  [data-theme="light"] .lb-nav {
+    background: rgba(14,17,22,0.06);
+    border-color: rgba(14,17,22,0.14);
+    color: #0E1116;
+  }
+  [data-theme="light"] .lb-close:hover,
+  [data-theme="light"] .lb-nav:hover { background: var(--orange); border-color: var(--orange); color: #fff; }
+
+  @media (max-width: 980px) {
+    .lb-nav { width: 44px; height: 44px; }
+    .lb-prev { left: 12px; }
+    .lb-next { right: 12px; }
+    .lb-close { top: 12px; right: 12px; width: 38px; height: 38px; }
+    .lb-image-wrap { padding: 8px; max-height: 60vh; }
+    .lb-image { max-height: calc(60vh - 16px); }
+    .lb-caption { font-size: 15px; }
+  }
 </style>
 </head>
 <body>
@@ -1052,6 +1211,29 @@
 
 </main>
 
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="lbCaption">
+  <button type="button" class="lb-close" aria-label="Close (Esc)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
+  <button type="button" class="lb-nav lb-prev" aria-label="Previous step (Left arrow)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>
+  </button>
+  <button type="button" class="lb-nav lb-next" aria-label="Next step (Right arrow)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+  </button>
+  <div class="lb-content">
+    <div class="lb-image-wrap"><img class="lb-image" alt=""></div>
+    <div class="lb-meta">
+      <div class="lb-section"></div>
+      <div class="lb-step-row">
+        <span class="lb-badge"></span>
+        <span class="lb-counter"></span>
+      </div>
+      <p class="lb-caption" id="lbCaption"></p>
+    </div>
+  </div>
+</div>
+
 <script>
   // ===== Theme toggle =====
   (function theme() {
@@ -1145,6 +1327,97 @@
         const cur = document.body.getAttribute('data-view') === 'screenshots' ? 'screenshots' : 'mockups';
         setView(cur === 'mockups' ? 'screenshots' : 'mockups');
       }
+    });
+  })();
+
+  // ===== Lightbox: click a screenshot card to enlarge =====
+  (function lightbox() {
+    const lb = document.getElementById('lightbox');
+    if (!lb) return;
+    const lbImage   = lb.querySelector('.lb-image');
+    const lbBadge   = lb.querySelector('.lb-badge');
+    const lbCounter = lb.querySelector('.lb-counter');
+    const lbCaption = lb.querySelector('.lb-caption');
+    const lbSection = lb.querySelector('.lb-section');
+    const lbClose   = lb.querySelector('.lb-close');
+    const lbPrev    = lb.querySelector('.lb-prev');
+    const lbNext    = lb.querySelector('.lb-next');
+
+    let currentFlow = null;
+    let currentIndex = 0;
+
+    function steps() { return [...currentFlow.querySelectorAll('.step')]; }
+
+    function render() {
+      const list = steps();
+      const step = list[currentIndex];
+      const img = step.querySelector('.screenshot img');
+      const cap = step.querySelector('.step-cap');
+      const head = currentFlow.previousElementSibling;
+      const headH2 = head && head.querySelector ? head.querySelector('h2') : null;
+      const sectionTitle = headH2 ? headH2.textContent : '';
+
+      lbImage.setAttribute('src', img.getAttribute('src').split('?')[0]);
+      lbImage.setAttribute('alt', img.getAttribute('alt') || '');
+      lbBadge.textContent = (step.querySelector('.badge').textContent || '').trim();
+      lbCounter.textContent = 'Step ' + (currentIndex + 1) + ' of ' + list.length;
+      lbSection.textContent = sectionTitle;
+
+      // Caption: deep-clone the trusted .step-cap from our own DOM, drop the
+      // "Step NN" label, and move the remaining nodes into the lightbox so
+      // <strong> formatting is preserved without using innerHTML.
+      const capClone = cap.cloneNode(true);
+      const label = capClone.querySelector('.label');
+      if (label) label.remove();
+      lbCaption.replaceChildren(...capClone.childNodes);
+
+      lbPrev.setAttribute('aria-disabled', currentIndex === 0 ? 'true' : 'false');
+      lbNext.setAttribute('aria-disabled', currentIndex === list.length - 1 ? 'true' : 'false');
+    }
+
+    function open(flow, index) {
+      currentFlow = flow;
+      currentIndex = index;
+      render();
+      lb.classList.add('open');
+      lb.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+    function close() {
+      lb.classList.remove('open');
+      lb.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+    function next() {
+      if (currentIndex < steps().length - 1) { currentIndex++; render(); }
+    }
+    function prev() {
+      if (currentIndex > 0) { currentIndex--; render(); }
+    }
+
+    document.querySelectorAll('.flow').forEach(flow => {
+      [...flow.querySelectorAll('.step')].forEach((step, i) => {
+        const canvas = step.querySelector('.canvas');
+        if (!canvas) return;
+        canvas.addEventListener('click', (e) => {
+          if (document.body.getAttribute('data-view') !== 'screenshots') return;
+          e.preventDefault();
+          open(flow, i);
+        });
+      });
+    });
+
+    lbClose.addEventListener('click', close);
+    lbPrev.addEventListener('click', prev);
+    lbNext.addEventListener('click', next);
+    lb.addEventListener('click', (e) => {
+      if (e.target === lb) close();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (!lb.classList.contains('open')) return;
+      if (e.key === 'Escape') { e.preventDefault(); close(); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); next(); }
     });
   })();
 
