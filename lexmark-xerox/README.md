@@ -1,6 +1,6 @@
-# Lexmark / Xerox · HP Inc. · Y Soft — Value Alignment Meeting
+# Lexmark / Xerox · Y Soft — Value Alignment Meeting
 
-Web version of the Value Alignment Meeting deck for Lexmark / Xerox, HP Inc., and Y Soft (5/6/26).
+Web version of the Value Alignment Meeting deck for Lexmark / Xerox and Y Soft (5/6/26).
 
 ## View it
 
