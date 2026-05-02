@@ -454,13 +454,13 @@
         <div class="eyebrow">Market signal</div>
         <h1 class="display h-title" style="margin-bottom: 40px;">Cloud print now leads new rollouts, worldwide.</h1>
         <p class="perex" style="margin-bottom: 56px;">
-          In 2025, cloud overtook on-prem globally after four years of accelerating adoption. A tipping point, not a trend.
+          Cloud overtook on-prem globally in 2025 — and the lead is widening fast. By 2026, nearly three of every four new deployments go to cloud.
         </p>
 
         <div style="display: flex; gap: 64px; align-items: baseline;">
           <div>
-            <div class="stat-big" style="font-size: 200px;">64.8<span style="color: var(--orange);">%</span></div>
-            <div class="stat-label">of new deployments, now cloud</div>
+            <div class="stat-big" style="font-size: 200px;">73.4<span style="color: var(--orange);">%</span></div>
+            <div class="stat-label">of new deployments in 2026, cloud</div>
           </div>
         </div>
       </div>
@@ -484,40 +484,49 @@
             <text x="46" y="345" text-anchor="end">20%</text>
             <text x="46" y="425" text-anchor="end">0%</text>
           </g>
-          <!-- Data: 2021 1%, 2022 2.21%, 2023 16.94%, 2024 42.64%, 2025 64.8% -->
-          <!-- x: 110, 260, 410, 560, 680 -->
-          <path d="M 110,415 L 260,411 L 410,335 L 560,207 L 680,97"
+          <!-- Data (Cloud share): 2020 0.01%, 2021 0.21%, 2022 2.43%, 2023 3.94%, 2024 30.32%, 2025 54.18%, 2026 73.41% -->
+          <!-- x positions (95px apart): 110, 205, 300, 395, 490, 585, 680 -->
+          <path d="M 110,420 L 205,419 L 300,408 L 395,401 L 490,276 L 585,163 L 680,71"
                 fill="none" stroke="#FF6600" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
           <!-- area fill -->
-          <path d="M 110,415 L 260,411 L 410,335 L 560,207 L 680,97 L 680,420 L 110,420 Z"
+          <path d="M 110,420 L 205,419 L 300,408 L 395,401 L 490,276 L 585,163 L 680,71 L 680,420 L 110,420 Z"
                 fill="#FF6600" fill-opacity="0.08"/>
+          <!-- 50% threshold marker (cloud crosses on-prem) -->
+          <line x1="60" y1="183" x2="720" y2="183" stroke="#97999B" stroke-width="1" stroke-dasharray="4 4"/>
+          <text x="716" y="178" text-anchor="end" font-family="Inter" font-size="13" fill="#97999B">cloud &gt; on-prem</text>
           <!-- dots -->
           <g fill="#FF6600">
-            <circle cx="110" cy="415" r="8"/>
-            <circle cx="260" cy="411" r="8"/>
-            <circle cx="410" cy="335" r="8"/>
-            <circle cx="560" cy="207" r="8"/>
-            <circle cx="680" cy="97" r="10" fill="#000"/>
+            <circle cx="110" cy="420" r="7"/>
+            <circle cx="205" cy="419" r="7"/>
+            <circle cx="300" cy="408" r="7"/>
+            <circle cx="395" cy="401" r="7"/>
+            <circle cx="490" cy="276" r="8"/>
+            <circle cx="585" cy="163" r="8"/>
+            <circle cx="680" cy="71"  r="10" fill="#000"/>
           </g>
           <!-- value labels -->
-          <g font-family="Inter" font-size="18" font-weight="600" fill="#000">
-            <text x="110" y="395" text-anchor="middle">1.0%</text>
-            <text x="260" y="391" text-anchor="middle">2.2%</text>
-            <text x="410" y="315" text-anchor="middle">16.9%</text>
-            <text x="560" y="187" text-anchor="middle">42.6%</text>
-            <text x="680" y="77"  text-anchor="middle" fill="#FF6600">64.8%</text>
+          <g font-family="Inter" font-size="16" font-weight="600" fill="#000">
+            <text x="110" y="402" text-anchor="middle" fill="#97999B">0.0%</text>
+            <text x="205" y="402" text-anchor="middle" fill="#97999B">0.2%</text>
+            <text x="300" y="392" text-anchor="middle" fill="#97999B">2.4%</text>
+            <text x="395" y="385" text-anchor="middle" fill="#97999B">3.9%</text>
+            <text x="490" y="258" text-anchor="middle">30.3%</text>
+            <text x="585" y="145" text-anchor="middle">54.2%</text>
+            <text x="680" y="53"  text-anchor="middle" font-size="20" fill="#FF6600">73.4%</text>
           </g>
           <!-- x axis -->
-          <g font-family="Inter" font-size="18" fill="#53565A">
-            <text x="110" y="455" text-anchor="middle">2021</text>
-            <text x="260" y="455" text-anchor="middle">2022</text>
-            <text x="410" y="455" text-anchor="middle">2023</text>
-            <text x="560" y="455" text-anchor="middle">2024</text>
-            <text x="680" y="455" text-anchor="middle" font-weight="700" fill="#000">2025</text>
+          <g font-family="Inter" font-size="17" fill="#53565A">
+            <text x="110" y="455" text-anchor="middle">2020</text>
+            <text x="205" y="455" text-anchor="middle">2021</text>
+            <text x="300" y="455" text-anchor="middle">2022</text>
+            <text x="395" y="455" text-anchor="middle">2023</text>
+            <text x="490" y="455" text-anchor="middle">2024</text>
+            <text x="585" y="455" text-anchor="middle">2025</text>
+            <text x="680" y="455" text-anchor="middle" font-weight="700" fill="#000">2026</text>
           </g>
         </svg>
         <p style="margin-top: 16px; font-size: 18px; color: var(--grey-7); text-align: center;">
-          Share of new SAFEQ deployments going to cloud, 2021–2025. Source: Y&nbsp;Soft internal research.
+          Share of new SAFEQ deployments going to cloud, 2020–2026. Source: Y&nbsp;Soft internal research.
         </p>
       </div>
     </div>
