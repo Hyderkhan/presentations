@@ -2,24 +2,19 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>Regional Share · FY2022 – FY2026 · NALA Reference</title>
+<title>USA · Catching Europe by 2031 · Y Soft</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <style>
   :root {
     --orange: #FF6600;
     --teal: #009CB6;
     --ink: #0E1116;
-    --paper: #F6F4EE;
-    --font-display: "Inter", "Helvetica Neue", Arial, sans-serif;
-    --font-body: "Inter", "Helvetica Neue", Arial, sans-serif;
 
-    /* series palette — matched to the source chart */
-    --c-europe: #FF6600;
-    --c-na:     #BC2A8B;
-    --c-apac:   #1F6B7A;
-    --c-mea:    #41B6E6;
-    --c-latam:  #1B5E3F;
-    --c-unkn:   #A6CE3A;
+    --c-eu:  #009CB6;       /* Europe — teal */
+    --c-eu-soft: rgba(0,156,182,0.30);
+    --c-na:  #FF6600;       /* North America — orange */
+    --c-na-soft: rgba(255,102,0,0.30);
+    --c-na-glow: rgba(255,102,0,0.55);
 
     /* ===== dark theme (default) ===== */
     --bg-from:    #0B0E13;
@@ -30,6 +25,7 @@
     --rule:       rgba(255,255,255,0.10);
     --card-bg:    rgba(255,255,255,0.04);
     --card-border: rgba(255,255,255,0.10);
+    --card-bg-hi: rgba(255,255,255,0.07);
     --grid:       rgba(255,255,255,0.08);
     --grid-axis:  rgba(255,255,255,0.18);
     --anno-line:  rgba(255,255,255,0.35);
@@ -39,7 +35,7 @@
     --bokeh-blend: screen;
     --bokeh-opacity: 1;
     --orb-opacity: 1;
-    --series-shadow: 0 0 6px rgba(0,0,0,0.20);
+    --bar-shadow: 0 0 8px rgba(0,0,0,0.25);
   }
 
   :root[data-theme="light"] {
@@ -51,6 +47,7 @@
     --rule:       rgba(14,17,22,0.10);
     --card-bg:    rgba(255,255,255,0.62);
     --card-border: rgba(14,17,22,0.10);
+    --card-bg-hi: rgba(255,255,255,0.85);
     --grid:       rgba(14,17,22,0.08);
     --grid-axis:  rgba(14,17,22,0.22);
     --anno-line:  rgba(14,17,22,0.35);
@@ -60,7 +57,7 @@
     --bokeh-blend: multiply;
     --bokeh-opacity: 0.40;
     --orb-opacity: 0.28;
-    --series-shadow: 0 0 4px rgba(14,17,22,0.10);
+    --bar-shadow: 0 0 4px rgba(14,17,22,0.10);
   }
 
   * { box-sizing: border-box; }
@@ -69,25 +66,24 @@
     width: 100%; height: 100%;
     background: var(--bg-from);
     color: var(--text);
-    font-family: var(--font-body);
+    font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
     transition: background 320ms ease, color 320ms ease;
   }
   body {
-    width: 100vw;
-    height: 100vh;
+    width: 100vw; height: 100vh;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
   }
 
-  /* shared theme transitions for swappy elements */
-  .slide, .chart-card, .pill, .back-link, .theme-toggle, .step-hint, .step-dot,
-  .legend-item, .legend-name, .legend-val,
-  .grid-line, .axis-text, .anno-line, .anno-text, .anno-text-sub {
+  .slide, .stat-card, .pill, .back-link, .theme-toggle, .step-hint, .step-dot,
+  .bar-eu, .bar-na, .grid-line, .axis-text, .anno-text, .anno-text-sub,
+  .forecast-line, .forecast-label {
     transition: background 320ms ease, color 320ms ease,
                 fill 320ms ease, stroke 320ms ease,
-                border-color 320ms ease, transform 220ms ease;
+                border-color 320ms ease, box-shadow 320ms ease,
+                transform 220ms ease;
   }
 
   .slide {
@@ -175,6 +171,7 @@
 
   @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes slideInRight { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
   @keyframes letterIn {
     from { opacity: 0; transform: translateY(40px) rotateX(-30deg); }
     to   { opacity: 1; transform: translateY(0)  rotateX(0); }
@@ -183,8 +180,12 @@
     0%, 100% { text-shadow: 0 0 18px rgba(255,102,0,0.0); }
     50%      { text-shadow: 0 0 36px rgba(255,102,0,0.55); }
   }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.04); }
+  }
 
-  .frame { position: absolute; inset: 0; padding: 80px 110px 60px; display: flex; flex-direction: column; }
+  .frame { position: absolute; inset: 0; padding: 64px 110px 56px; display: flex; flex-direction: column; }
 
   /* ===== top-right theme toggle ===== */
   .theme-toggle {
@@ -248,10 +249,7 @@
     animation: fadeUp 0.8s 1.7s ease-out forwards;
   }
   .step-hint .step-label { white-space: nowrap; }
-  .step-hint .step-dots {
-    display: inline-flex;
-    gap: 7px;
-  }
+  .step-hint .step-dots { display: inline-flex; gap: 7px; }
   .step-hint .step-dot {
     width: 9px; height: 9px;
     border-radius: 50%;
@@ -288,7 +286,6 @@
   }
 
   h1.title {
-    font-family: var(--font-display);
     font-weight: 800;
     font-size: 84px;
     line-height: 1.0;
@@ -315,12 +312,12 @@
     max-width: 1300px;
   }
 
-  /* ===== chart layout ===== */
-  .chart-wrap {
+  /* ===== two-column body ===== */
+  .body-grid {
     flex: 1;
     display: grid;
-    grid-template-columns: 1fr 280px;
-    gap: 56px;
+    grid-template-columns: 1fr 460px;
+    gap: 40px;
     min-height: 0;
     align-items: stretch;
   }
@@ -330,143 +327,251 @@
     background: var(--card-bg);
     border: 1px solid var(--card-border);
     border-radius: 16px;
-    padding: 28px 32px;
+    padding: 24px 28px 20px;
     backdrop-filter: blur(8px);
     opacity: 0;
-    animation: fadeUp 0.9s 1.7s cubic-bezier(.2,.7,.2,1) forwards;
+    animation: fadeUp 0.9s 1.5s cubic-bezier(.2,.7,.2,1) forwards;
+    display: flex;
+    flex-direction: column;
   }
-  .chart-card svg { width: 100%; height: 100%; display: block; }
+  .chart-card svg { width: 100%; flex: 1; display: block; }
+
+  .chart-legend {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    padding: 4px 4px 14px;
+    color: var(--text-soft);
+    font-size: 16px;
+    letter-spacing: 0.04em;
+  }
+  .legend-item { display: inline-flex; align-items: center; gap: 10px; }
+  .legend-swatch {
+    width: 26px; height: 12px; border-radius: 3px;
+    box-shadow: 0 0 12px currentColor;
+  }
+  .legend-swatch.solid-eu  { background: var(--c-eu);  color: var(--c-eu); }
+  .legend-swatch.solid-na  { background: var(--c-na);  color: var(--c-na); }
+  .legend-swatch.dashed {
+    background: repeating-linear-gradient(90deg, currentColor 0 6px, transparent 6px 10px);
+    box-shadow: none;
+    color: var(--c-na);
+  }
+  .legend-divider {
+    width: 1px; height: 18px;
+    background: var(--rule);
+  }
 
   /* ===== axes ===== */
   .grid-line { stroke: var(--grid); stroke-width: 1; }
   .grid-line.grid-axis { stroke: var(--grid-axis); }
-  .axis-text { fill: var(--muted); font-family: var(--font-body); font-size: 18px; }
+  .axis-text { fill: var(--muted); font-size: 16px; }
   .axis-text-strong { fill: var(--text); font-weight: 600; }
+  .axis-text-future { fill: var(--c-na); font-weight: 600; }
 
   .grid-line, .axis-text {
     opacity: 0;
-    animation: fadeIn 0.8s 1.95s ease-out forwards;
+    animation: fadeIn 0.8s 1.8s ease-out forwards;
   }
 
-  /* ===== series lines: stroke-draw on .is-revealed ===== */
-  .series {
-    fill: none;
-    stroke-width: 4;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    stroke-dasharray: 3000;
-    stroke-dashoffset: 3000;
+  /* ===== bars ===== */
+  .bar {
+    transform-box: fill-box;
+    transform-origin: bottom center;
+    transform: scaleY(0);
     opacity: 0;
-    filter: drop-shadow(var(--series-shadow));
+    filter: drop-shadow(var(--bar-shadow));
   }
-  .series.is-revealed {
-    opacity: 1;
-    animation: drawLine 1.6s cubic-bezier(.55,.1,.25,1) forwards;
+  .bar.is-revealed { animation: barGrow 0.85s cubic-bezier(.2,.8,.25,1) forwards; }
+  @keyframes barGrow {
+    from { transform: scaleY(0); opacity: 0; }
+    50%  { opacity: 1; }
+    to   { transform: scaleY(1); opacity: 1; }
   }
-  @keyframes drawLine { to { stroke-dashoffset: 0; } }
+  .bar-eu { fill: var(--c-eu); }
+  .bar-na { fill: var(--c-na); }
+  .bar-eu-fc {
+    fill: none;
+    stroke: var(--c-eu);
+    stroke-width: 2;
+    stroke-dasharray: 4 4;
+  }
+  .bar-na-fc {
+    fill: var(--c-na-soft);
+    stroke: var(--c-na);
+    stroke-width: 2;
+  }
 
-  .series.s-europe { stroke: var(--c-europe); stroke-width: 5; }
-  .series.s-na     { stroke: var(--c-na);     }
-  .series.s-apac   { stroke: var(--c-apac);   }
-  .series.s-mea    { stroke: var(--c-mea);    }
-  .series.s-latam  { stroke: var(--c-latam);  }
-  .series.s-unkn   { stroke: var(--c-unkn);   }
+  /* forecast divider */
+  .forecast-line {
+    stroke: var(--c-na);
+    stroke-width: 2;
+    stroke-dasharray: 4 6;
+    opacity: 0;
+  }
+  .forecast-line.is-revealed {
+    animation: fadeIn 0.6s ease-out forwards;
+  }
+  .forecast-label {
+    fill: var(--c-na);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0;
+  }
+  .forecast-label.is-revealed { animation: fadeUp 0.7s ease-out forwards; }
 
-  /* ===== dots: pop on .is-revealed ===== */
-  .dot {
+  /* CAGR badge floating on chart */
+  .cagr-badge {
     opacity: 0;
     transform-box: fill-box;
     transform-origin: center;
   }
-  .dot.is-revealed {
-    animation: dotPop 0.5s cubic-bezier(.2,1.6,.5,1) forwards;
+  .cagr-badge.is-revealed {
+    animation: fadeUp 0.7s cubic-bezier(.2,1.4,.4,1) forwards;
   }
-  .dot.dot-end {
-    stroke: var(--text);
-    stroke-width: 2;
+  .cagr-bg {
+    fill: var(--card-bg-hi);
+    stroke: currentColor;
+    stroke-width: 1.5;
   }
-  @keyframes dotPop {
-    from { opacity: 0; transform: scale(0); }
-    to   { opacity: 1; transform: scale(1); }
+  .cagr-text {
+    fill: var(--text);
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: -0.01em;
+  }
+  .cagr-sub {
+    fill: var(--muted);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .cagr-eu { color: var(--c-eu); }
+  .cagr-na { color: var(--c-na); }
+
+  /* catch-up arrow */
+  .catch-arrow {
+    fill: none;
+    stroke: var(--c-na);
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 800;
+    stroke-dashoffset: 800;
+    opacity: 0;
+    filter: drop-shadow(0 0 12px var(--c-na-glow));
+  }
+  .catch-arrow.is-revealed {
+    opacity: 1;
+    animation: drawArrow 1.4s cubic-bezier(.55,.1,.25,1) forwards;
+  }
+  @keyframes drawArrow { to { stroke-dashoffset: 0; } }
+  .catch-arrow-head { fill: var(--c-na); opacity: 0; }
+  .catch-arrow-head.is-revealed {
+    animation: fadeIn 0.4s 1.0s ease-out forwards;
   }
 
-  /* ===== legend ===== */
-  .legend {
+  /* ===== stats stack ===== */
+  .stats {
     display: flex;
     flex-direction: column;
-    gap: 14px;
-    padding-top: 20px;
+    gap: 16px;
+    min-height: 0;
   }
-  .legend-item {
+  .stat-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 18px 22px;
+    backdrop-filter: blur(8px);
+    opacity: 0;
+    transform: translateX(40px);
+    flex: 1;
     display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 10px 14px;
-    border-radius: 10px;
-    cursor: pointer;
-    opacity: 0.28;
-    filter: grayscale(0.6);
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
   }
-  .legend-item.is-revealed {
-    animation: fadeUp 0.6s ease-out forwards;
-    opacity: 1;
-    filter: none;
+  .stat-card.is-revealed {
+    animation: slideInRight 0.7s cubic-bezier(.2,.8,.25,1) forwards;
   }
-  .legend-item.is-revealed:hover {
-    background: var(--hover-bg);
-    transform: translateX(-4px);
+  .stat-card.is-revealed.is-final {
+    animation: slideInRight 0.7s cubic-bezier(.2,.8,.25,1) forwards, pulse 3.5s 1.0s ease-in-out infinite;
   }
-  .legend-swatch {
-    width: 32px; height: 4px;
-    border-radius: 2px;
-    flex-shrink: 0;
-    box-shadow: 0 0 12px currentColor;
-  }
-  .legend-name {
-    font-size: 18px;
-    color: var(--text-soft);
-    letter-spacing: 0.01em;
-  }
-  .legend-val {
-    margin-left: auto;
-    font-size: 16px;
+  .stat-card .label {
     color: var(--muted);
-    font-variant-numeric: tabular-nums;
-    font-weight: 600;
-  }
-
-  /* dim non-hovered series when hovering a legend item */
-  .chart-card.has-hover .series.is-revealed:not(.is-hover) { opacity: 0.18; }
-  .chart-card.has-hover .dot.is-revealed:not(.is-hover) { opacity: 0.22; }
-  .chart-card .series.is-revealed, .chart-card .dot.is-revealed { transition: opacity 220ms ease; }
-
-  /* annotation callout: Europe — gated on .is-revealed */
-  .anno-line {
-    stroke: var(--anno-line);
-    stroke-width: 1;
-    stroke-dasharray: 2 4;
-    opacity: 0;
-  }
-  .anno-text {
-    fill: var(--text-soft);
-    font-size: 18px;
-    font-weight: 600;
-    opacity: 0;
-  }
-  .anno-text-sub {
-    fill: var(--muted);
-    font-size: 14px;
-    letter-spacing: 0.04em;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
-    opacity: 0;
+    margin-bottom: 12px;
   }
-  .anno-line.is-revealed   { animation: fadeIn 0.7s ease-out forwards; }
-  .anno-text.is-revealed   { animation: fadeUp 0.7s ease-out forwards; }
-  .anno-text-sub.is-revealed { animation: fadeUp 0.7s 0.1s ease-out forwards; }
+  .stat-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    align-items: center;
+  }
+  .stat-cell { display: flex; flex-direction: column; gap: 4px; }
+  .stat-name {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .stat-name.is-eu { color: var(--c-eu); }
+  .stat-name.is-na { color: var(--c-na); }
+  .stat-value {
+    font-size: 44px;
+    font-weight: 800;
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    color: var(--text);
+  }
+  .stat-unit {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-left: 4px;
+    letter-spacing: 0;
+  }
+  .stat-meta {
+    font-size: 14px;
+    color: var(--muted);
+    margin-top: 4px;
+    letter-spacing: 0.04em;
+  }
+  .stat-card.is-final {
+    background: linear-gradient(135deg, rgba(255,102,0,0.18), rgba(255,102,0,0.04));
+    border-color: var(--c-na);
+    box-shadow: 0 0 24px rgba(255,102,0,0.18);
+  }
+  .stat-card.is-final .label { color: var(--c-na); }
+  .stat-card.is-final .stat-value { color: var(--c-na); text-shadow: 0 0 26px rgba(255,102,0,0.28); }
+  .stat-card.is-final .ribbon {
+    position: absolute;
+    top: 14px; right: -50px;
+    transform: rotate(35deg);
+    background: var(--c-na);
+    color: var(--text);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 4px 60px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.18);
+  }
+  :root[data-theme="light"] .stat-card.is-final .ribbon { color: #fff; }
 
   /* ===== footer ===== */
   .footer {
-    margin-top: 24px;
+    margin-top: 18px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -474,7 +579,7 @@
     font-size: 16px;
     letter-spacing: 0.08em;
     opacity: 0;
-    animation: fadeUp 0.8s 2.2s ease-out forwards;
+    animation: fadeUp 0.8s 2.0s ease-out forwards;
   }
   .pill {
     display: inline-block;
@@ -494,7 +599,6 @@
     text-transform: uppercase;
     border-bottom: 1px dashed var(--link-border);
     padding-bottom: 2px;
-    transition: color 200ms ease, border-color 200ms ease;
   }
   .back-link:hover { color: var(--orange); border-color: var(--orange); }
 
@@ -517,145 +621,155 @@
   <div class="bokeh b3"></div>
   <div class="accent-line"></div>
 
-  <!-- top-right: theme toggle -->
   <button class="theme-toggle" id="theme-toggle" type="button" aria-pressed="false" aria-label="Toggle light mode">
     <span class="glyph" id="theme-glyph">☀</span>
     <span id="theme-label">Light</span>
   </button>
 
-  <!-- top-center: step indicator -->
   <div class="step-hint" id="step-hint" role="status" aria-live="polite">
-    <span class="step-label" id="step-label">Click to reveal each region</span>
+    <span class="step-label" id="step-label">Click to step through the story</span>
     <span class="step-dots" id="step-dots">
-      <span class="step-dot" data-step="0" title="Europe"></span>
-      <span class="step-dot" data-step="1" title="North America"></span>
-      <span class="step-dot" data-step="2" title="Asia &amp; Pacific"></span>
-      <span class="step-dot" data-step="3" title="Middle East &amp; Africa"></span>
-      <span class="step-dot" data-step="4" title="Latin America"></span>
-      <span class="step-dot" data-step="5" title="Unknown"></span>
+      <span class="step-dot" data-step="0" title="Today’s revenue"></span>
+      <span class="step-dot" data-step="1" title="CAGR gap"></span>
+      <span class="step-dot" data-step="2" title="FTE productivity"></span>
+      <span class="step-dot" data-step="3" title="Forecast — catching Europe"></span>
+      <span class="step-dot" data-step="4" title="Catch Europe by 2031"></span>
     </span>
-    <span class="step-count"><span id="prog-current">0</span>&nbsp;/&nbsp;6</span>
+    <span class="step-count"><span id="prog-current">0</span>&nbsp;/&nbsp;5</span>
   </div>
 
   <div class="frame">
-    <div class="eyebrow">Y Soft · Regional revenue mix · FY22 – FY26</div>
-    <h1 class="title" id="hero-title"><span class="accent">Regional</span> share.</h1>
-    <p class="sub">Europe holds a steady ~63% majority. North America is creeping up. NALA is a small, stable slice — high-leverage on conversion, not headline revenue.</p>
+    <div class="eyebrow">Y Soft · Regional sales · 2018 → 2031</div>
+    <h1 class="title" id="hero-title">The <span class="accent">USA</span> opportunity.</h1>
+    <p class="sub">Europe carries today’s revenue. North America grows 3× faster — and a 38% CAGR closes the gap by 2031. Click through the story.</p>
 
-    <div class="chart-wrap">
-      <!-- ============ CHART CARD ============ -->
+    <div class="body-grid">
+
+      <!-- ========================= CHART CARD ========================= -->
       <div class="chart-card" id="chart-card">
-        <svg viewBox="0 0 1600 780" preserveAspectRatio="none" aria-label="Regional share line chart, FY2022 to FY2026">
-          <!-- gridlines + y labels (every 10%, 0-70) -->
-          <g>
-            <line class="grid-line" x1="120" y1="140" x2="1500" y2="140"/>
-            <text class="axis-text" x="100" y="146" text-anchor="end">70%</text>
-            <line class="grid-line" x1="120" y1="220" x2="1500" y2="220"/>
-            <text class="axis-text" x="100" y="226" text-anchor="end">60%</text>
-            <line class="grid-line" x1="120" y1="300" x2="1500" y2="300"/>
-            <text class="axis-text" x="100" y="306" text-anchor="end">50%</text>
-            <line class="grid-line" x1="120" y1="380" x2="1500" y2="380"/>
-            <text class="axis-text" x="100" y="386" text-anchor="end">40%</text>
-            <line class="grid-line" x1="120" y1="460" x2="1500" y2="460"/>
-            <text class="axis-text" x="100" y="466" text-anchor="end">30%</text>
-            <line class="grid-line" x1="120" y1="540" x2="1500" y2="540"/>
-            <text class="axis-text" x="100" y="546" text-anchor="end">20%</text>
-            <line class="grid-line" x1="120" y1="620" x2="1500" y2="620"/>
-            <text class="axis-text" x="100" y="626" text-anchor="end">10%</text>
-            <line class="grid-line grid-axis" x1="120" y1="700" x2="1500" y2="700"/>
-            <text class="axis-text" x="100" y="706" text-anchor="end">0%</text>
+        <div class="chart-legend">
+          <span class="legend-item"><span class="legend-swatch solid-eu"></span>Europe — actual</span>
+          <span class="legend-item"><span class="legend-swatch solid-na"></span>North America — actual</span>
+          <span class="legend-divider"></span>
+          <span class="legend-item"><span class="legend-swatch dashed"></span>Forecast 2027 → 2031</span>
+        </div>
+
+        <svg id="chart-svg" viewBox="0 0 1600 760" preserveAspectRatio="none"
+             aria-label="Bar chart, regional sales 2018 to 2031, Europe vs North America">
+          <!-- gridlines + y labels (€M) -->
+          <g id="grid">
+            <line class="grid-line" x1="100" y1="60"  x2="1560" y2="60"/>
+            <text class="axis-text" x="86" y="66" text-anchor="end">€50m</text>
+            <line class="grid-line" x1="100" y1="190" x2="1560" y2="190"/>
+            <text class="axis-text" x="86" y="196" text-anchor="end">€40m</text>
+            <line class="grid-line" x1="100" y1="320" x2="1560" y2="320"/>
+            <text class="axis-text" x="86" y="326" text-anchor="end">€30m</text>
+            <line class="grid-line" x1="100" y1="450" x2="1560" y2="450"/>
+            <text class="axis-text" x="86" y="456" text-anchor="end">€20m</text>
+            <line class="grid-line" x1="100" y1="580" x2="1560" y2="580"/>
+            <text class="axis-text" x="86" y="586" text-anchor="end">€10m</text>
+            <line class="grid-line grid-axis" x1="100" y1="710" x2="1560" y2="710"/>
+            <text class="axis-text" x="86" y="716" text-anchor="end">€0</text>
           </g>
 
-          <!-- x labels — years -->
-          <g>
-            <text class="axis-text" x="200"  y="745" text-anchor="middle">2022</text>
-            <text class="axis-text" x="525"  y="745" text-anchor="middle">2023</text>
-            <text class="axis-text" x="850"  y="745" text-anchor="middle">2024</text>
-            <text class="axis-text" x="1175" y="745" text-anchor="middle">2025</text>
-            <text class="axis-text axis-text-strong" x="1500" y="745" text-anchor="middle">2026</text>
-          </g>
+          <!-- forecast divider (revealed step 4) -->
+          <line id="forecast-line" class="forecast-line" x1="0" y1="60" x2="0" y2="710" />
+          <text id="forecast-label-hist" class="forecast-label" x="0" y="48" text-anchor="end">History</text>
+          <text id="forecast-label-fc"   class="forecast-label" x="0" y="48" text-anchor="start">Forecast · 38% CAGR</text>
 
-          <!-- ============ SERIES LINES ============ -->
-          <!-- y(p) = 700 - p * 8 -->
+          <!-- bars + x-axis are rendered by JS -->
+          <g id="bars-history"></g>
+          <g id="bars-forecast"></g>
+          <g id="axis-x"></g>
 
-          <!-- Europe: 61.5, 63.7, 63.8, 60.8, 65.3 -->
-          <path class="series s-europe" data-series="europe"
-                d="M 200,208 L 525,190 L 850,190 L 1175,214 L 1500,178" />
+          <!-- CAGR badges (rendered by JS) -->
+          <g id="cagr-badges"></g>
 
-          <!-- North America: 15.0, 14.0, 16.0, 15.0, 16.5 -->
-          <path class="series s-na" data-series="na"
-                d="M 200,580 L 525,588 L 850,572 L 1175,580 L 1500,568" />
-
-          <!-- Asia and Pacific: 13.0, 12.0, 10.8, 15.0, 11.0 -->
-          <path class="series s-apac" data-series="apac"
-                d="M 200,596 L 525,604 L 850,614 L 1175,580 L 1500,612" />
-
-          <!-- Middle East and Africa: 6.5, 6.5, 7.0, 8.0, 6.2 -->
-          <path class="series s-mea" data-series="mea"
-                d="M 200,648 L 525,648 L 850,644 L 1175,636 L 1500,650" />
-
-          <!-- Latin America: 2.0, 2.5, 1.0, 1.0, 1.0 -->
-          <path class="series s-latam" data-series="latam"
-                d="M 200,684 L 525,680 L 850,692 L 1175,692 L 1500,692" />
-
-          <!-- Unknown: 2.0, 2.0, 1.0, 0.0, 0.0 -->
-          <path class="series s-unkn" data-series="unkn"
-                d="M 200,684 L 525,684 L 850,692 L 1175,700 L 1500,700" />
-
-          <!-- ============ DOTS ============ -->
-          <g id="dots-layer"></g>
-
-          <!-- ============ ANNOTATION ============ -->
-          <line class="anno-line" x1="1500" y1="178" x2="1430" y2="120" />
-          <text class="anno-text-sub" x="1430" y="100" text-anchor="end">FY26 lead</text>
-          <text class="anno-text" x="1430" y="125" text-anchor="end">Europe · 65.3%</text>
+          <!-- catch-up arrow (rendered by JS) -->
+          <g id="catch-arrow"></g>
         </svg>
       </div>
 
-      <!-- ============ LEGEND ============ -->
-      <div class="legend" id="legend">
-        <div class="legend-item" data-series="europe" style="color: var(--c-europe);">
-          <span class="legend-swatch" style="background: var(--c-europe);"></span>
-          <span class="legend-name">Europe</span>
-          <span class="legend-val">65.3%</span>
+      <!-- ========================= STAT CARDS ========================= -->
+      <div class="stats">
+        <div class="stat-card" data-stat="0">
+          <div class="label">Today · 2026 revenue</div>
+          <div class="stat-row">
+            <div class="stat-cell">
+              <span class="stat-name is-eu">Europe</span>
+              <div><span class="stat-value" id="v-eu-rev">€31</span><span class="stat-unit">m</span></div>
+              <span class="stat-meta">31.2m · 80% of total</span>
+            </div>
+            <div class="stat-cell">
+              <span class="stat-name is-na">USA</span>
+              <div><span class="stat-value" id="v-na-rev">€7.9</span><span class="stat-unit">m</span></div>
+              <span class="stat-meta">7.9m · 20% of total</span>
+            </div>
+          </div>
         </div>
-        <div class="legend-item" data-series="na" style="color: var(--c-na);">
-          <span class="legend-swatch" style="background: var(--c-na);"></span>
-          <span class="legend-name">North America</span>
-          <span class="legend-val">16.5%</span>
+
+        <div class="stat-card" data-stat="1">
+          <div class="label">CAGR · 2018 → 2026</div>
+          <div class="stat-row">
+            <div class="stat-cell">
+              <span class="stat-name is-eu">Europe</span>
+              <div><span class="stat-value" id="v-eu-cagr">4.4</span><span class="stat-unit">%</span></div>
+              <span class="stat-meta">Mature, steady growth</span>
+            </div>
+            <div class="stat-cell">
+              <span class="stat-name is-na">USA</span>
+              <div><span class="stat-value" id="v-na-cagr">12</span><span class="stat-unit">%</span></div>
+              <span class="stat-meta">~3× faster than Europe</span>
+            </div>
+          </div>
         </div>
-        <div class="legend-item" data-series="apac" style="color: var(--c-apac);">
-          <span class="legend-swatch" style="background: var(--c-apac);"></span>
-          <span class="legend-name">Asia &amp; Pacific</span>
-          <span class="legend-val">11.0%</span>
+
+        <div class="stat-card" data-stat="2">
+          <div class="label">Field team · 2026</div>
+          <div class="stat-row">
+            <div class="stat-cell">
+              <span class="stat-name is-eu">Europe</span>
+              <div><span class="stat-value" id="v-eu-fte">30</span><span class="stat-unit">FTE</span></div>
+              <span class="stat-meta">€1.0m revenue / FTE</span>
+            </div>
+            <div class="stat-cell">
+              <span class="stat-name is-na">USA</span>
+              <div><span class="stat-value" id="v-na-fte">16</span><span class="stat-unit">FTE</span></div>
+              <span class="stat-meta">€0.5m revenue / FTE</span>
+            </div>
+          </div>
         </div>
-        <div class="legend-item" data-series="mea" style="color: var(--c-mea);">
-          <span class="legend-swatch" style="background: var(--c-mea);"></span>
-          <span class="legend-name">Middle East &amp; Africa</span>
-          <span class="legend-val">6.2%</span>
-        </div>
-        <div class="legend-item" data-series="latam" style="color: var(--c-latam);">
-          <span class="legend-swatch" style="background: var(--c-latam);"></span>
-          <span class="legend-name">Latin America</span>
-          <span class="legend-val">1.0%</span>
-        </div>
-        <div class="legend-item" data-series="unkn" style="color: var(--c-unkn);">
-          <span class="legend-swatch" style="background: var(--c-unkn);"></span>
-          <span class="legend-name">Unknown</span>
-          <span class="legend-val">0.0%</span>
+
+        <div class="stat-card is-final" data-stat="3">
+          <div class="ribbon">Goal</div>
+          <div class="label">Catch Europe by 2031</div>
+          <div class="stat-row">
+            <div class="stat-cell">
+              <span class="stat-name is-na">Required CAGR</span>
+              <div><span class="stat-value" id="v-need-cagr">38</span><span class="stat-unit">%</span></div>
+              <span class="stat-meta">USA: $7.9m → $39m</span>
+            </div>
+            <div class="stat-cell">
+              <span class="stat-name is-eu">Europe at parity</span>
+              <div><span class="stat-value" id="v-eu-2031">€38</span><span class="stat-unit">m</span></div>
+              <span class="stat-meta">@ continued 4.4% CAGR</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
     <div class="footer">
-      <span class="pill">Y Soft · NALA Reference · FY22 – FY26</span>
+      <span class="pill">Y Soft · Go-to-Geo USA · Chef’s remarks · 4 April 2026</span>
       <a class="back-link" href="index.html">← Back to NALA agenda</a>
     </div>
   </div>
 </section>
 
 <script>
-  // ----- Auto-fit: scale 1920x1080 canvas to fit the viewport -----
+  // ============================================================
+  // Auto-fit: scale 1920x1080 canvas to viewport
+  // ============================================================
   (function autoFit() {
     const root = document.documentElement;
     const fit = () => {
@@ -667,7 +781,9 @@
     window.addEventListener('orientationchange', fit, { passive: true });
   })();
 
-  // ----- Theme toggle (persists in localStorage) -----
+  // ============================================================
+  // Theme toggle (persists in localStorage)
+  // ============================================================
   (function themeToggle() {
     const root = document.documentElement;
     const btn = document.getElementById('theme-toggle');
@@ -695,7 +811,9 @@
     });
   })();
 
-  // ----- Letter-by-letter hero title -----
+  // ============================================================
+  // Letter-by-letter hero title
+  // ============================================================
   (function splitTitle() {
     const h1 = document.getElementById('hero-title');
     if (!h1) return;
@@ -732,88 +850,288 @@
     });
   })();
 
-  // ----- Build dots from series paths so they stay in sync with data -----
-  (function buildDots() {
-    const layer = document.getElementById('dots-layer');
-    if (!layer) return;
-    const colors = {
-      europe: getComputedStyle(document.documentElement).getPropertyValue('--c-europe').trim(),
-      na:     getComputedStyle(document.documentElement).getPropertyValue('--c-na').trim(),
-      apac:   getComputedStyle(document.documentElement).getPropertyValue('--c-apac').trim(),
-      mea:    getComputedStyle(document.documentElement).getPropertyValue('--c-mea').trim(),
-      latam:  getComputedStyle(document.documentElement).getPropertyValue('--c-latam').trim(),
-      unkn:   getComputedStyle(document.documentElement).getPropertyValue('--c-unkn').trim()
-    };
+  // ============================================================
+  // Build bar chart (all 14 years; forecast bars start hidden)
+  // ============================================================
+  const SVG_NS = 'http://www.w3.org/2000/svg';
 
-    document.querySelectorAll('path.series').forEach(p => {
-      const key = p.dataset.series;
-      const d = p.getAttribute('d');
-      const pts = d.split(/[ML]\s*/).filter(Boolean).map(s => {
-        const [x, y] = s.trim().split(',').map(Number);
-        return { x, y };
-      });
-      pts.forEach((pt, idx) => {
-        const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        c.setAttribute('cx', pt.x);
-        c.setAttribute('cy', pt.y);
-        c.setAttribute('r', key === 'europe' ? 6 : 5);
-        c.setAttribute('fill', colors[key]);
-        c.setAttribute('class', 'dot');
-        c.setAttribute('data-series', key);
-        // last dot of europe gets a ring whose stroke flips with theme
-        if (key === 'europe' && idx === pts.length - 1) {
-          c.setAttribute('r', 9);
-          c.classList.add('dot-end');
-        }
-        // pop dots staggered after the line finishes drawing
-        c.style.animationDelay = (1.55 + idx * 0.05) + 's';
-        layer.appendChild(c);
-      });
+  // Source data: revenue in € millions, sales by year
+  // Europe history 2018-2026 (4.4% CAGR forward), then forecast at 4.4%
+  // USA history 2018-2026 (~12% CAGR), then forecast at 38% CAGR
+  const YEARS_HIST = [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026];
+  const YEARS_FC   = [2027, 2028, 2029, 2030, 2031];
+  const YEARS = [...YEARS_HIST, ...YEARS_FC];
+
+  const EU_HIST = [22.1, 27.5, 23.7, 22.8, 18.8, 27.6, 27.4, 26.9, 31.2];
+  const NA_HIST = [3.2,  3.1,  4.7,  3.5,  4.6,  6.1,  6.9,  6.6,  7.9];
+
+  // Forecast: continue Europe at 4.4% CAGR; USA at 38% CAGR
+  const cagrExtend = (last, rate, n) => {
+    const out = []; let v = last;
+    for (let i = 0; i < n; i++) { v = v * (1 + rate); out.push(+v.toFixed(2)); }
+    return out;
+  };
+  const EU_FC = cagrExtend(EU_HIST.at(-1), 0.044, 5);   // 32.6, 34.0, 35.5, 37.1, 38.7
+  const NA_FC = cagrExtend(NA_HIST.at(-1), 0.38, 5);    // 10.9, 15.0, 20.7, 28.6, 39.4
+
+  // chart geometry — viewBox: 1600 x 760
+  const PLOT = { left: 100, right: 1560, top: 60, bottom: 710 };
+  const PLOT_W = PLOT.right - PLOT.left;       // 1460
+  const PLOT_H = PLOT.bottom - PLOT.top;       // 650
+  const Y_MAX_M = 50;                          // €50m at the top
+  const yFor = (vM) => PLOT.bottom - (vM / Y_MAX_M) * PLOT_H;
+  const yPx = (vM) => PLOT_H * (vM / Y_MAX_M);
+
+  const N = YEARS.length;
+  const groupW = PLOT_W / N;                   // 104.28
+  const BAR_W = 30;
+  const BAR_GAP = 8;
+  const groupCenter = (i) => PLOT.left + (i + 0.5) * groupW;
+
+  const barX_eu = (i) => groupCenter(i) - (BAR_W + BAR_GAP / 2);
+  const barX_na = (i) => groupCenter(i) + (BAR_GAP / 2);
+
+  function makeBar({ x, y, w, h, klass, rx = 4 }) {
+    const r = document.createElementNS(SVG_NS, 'rect');
+    r.setAttribute('x', x);
+    r.setAttribute('y', y);
+    r.setAttribute('width', w);
+    r.setAttribute('height', Math.max(h, 0));
+    r.setAttribute('rx', rx);
+    r.setAttribute('class', klass);
+    return r;
+  }
+
+  // axis-x labels
+  (function renderAxis() {
+    const axis = document.getElementById('axis-x');
+    YEARS.forEach((yr, i) => {
+      const isFC = i >= YEARS_HIST.length;
+      const isLast = i === N - 1;
+      const t = document.createElementNS(SVG_NS, 'text');
+      t.setAttribute('x', groupCenter(i));
+      t.setAttribute('y', 740);
+      t.setAttribute('text-anchor', 'middle');
+      t.setAttribute('class', 'axis-text' + (isLast ? ' axis-text-strong' : '') + (isFC ? ' axis-text-future' : ''));
+      t.textContent = yr;
+      axis.appendChild(t);
     });
   })();
 
-  // ----- Click-by-click reveal (one region per click) -----
+  // history bars
+  (function renderHistoryBars() {
+    const layer = document.getElementById('bars-history');
+    YEARS_HIST.forEach((_, i) => {
+      const eu = EU_HIST[i], na = NA_HIST[i];
+      const euBar = makeBar({ x: barX_eu(i), y: yFor(eu), w: BAR_W, h: yPx(eu), klass: 'bar bar-eu', rx: 4 });
+      const naBar = makeBar({ x: barX_na(i), y: yFor(na), w: BAR_W, h: yPx(na), klass: 'bar bar-na', rx: 4 });
+      // history bars reveal as part of the initial chart-card animation
+      euBar.style.animationDelay = (1.65 + i * 0.05) + 's';
+      naBar.style.animationDelay = (1.7  + i * 0.05) + 's';
+      euBar.classList.add('is-revealed');
+      naBar.classList.add('is-revealed');
+      layer.appendChild(euBar);
+      layer.appendChild(naBar);
+    });
+  })();
+
+  // forecast bars: EU = dashed outline, NA = filled-soft + outline
+  (function renderForecastBars() {
+    const layer = document.getElementById('bars-forecast');
+    YEARS_FC.forEach((_, i) => {
+      const idx = YEARS_HIST.length + i;
+      const eu = EU_FC[i], na = NA_FC[i];
+      const euBar = makeBar({ x: barX_eu(idx), y: yFor(eu), w: BAR_W, h: yPx(eu), klass: 'bar bar-eu-fc' });
+      const naBar = makeBar({ x: barX_na(idx), y: yFor(na), w: BAR_W, h: yPx(na), klass: 'bar bar-na-fc' });
+      euBar.style.animationDelay = (i * 0.07) + 's';
+      naBar.style.animationDelay = (i * 0.07 + 0.05) + 's';
+      euBar.dataset.fc = 'eu';
+      naBar.dataset.fc = 'na';
+      layer.appendChild(euBar);
+      layer.appendChild(naBar);
+    });
+  })();
+
+  // forecast divider line + labels — positioned between 2026 and 2027
+  (function renderForecastLine() {
+    const xMid = (groupCenter(YEARS_HIST.length - 1) + groupCenter(YEARS_HIST.length)) / 2;
+    const fl = document.getElementById('forecast-line');
+    fl.setAttribute('x1', xMid);
+    fl.setAttribute('x2', xMid);
+    document.getElementById('forecast-label-hist').setAttribute('x', xMid - 8);
+    document.getElementById('forecast-label-fc').setAttribute('x', xMid + 8);
+  })();
+
+  // CAGR badges floating on the chart (revealed step 2)
+  (function renderCagrBadges() {
+    const layer = document.getElementById('cagr-badges');
+
+    const badge = ({ x, y, big, sub, klass }) => {
+      const g = document.createElementNS(SVG_NS, 'g');
+      g.setAttribute('class', 'cagr-badge ' + klass);
+      g.setAttribute('transform', `translate(${x},${y})`);
+      const w = 170, h = 64;
+      const r = document.createElementNS(SVG_NS, 'rect');
+      r.setAttribute('class', 'cagr-bg');
+      r.setAttribute('x', -w / 2); r.setAttribute('y', -h / 2);
+      r.setAttribute('width', w);  r.setAttribute('height', h);
+      r.setAttribute('rx', 12);
+      g.appendChild(r);
+      const t1 = document.createElementNS(SVG_NS, 'text');
+      t1.setAttribute('class', 'cagr-text');
+      t1.setAttribute('x', 0); t1.setAttribute('y', -2);
+      t1.setAttribute('text-anchor', 'middle');
+      t1.textContent = big;
+      g.appendChild(t1);
+      const t2 = document.createElementNS(SVG_NS, 'text');
+      t2.setAttribute('class', 'cagr-sub');
+      t2.setAttribute('x', 0); t2.setAttribute('y', 18);
+      t2.setAttribute('text-anchor', 'middle');
+      t2.textContent = sub;
+      g.appendChild(t2);
+      return g;
+    };
+
+    // Place above the 2022-area for europe, just over the 2024-area for NA
+    const euBadge = badge({
+      x: groupCenter(2),  // around 2020 — leaves space above the bars
+      y: 130,
+      big: '4.4% CAGR',
+      sub: 'Europe · 2018→26',
+      klass: 'cagr-eu',
+    });
+    const naBadge = badge({
+      x: groupCenter(5),
+      y: 220,
+      big: '12% CAGR',
+      sub: 'USA · 2018→26',
+      klass: 'cagr-na',
+    });
+    layer.appendChild(euBadge);
+    layer.appendChild(naBadge);
+  })();
+
+  // Catch-up arrow (revealed final step) — curved arrow from NA 2026 bar top to NA 2031 bar top
+  (function renderCatchArrow() {
+    const layer = document.getElementById('catch-arrow');
+    const x1 = barX_na(YEARS_HIST.length - 1) + BAR_W / 2;
+    const y1 = yFor(NA_HIST.at(-1));
+    const x2 = barX_na(YEARS.length - 1) + BAR_W / 2;
+    const y2 = yFor(NA_FC.at(-1)) - 14;
+    const cx = (x1 + x2) / 2;
+    const cy = Math.min(y1, y2) - 70;
+    const path = document.createElementNS(SVG_NS, 'path');
+    path.setAttribute('class', 'catch-arrow');
+    path.setAttribute('d', `M ${x1} ${y1 - 6} Q ${cx} ${cy} ${x2} ${y2}`);
+    layer.appendChild(path);
+
+    // arrowhead
+    const head = document.createElementNS(SVG_NS, 'polygon');
+    head.setAttribute('class', 'catch-arrow-head');
+    const ax = x2, ay = y2;
+    head.setAttribute('points', `${ax - 9},${ay - 14} ${ax + 9},${ay - 14} ${ax},${ay + 4}`);
+    layer.appendChild(head);
+
+    // label — pill-style background + text, positioned along the curve apex
+    const labelGroup = document.createElementNS(SVG_NS, 'g');
+    labelGroup.setAttribute('class', 'catch-label-group');
+    labelGroup.style.opacity = '0';
+    labelGroup.style.transition = 'opacity 0.5s 0.8s';
+    labelGroup.dataset.role = 'catch-label';
+
+    const labelW = 230, labelH = 44;
+    const labelX = cx - labelW / 2;
+    const labelY = cy + 32;
+
+    const bg = document.createElementNS(SVG_NS, 'rect');
+    bg.setAttribute('x', labelX);
+    bg.setAttribute('y', labelY);
+    bg.setAttribute('width', labelW);
+    bg.setAttribute('height', labelH);
+    bg.setAttribute('rx', 22);
+    bg.setAttribute('fill', 'var(--c-na)');
+    bg.setAttribute('opacity', '0.95');
+    labelGroup.appendChild(bg);
+
+    const t = document.createElementNS(SVG_NS, 'text');
+    t.setAttribute('x', cx);
+    t.setAttribute('y', labelY + labelH / 2 + 7);
+    t.setAttribute('text-anchor', 'middle');
+    t.setAttribute('fill', '#fff');
+    t.style.fontSize = '20px';
+    t.style.fontWeight = '800';
+    t.style.letterSpacing = '0.02em';
+    t.textContent = '€7.9m → €39m';
+    labelGroup.appendChild(t);
+
+    layer.appendChild(labelGroup);
+  })();
+
+  // ============================================================
+  // Click-by-click reveal
+  // 0 → reveal stat 0 (today rev)
+  // 1 → reveal stat 1 (CAGR) + cagr badges on chart
+  // 2 → reveal stat 2 (FTE)
+  // 3 → reveal forecast bars + forecast divider/label
+  // 4 → reveal final stat (catch Europe) + catch arrow
+  // ============================================================
   (function clickReveal() {
-    const sequence = ['europe', 'na', 'apac', 'mea', 'latam', 'unkn'];
     const slide = document.getElementById('slide');
     const hint = document.getElementById('step-hint');
     const label = document.getElementById('step-label');
     const counter = document.getElementById('prog-current');
     const dots = [...document.querySelectorAll('.step-hint .step-dot')];
     const labels = [
-      'Europe revealed',
-      'North America revealed',
-      'Asia & Pacific revealed',
-      'Middle East & Africa revealed',
-      'Latin America revealed',
-      'All regions revealed'
+      'Today’s revenue revealed',
+      'CAGR comparison revealed',
+      'Field-team productivity revealed',
+      'Forecast — 38% CAGR for USA',
+      'Catching Europe by 2031',
     ];
+    const TOTAL = 5;
     let step = 0;
 
-    const revealKey = (key) => {
-      document.querySelectorAll(`.series[data-series="${key}"]`).forEach(el => el.classList.add('is-revealed'));
-      document.querySelectorAll(`.dot[data-series="${key}"]`).forEach(el => el.classList.add('is-revealed'));
-      document.querySelectorAll(`.legend-item[data-series="${key}"]`).forEach(el => el.classList.add('is-revealed'));
-    };
-    const unrevealKey = (key) => {
-      document.querySelectorAll(`[data-series="${key}"]`).forEach(el => el.classList.remove('is-revealed'));
-    };
-    const showAnno = () => {
-      document.querySelectorAll('.anno-line, .anno-text, .anno-text-sub').forEach(el => el.classList.add('is-revealed'));
-    };
-    const hideAnno = () => {
-      document.querySelectorAll('.anno-line, .anno-text, .anno-text-sub').forEach(el => el.classList.remove('is-revealed'));
-    };
+    const cards = [...document.querySelectorAll('.stat-card')];
+    const cagrBadges = [...document.querySelectorAll('.cagr-badge')];
+    const fcBars = [...document.querySelectorAll('[data-fc]')];
+    const fcDivider = document.getElementById('forecast-line');
+    const fcLabelHist = document.getElementById('forecast-label-hist');
+    const fcLabelFc = document.getElementById('forecast-label-fc');
+    const catchArrow = document.querySelector('.catch-arrow');
+    const catchHead = document.querySelector('.catch-arrow-head');
+    const catchLabel = document.querySelector('[data-role="catch-label"]');
 
-    const update = () => {
+    const setRevealed = (el, on) => el && el.classList.toggle('is-revealed', on);
+
+    const apply = () => {
+      // stat cards: 0..2 normal, final card after step 3
+      cards.forEach((c, i) => {
+        const want = i < step;
+        c.style.animationDelay = (i === step - 1 ? '0s' : '0s');
+        setRevealed(c, want);
+      });
+      // CAGR badges with stagger when step >= 2
+      cagrBadges.forEach((b, i) => {
+        b.style.animationDelay = (i * 0.18) + 's';
+        setRevealed(b, step >= 2);
+      });
+      // forecast bars + divider after step 4
+      fcBars.forEach((b) => setRevealed(b, step >= 4));
+      [fcDivider, fcLabelHist, fcLabelFc].forEach(e => setRevealed(e, step >= 4));
+      // catch-up arrow after step 5
+      setRevealed(catchArrow, step >= 5);
+      setRevealed(catchHead, step >= 5);
+      if (catchLabel) catchLabel.style.opacity = step >= 5 ? '1' : '0';
+
+      // step hint
       counter.textContent = step;
       dots.forEach((d, i) => d.classList.toggle('active', i < step));
       if (step === 0) {
-        label.textContent = 'Click to reveal each region';
+        label.textContent = 'Click to step through the story';
         hint.classList.remove('is-done');
         slide.classList.remove('is-done');
-      } else if (step >= sequence.length) {
-        label.textContent = labels[sequence.length - 1];
+      } else if (step >= TOTAL) {
+        label.textContent = labels[TOTAL - 1];
         hint.classList.add('is-done');
         slide.classList.add('is-done');
       } else {
@@ -823,52 +1141,17 @@
       }
     };
 
-    const advance = () => {
-      if (step >= sequence.length) return;
-      const key = sequence[step];
-      revealKey(key);
-      // Europe gets the annotation popping in 1.7s after its line draws
-      if (key === 'europe') setTimeout(showAnno, 1700);
-      step++;
-      update();
-    };
+    const advance = () => { if (step < TOTAL) { step++; apply(); } };
+    const back    = () => { if (step > 0)     { step--; apply(); } };
+    const jumpTo  = (t) => { step = Math.max(0, Math.min(TOTAL, t)); apply(); };
 
-    const back = () => {
-      if (step <= 0) return;
-      step--;
-      const key = sequence[step];
-      unrevealKey(key);
-      if (key === 'europe') hideAnno();
-      update();
-    };
-
-    const jumpTo = (target) => {
-      while (step < target && step < sequence.length) {
-        const key = sequence[step];
-        revealKey(key);
-        if (key === 'europe') showAnno();
-        step++;
-      }
-      while (step > target) {
-        step--;
-        const key = sequence[step];
-        unrevealKey(key);
-        if (key === 'europe') hideAnno();
-      }
-      update();
-    };
-
-    const reset = () => jumpTo(0);
-
-    // ignore clicks on interactive elements
-    const isInteractive = (target) => !!target.closest('button, a, .legend-item, .step-dot');
+    const isInteractive = (target) => !!target.closest('button, a, .step-dot');
 
     slide.addEventListener('click', (e) => {
       if (isInteractive(e.target)) return;
       advance();
     });
 
-    // step-dot click → jump to that step
     dots.forEach((dot, i) => {
       dot.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -876,44 +1159,20 @@
       });
     });
 
-    // keyboard nav
     document.addEventListener('keydown', (e) => {
       if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A') return;
       if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
-        e.preventDefault();
-        advance();
+        e.preventDefault(); advance();
       } else if (e.key === 'ArrowLeft' || e.key === 'Backspace') {
-        e.preventDefault();
-        back();
+        e.preventDefault(); back();
       } else if (e.key === 'Escape' || e.key === 'r' || e.key === 'R' || e.key === '0') {
-        reset();
-      } else if (/^[1-6]$/.test(e.key)) {
+        jumpTo(0);
+      } else if (/^[1-5]$/.test(e.key)) {
         jumpTo(parseInt(e.key, 10));
       }
     });
 
-    update();
-  })();
-
-  // ----- Hover legend → highlight series (only after revealed) -----
-  (function legendHover() {
-    const card = document.getElementById('chart-card');
-    document.querySelectorAll('.legend-item').forEach(item => {
-      const key = item.dataset.series;
-      item.addEventListener('mouseenter', () => {
-        if (!item.classList.contains('is-revealed')) return;
-        card.classList.add('has-hover');
-        document.querySelectorAll('path.series, .dot').forEach(el => {
-          el.classList.toggle('is-hover', el.dataset.series === key);
-        });
-      });
-      item.addEventListener('mouseleave', () => {
-        card.classList.remove('has-hover');
-        document.querySelectorAll('path.series, .dot').forEach(el => {
-          el.classList.remove('is-hover');
-        });
-      });
-    });
+    apply();
   })();
 </script>
 
