@@ -24,14 +24,30 @@
     --c-unkn:   #A6CE3A;
   }
   * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; background: #000; color: #fff; font-family: var(--font-body); }
+  html, body {
+    margin: 0; padding: 0;
+    width: 100%; height: 100%;
+    background: #000; color: #fff;
+    font-family: var(--font-body);
+  }
+  body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
   .slide {
     position: relative;
     width: 1920px;
     height: 1080px;
-    margin: 0 auto;
+    flex-shrink: 0;
     overflow: hidden;
+    transform: scale(var(--scale, 1));
+    transform-origin: center center;
+    will-change: transform;
     background:
       radial-gradient(ellipse 1100px 820px at 92% 6%, rgba(255,102,0,0.42) 0%, rgba(255,102,0,0) 58%),
       radial-gradient(ellipse 760px 600px at 6% 102%, rgba(0,156,182,0.30) 0%, rgba(0,156,182,0) 55%),
@@ -467,6 +483,18 @@
 </section>
 
 <script>
+  // ----- Auto-fit: scale 1920x1080 canvas to fit the viewport -----
+  (function autoFit() {
+    const root = document.documentElement;
+    const fit = () => {
+      const s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+      root.style.setProperty('--scale', s);
+    };
+    fit();
+    window.addEventListener('resize', fit, { passive: true });
+    window.addEventListener('orientationchange', fit, { passive: true });
+  })();
+
   // ----- Letter-by-letter hero title -----
   (function splitTitle() {
     const h1 = document.getElementById('hero-title');
