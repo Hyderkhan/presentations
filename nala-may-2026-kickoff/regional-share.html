@@ -1,0 +1,573 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Regional Share · FY2022 – FY2026 · NALA Reference</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  :root {
+    --orange: #FF6600;
+    --teal: #009CB6;
+    --ink: #0E1116;
+    --paper: #F6F4EE;
+    --rule: rgba(255,255,255,0.10);
+    --muted: rgba(255,255,255,0.62);
+    --font-display: "Inter", "Helvetica Neue", Arial, sans-serif;
+    --font-body: "Inter", "Helvetica Neue", Arial, sans-serif;
+
+    /* series palette — matched to the source chart */
+    --c-europe: #FF6600;
+    --c-na:     #BC2A8B;
+    --c-apac:   #1F6B7A;
+    --c-mea:    #41B6E6;
+    --c-latam:  #1B5E3F;
+    --c-unkn:   #A6CE3A;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #000; color: #fff; font-family: var(--font-body); }
+
+  .slide {
+    position: relative;
+    width: 1920px;
+    height: 1080px;
+    margin: 0 auto;
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse 1100px 820px at 92% 6%, rgba(255,102,0,0.42) 0%, rgba(255,102,0,0) 58%),
+      radial-gradient(ellipse 760px 600px at 6% 102%, rgba(0,156,182,0.30) 0%, rgba(0,156,182,0) 55%),
+      linear-gradient(135deg, #0B0E13 0%, #161B23 100%);
+  }
+
+  .orb {
+    position: absolute;
+    width: 920px; height: 920px;
+    right: -260px; bottom: -300px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, rgba(255,102,0,0.95), rgba(255,102,0,0.18) 55%, rgba(255,102,0,0) 75%);
+    filter: blur(2px);
+    animation: breathe 9s ease-in-out infinite;
+  }
+  @keyframes breathe {
+    0%,100% { transform: scale(1); opacity: 0.92; }
+    50%     { transform: scale(1.06); opacity: 1; }
+  }
+
+  .bokeh {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    mix-blend-mode: screen;
+  }
+  .bokeh.b1 {
+    width: 380px; height: 380px;
+    background: radial-gradient(circle, rgba(255,102,0,0.55), transparent 70%);
+    top: 18%; left: 8%;
+    animation: drift1 22s ease-in-out infinite;
+  }
+  .bokeh.b2 {
+    width: 320px; height: 320px;
+    background: radial-gradient(circle, rgba(0,156,182,0.55), transparent 70%);
+    top: 55%; left: 38%;
+    animation: drift2 28s ease-in-out infinite;
+  }
+  .bokeh.b3 {
+    width: 280px; height: 280px;
+    background: radial-gradient(circle, rgba(255,180,90,0.40), transparent 70%);
+    top: 72%; left: 78%;
+    animation: drift3 26s ease-in-out infinite;
+  }
+  @keyframes drift1 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(60px,-30px) scale(1.12); } }
+  @keyframes drift2 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-80px,40px) scale(1.08); } }
+  @keyframes drift3 { 0%,100% { transform: translate(0,0) scale(0.95); } 50% { transform: translate(40px,-50px) scale(1.05); } }
+
+  .ring {
+    position: absolute;
+    left: -200px; top: -200px;
+    width: 480px; height: 480px;
+    border: 2px solid rgba(0,156,182,0.45);
+    border-radius: 50%;
+  }
+
+  .accent-line {
+    position: absolute;
+    left: 110px; right: 110px; top: 240px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,102,0,0.85), rgba(0,156,182,0.65), transparent);
+    background-size: 200% 100%;
+    transform: scaleX(0);
+    transform-origin: left center;
+    animation: shimmer 6s linear infinite, lineIn 1.4s 0.5s cubic-bezier(.2,.7,.2,1) forwards;
+  }
+  @keyframes shimmer { 0% { background-position: 0% 0; } 100% { background-position: 200% 0; } }
+  @keyframes lineIn { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes letterIn {
+    from { opacity: 0; transform: translateY(40px) rotateX(-30deg); }
+    to   { opacity: 1; transform: translateY(0)  rotateX(0); }
+  }
+  @keyframes glowOrange {
+    0%, 100% { text-shadow: 0 0 18px rgba(255,102,0,0.0); }
+    50%      { text-shadow: 0 0 36px rgba(255,102,0,0.55); }
+  }
+
+  .frame { position: absolute; inset: 0; padding: 80px 110px 60px; display: flex; flex-direction: column; }
+
+  .eyebrow {
+    color: var(--orange);
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.1s ease-out forwards;
+  }
+
+  h1.title {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 84px;
+    line-height: 1.0;
+    margin: 0 0 8px;
+    letter-spacing: -0.02em;
+    perspective: 800px;
+  }
+  .title .word { display: inline-block; }
+  .title .ch {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(40px) rotateX(-30deg);
+    animation: letterIn 0.7s cubic-bezier(.2,.8,.2,1) forwards;
+  }
+  .title .accent { color: var(--orange); animation: glowOrange 4.5s ease-in-out 2.2s infinite; }
+
+  .sub {
+    font-size: 22px;
+    color: var(--muted);
+    margin: 0 0 24px;
+    letter-spacing: 0.04em;
+    opacity: 0;
+    animation: fadeUp 0.8s 1.5s ease-out forwards;
+    max-width: 1300px;
+  }
+
+  /* ===== chart layout ===== */
+  .chart-wrap {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 56px;
+    min-height: 0;
+    align-items: stretch;
+  }
+
+  .chart-card {
+    position: relative;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--rule);
+    border-radius: 16px;
+    padding: 28px 32px;
+    backdrop-filter: blur(8px);
+    opacity: 0;
+    animation: fadeUp 0.9s 1.7s cubic-bezier(.2,.7,.2,1) forwards;
+  }
+  .chart-card svg { width: 100%; height: 100%; display: block; }
+
+  /* ===== axes ===== */
+  .grid-line { stroke: rgba(255,255,255,0.08); stroke-width: 1; }
+  .axis-text { fill: var(--muted); font-family: var(--font-body); font-size: 18px; }
+  .axis-text-strong { fill: #fff; font-weight: 600; }
+
+  .grid-line, .axis-text {
+    opacity: 0;
+    animation: fadeIn 0.8s 1.95s ease-out forwards;
+  }
+
+  /* ===== series lines: stroke-draw ===== */
+  .series {
+    fill: none;
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 3000;
+    stroke-dashoffset: 3000;
+    animation: drawLine 1.6s cubic-bezier(.55,.1,.25,1) forwards;
+    filter: drop-shadow(0 0 6px rgba(0,0,0,0.2));
+  }
+  @keyframes drawLine { to { stroke-dashoffset: 0; } }
+
+  .series.s-europe { stroke: var(--c-europe); stroke-width: 5; animation-delay: 2.30s; }
+  .series.s-na     { stroke: var(--c-na);     animation-delay: 2.45s; }
+  .series.s-apac   { stroke: var(--c-apac);   animation-delay: 2.60s; }
+  .series.s-mea    { stroke: var(--c-mea);    animation-delay: 2.75s; }
+  .series.s-latam  { stroke: var(--c-latam);  animation-delay: 2.90s; }
+  .series.s-unkn   { stroke: var(--c-unkn);   animation-delay: 3.05s; }
+
+  /* ===== dots ===== */
+  .dot {
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: dotPop 0.5s cubic-bezier(.2,1.6,.5,1) forwards;
+  }
+  @keyframes dotPop {
+    from { opacity: 0; transform: scale(0); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+
+  /* ===== legend ===== */
+  .legend {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding-top: 20px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    cursor: default;
+    transition: background 220ms ease, transform 220ms ease;
+    opacity: 0;
+    animation: fadeUp 0.6s ease-out forwards;
+  }
+  .legend-item:hover {
+    background: rgba(255,255,255,0.06);
+    transform: translateX(-4px);
+  }
+  .legend-swatch {
+    width: 32px; height: 4px;
+    border-radius: 2px;
+    flex-shrink: 0;
+    box-shadow: 0 0 12px currentColor;
+  }
+  .legend-name {
+    font-size: 18px;
+    color: rgba(255,255,255,0.92);
+    letter-spacing: 0.01em;
+  }
+  .legend-val {
+    margin-left: auto;
+    font-size: 16px;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+  }
+
+  /* dim non-hovered series when hovering a legend item */
+  .chart-card.has-hover .series:not(.is-hover) { opacity: 0.18; }
+  .chart-card.has-hover .dot:not(.is-hover) { opacity: 0.22; }
+  .chart-card .series, .chart-card .dot { transition: opacity 220ms ease; }
+
+  /* annotation callout: Europe */
+  .anno-line {
+    stroke: rgba(255,255,255,0.35);
+    stroke-width: 1;
+    stroke-dasharray: 2 4;
+    opacity: 0;
+    animation: fadeIn 0.8s 4.0s ease-out forwards;
+  }
+  .anno-text {
+    fill: rgba(255,255,255,0.85);
+    font-size: 18px;
+    font-weight: 600;
+    opacity: 0;
+    animation: fadeUp 0.8s 4.1s ease-out forwards;
+  }
+  .anno-text-sub {
+    fill: var(--muted);
+    font-size: 14px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fadeUp 0.8s 4.2s ease-out forwards;
+  }
+
+  /* ===== footer ===== */
+  .footer {
+    margin-top: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--muted);
+    font-size: 16px;
+    letter-spacing: 0.08em;
+    opacity: 0;
+    animation: fadeUp 0.8s 3.6s ease-out forwards;
+  }
+  .pill {
+    display: inline-block;
+    padding: 6px 14px;
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 999px;
+    font-size: 14px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .back-link {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border-bottom: 1px dashed rgba(255,255,255,0.25);
+    padding-bottom: 2px;
+    transition: color 200ms ease, border-color 200ms ease;
+  }
+  .back-link:hover { color: var(--orange); border-color: var(--orange); }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001s !important;
+      animation-delay: 0s !important;
+      transition-duration: 0.001s !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<section class="slide">
+  <div class="ring"></div>
+  <div class="orb"></div>
+  <div class="bokeh b1"></div>
+  <div class="bokeh b2"></div>
+  <div class="bokeh b3"></div>
+  <div class="accent-line"></div>
+
+  <div class="frame">
+    <div class="eyebrow">Y Soft · Regional revenue mix · FY22 – FY26</div>
+    <h1 class="title" id="hero-title"><span class="accent">Regional</span> share.</h1>
+    <p class="sub">Europe holds a steady ~63% majority. North America is creeping up. NALA is a small, stable slice — high-leverage on conversion, not headline revenue.</p>
+
+    <div class="chart-wrap">
+      <!-- ============ CHART CARD ============ -->
+      <div class="chart-card" id="chart-card">
+        <svg viewBox="0 0 1600 780" preserveAspectRatio="none" aria-label="Regional share line chart, FY2022 to FY2026">
+          <!-- gridlines + y labels (every 10%, 0-70) -->
+          <g>
+            <!-- 70% -->
+            <line class="grid-line" x1="120" y1="140" x2="1500" y2="140"/>
+            <text class="axis-text" x="100" y="146" text-anchor="end">70%</text>
+            <!-- 60% -->
+            <line class="grid-line" x1="120" y1="220" x2="1500" y2="220"/>
+            <text class="axis-text" x="100" y="226" text-anchor="end">60%</text>
+            <!-- 50% -->
+            <line class="grid-line" x1="120" y1="300" x2="1500" y2="300"/>
+            <text class="axis-text" x="100" y="306" text-anchor="end">50%</text>
+            <!-- 40% -->
+            <line class="grid-line" x1="120" y1="380" x2="1500" y2="380"/>
+            <text class="axis-text" x="100" y="386" text-anchor="end">40%</text>
+            <!-- 30% -->
+            <line class="grid-line" x1="120" y1="460" x2="1500" y2="460"/>
+            <text class="axis-text" x="100" y="466" text-anchor="end">30%</text>
+            <!-- 20% -->
+            <line class="grid-line" x1="120" y1="540" x2="1500" y2="540"/>
+            <text class="axis-text" x="100" y="546" text-anchor="end">20%</text>
+            <!-- 10% -->
+            <line class="grid-line" x1="120" y1="620" x2="1500" y2="620"/>
+            <text class="axis-text" x="100" y="626" text-anchor="end">10%</text>
+            <!-- 0% baseline -->
+            <line class="grid-line" x1="120" y1="700" x2="1500" y2="700" style="stroke: rgba(255,255,255,0.18);"/>
+            <text class="axis-text" x="100" y="706" text-anchor="end">0%</text>
+          </g>
+
+          <!-- x labels — years -->
+          <g>
+            <text class="axis-text" x="200"  y="745" text-anchor="middle">2022</text>
+            <text class="axis-text" x="525"  y="745" text-anchor="middle">2023</text>
+            <text class="axis-text" x="850"  y="745" text-anchor="middle">2024</text>
+            <text class="axis-text" x="1175" y="745" text-anchor="middle">2025</text>
+            <text class="axis-text axis-text-strong" x="1500" y="745" text-anchor="middle">2026</text>
+          </g>
+
+          <!-- ============ SERIES LINES ============ -->
+          <!-- y(p) = 700 - p * 8 -->
+
+          <!-- Europe: 61.5, 63.7, 63.8, 60.8, 65.3 -->
+          <path class="series s-europe" data-series="europe"
+                d="M 200,208 L 525,190 L 850,190 L 1175,214 L 1500,178" />
+
+          <!-- North America: 15.0, 14.0, 16.0, 15.0, 16.5 -->
+          <path class="series s-na" data-series="na"
+                d="M 200,580 L 525,588 L 850,572 L 1175,580 L 1500,568" />
+
+          <!-- Asia and Pacific: 13.0, 12.0, 10.8, 15.0, 11.0 -->
+          <path class="series s-apac" data-series="apac"
+                d="M 200,596 L 525,604 L 850,614 L 1175,580 L 1500,612" />
+
+          <!-- Middle East and Africa: 6.5, 6.5, 7.0, 8.0, 6.2 -->
+          <path class="series s-mea" data-series="mea"
+                d="M 200,648 L 525,648 L 850,644 L 1175,636 L 1500,650" />
+
+          <!-- Latin America: 2.0, 2.5, 1.0, 1.0, 1.0 -->
+          <path class="series s-latam" data-series="latam"
+                d="M 200,684 L 525,680 L 850,692 L 1175,692 L 1500,692" />
+
+          <!-- Unknown: 2.0, 2.0, 1.0, 0.0, 0.0 -->
+          <path class="series s-unkn" data-series="unkn"
+                d="M 200,684 L 525,684 L 850,692 L 1175,700 L 1500,700" />
+
+          <!-- ============ DOTS ============ -->
+          <g id="dots-layer"></g>
+
+          <!-- ============ ANNOTATION ============ -->
+          <line class="anno-line" x1="1500" y1="178" x2="1430" y2="120" />
+          <text class="anno-text-sub" x="1430" y="100" text-anchor="end">FY26 lead</text>
+          <text class="anno-text" x="1430" y="125" text-anchor="end">Europe · 65.3%</text>
+        </svg>
+      </div>
+
+      <!-- ============ LEGEND ============ -->
+      <div class="legend" id="legend">
+        <div class="legend-item" data-series="europe" style="animation-delay: 3.20s; color: var(--c-europe);">
+          <span class="legend-swatch" style="background: var(--c-europe);"></span>
+          <span class="legend-name">Europe</span>
+          <span class="legend-val">65.3%</span>
+        </div>
+        <div class="legend-item" data-series="na" style="animation-delay: 3.30s; color: var(--c-na);">
+          <span class="legend-swatch" style="background: var(--c-na);"></span>
+          <span class="legend-name">North America</span>
+          <span class="legend-val">16.5%</span>
+        </div>
+        <div class="legend-item" data-series="apac" style="animation-delay: 3.40s; color: var(--c-apac);">
+          <span class="legend-swatch" style="background: var(--c-apac);"></span>
+          <span class="legend-name">Asia &amp; Pacific</span>
+          <span class="legend-val">11.0%</span>
+        </div>
+        <div class="legend-item" data-series="mea" style="animation-delay: 3.50s; color: var(--c-mea);">
+          <span class="legend-swatch" style="background: var(--c-mea);"></span>
+          <span class="legend-name">Middle East &amp; Africa</span>
+          <span class="legend-val">6.2%</span>
+        </div>
+        <div class="legend-item" data-series="latam" style="animation-delay: 3.60s; color: var(--c-latam);">
+          <span class="legend-swatch" style="background: var(--c-latam);"></span>
+          <span class="legend-name">Latin America</span>
+          <span class="legend-val">1.0%</span>
+        </div>
+        <div class="legend-item" data-series="unkn" style="animation-delay: 3.70s; color: var(--c-unkn);">
+          <span class="legend-swatch" style="background: var(--c-unkn);"></span>
+          <span class="legend-name">Unknown</span>
+          <span class="legend-val">0.0%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <span class="pill">Y Soft · NALA Reference · FY22 – FY26</span>
+      <a class="back-link" href="index.html">← Back to NALA agenda</a>
+    </div>
+  </div>
+</section>
+
+<script>
+  // ----- Letter-by-letter hero title -----
+  (function splitTitle() {
+    const h1 = document.getElementById('hero-title');
+    if (!h1) return;
+    const nodes = [...h1.childNodes];
+    h1.replaceChildren();
+    let i = 0;
+    const addLetters = (text, target) => {
+      [...text].forEach(ch => {
+        const s = document.createElement('span');
+        s.className = 'ch';
+        s.textContent = ch === ' ' ? ' ' : ch;
+        s.style.animationDelay = (0.25 + i * 0.045) + 's';
+        i++;
+        target.appendChild(s);
+      });
+    };
+    nodes.forEach(node => {
+      if (node.nodeType === 3) {
+        node.textContent.split(' ').forEach((word, wIdx, arr) => {
+          if (word.length) {
+            const w = document.createElement('span');
+            w.className = 'word';
+            addLetters(word, w);
+            h1.appendChild(w);
+          }
+          if (wIdx < arr.length - 1) h1.appendChild(document.createTextNode(' '));
+        });
+      } else if (node.nodeType === 1) {
+        const wrap = document.createElement('span');
+        wrap.className = 'word ' + node.className;
+        addLetters(node.textContent, wrap);
+        h1.appendChild(wrap);
+      }
+    });
+  })();
+
+  // ----- Build dots from series paths so they stay in sync with data -----
+  (function buildDots() {
+    const layer = document.getElementById('dots-layer');
+    if (!layer) return;
+    const colors = {
+      europe: getComputedStyle(document.documentElement).getPropertyValue('--c-europe').trim(),
+      na:     getComputedStyle(document.documentElement).getPropertyValue('--c-na').trim(),
+      apac:   getComputedStyle(document.documentElement).getPropertyValue('--c-apac').trim(),
+      mea:    getComputedStyle(document.documentElement).getPropertyValue('--c-mea').trim(),
+      latam:  getComputedStyle(document.documentElement).getPropertyValue('--c-latam').trim(),
+      unkn:   getComputedStyle(document.documentElement).getPropertyValue('--c-unkn').trim()
+    };
+    // base delays match each series' draw-in delay
+    const baseDelay = { europe: 2.30, na: 2.45, apac: 2.60, mea: 2.75, latam: 2.90, unkn: 3.05 };
+
+    document.querySelectorAll('path.series').forEach(p => {
+      const key = p.dataset.series;
+      const d = p.getAttribute('d');
+      // parse "M x,y L x,y L x,y ..."
+      const pts = d.split(/[ML]\s*/).filter(Boolean).map(s => {
+        const [x, y] = s.trim().split(',').map(Number);
+        return { x, y };
+      });
+      pts.forEach((pt, idx) => {
+        const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        c.setAttribute('cx', pt.x);
+        c.setAttribute('cy', pt.y);
+        c.setAttribute('r', key === 'europe' ? 6 : 5);
+        c.setAttribute('fill', colors[key]);
+        c.setAttribute('class', 'dot');
+        c.setAttribute('data-series', key);
+        // last dot of europe gets a ring
+        if (key === 'europe' && idx === pts.length - 1) {
+          c.setAttribute('r', 9);
+          c.setAttribute('stroke', '#fff');
+          c.setAttribute('stroke-width', 2);
+        }
+        // pop dots in just after the line finishes drawing
+        c.style.animationDelay = (baseDelay[key] + 1.55 + idx * 0.04) + 's';
+        layer.appendChild(c);
+      });
+    });
+  })();
+
+  // ----- Hover legend → highlight series -----
+  (function legendHover() {
+    const card = document.getElementById('chart-card');
+    document.querySelectorAll('.legend-item').forEach(item => {
+      const key = item.dataset.series;
+      item.addEventListener('mouseenter', () => {
+        card.classList.add('has-hover');
+        document.querySelectorAll('path.series, .dot').forEach(el => {
+          el.classList.toggle('is-hover', el.dataset.series === key);
+        });
+      });
+      item.addEventListener('mouseleave', () => {
+        card.classList.remove('has-hover');
+        document.querySelectorAll('path.series, .dot').forEach(el => {
+          el.classList.remove('is-hover');
+        });
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>

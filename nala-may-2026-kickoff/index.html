@@ -348,6 +348,36 @@
     text-transform: uppercase;
     color: var(--muted);
   }
+
+  /* small reference link in the footer */
+  .ref-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border: 1px solid rgba(255,102,0,0.35);
+    border-radius: 999px;
+    font-size: 13px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(255,180,120,0.92);
+    text-decoration: none;
+    transition: background 200ms ease, color 200ms ease, border-color 200ms ease, transform 200ms ease;
+  }
+  .ref-link::before {
+    content: "";
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--orange);
+    box-shadow: 0 0 10px var(--orange);
+    animation: pulseTeal 2.4s ease-in-out infinite;
+  }
+  .ref-link:hover {
+    background: rgba(255,102,0,0.12);
+    border-color: var(--orange);
+    color: #fff;
+    transform: translateY(-1px);
+  }
 </style>
 </head>
 <body>
@@ -412,6 +442,7 @@
     <div class="footer">
       <span class="pill">Y Soft · NALA · May 2026</span>
       <span>Lunch at 12:00 &nbsp;·&nbsp; Breaks: 1h 45m / day</span>
+      <a class="ref-link" href="regional-share.html" title="Open the FY22-FY26 regional-share reference chart">Regional share · FY22 – FY26</a>
     </div>
   </div>
 </section>
