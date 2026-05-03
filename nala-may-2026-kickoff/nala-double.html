@@ -1,0 +1,1102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Double NALA in 2 years · Y Soft</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  :root {
+    --orange: #FF6600;
+    --teal: #009CB6;
+
+    --c-base: #009CB6;          /* baseline (12% trajectory) — teal */
+    --c-base-soft: rgba(0,156,182,0.32);
+    --c-target: #FF6600;        /* 41.4% target — orange */
+    --c-target-soft: rgba(255,102,0,0.32);
+    --c-target-glow: rgba(255,102,0,0.55);
+    --c-gap: rgba(255,102,0,0.16);
+
+    --bg-from:    #0B0E13;
+    --bg-to:      #161B23;
+    --text:       #FFFFFF;
+    --text-soft:  rgba(255,255,255,0.92);
+    --muted:      rgba(255,255,255,0.62);
+    --rule:       rgba(255,255,255,0.10);
+    --card-bg:    rgba(255,255,255,0.04);
+    --card-border: rgba(255,255,255,0.10);
+    --card-bg-hi: rgba(255,255,255,0.07);
+    --grid:       rgba(255,255,255,0.08);
+    --grid-axis:  rgba(255,255,255,0.18);
+    --hover-bg:   rgba(255,255,255,0.06);
+    --pill-border: rgba(255,255,255,0.18);
+    --link-border: rgba(255,255,255,0.25);
+    --bokeh-blend: screen;
+    --bokeh-opacity: 1;
+    --orb-opacity: 1;
+    --bar-shadow: 0 0 8px rgba(0,0,0,0.25);
+  }
+
+  :root[data-theme="light"] {
+    --bg-from:    #FAF7F0;
+    --bg-to:      #ECE6D8;
+    --text:       #0E1116;
+    --text-soft:  rgba(14,17,22,0.92);
+    --muted:      rgba(14,17,22,0.55);
+    --rule:       rgba(14,17,22,0.10);
+    --card-bg:    rgba(255,255,255,0.62);
+    --card-border: rgba(14,17,22,0.10);
+    --card-bg-hi: rgba(255,255,255,0.85);
+    --grid:       rgba(14,17,22,0.08);
+    --grid-axis:  rgba(14,17,22,0.22);
+    --hover-bg:   rgba(14,17,22,0.05);
+    --pill-border: rgba(14,17,22,0.18);
+    --link-border: rgba(14,17,22,0.25);
+    --bokeh-blend: multiply;
+    --bokeh-opacity: 0.40;
+    --orb-opacity: 0.28;
+    --bar-shadow: 0 0 4px rgba(14,17,22,0.10);
+  }
+
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    width: 100%; height: 100%;
+    background: var(--bg-from);
+    color: var(--text);
+    font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+    transition: background 320ms ease, color 320ms ease;
+  }
+  body {
+    width: 100vw; height: 100vh;
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .slide, .stat-card, .pill, .back-link, .theme-toggle, .step-hint, .step-dot,
+  .bar, .grid-line, .axis-text, .gap-band, .target-line, .target-label {
+    transition: background 320ms ease, color 320ms ease,
+                fill 320ms ease, stroke 320ms ease,
+                border-color 320ms ease, box-shadow 320ms ease,
+                transform 220ms ease;
+  }
+
+  .slide {
+    position: relative;
+    width: 1920px; height: 1080px;
+    flex-shrink: 0; overflow: hidden;
+    transform: scale(var(--scale, 1));
+    transform-origin: center center;
+    will-change: transform;
+    background:
+      radial-gradient(ellipse 1100px 820px at 92% 6%, rgba(255,102,0,0.42) 0%, rgba(255,102,0,0) 58%),
+      radial-gradient(ellipse 760px 600px at 6% 102%, rgba(0,156,182,0.30) 0%, rgba(0,156,182,0) 55%),
+      linear-gradient(135deg, var(--bg-from) 0%, var(--bg-to) 100%);
+    cursor: pointer;
+  }
+  .slide.is-done { cursor: default; }
+
+  .orb {
+    position: absolute;
+    width: 920px; height: 920px;
+    right: -260px; bottom: -300px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, rgba(255,102,0,0.95), rgba(255,102,0,0.18) 55%, rgba(255,102,0,0) 75%);
+    filter: blur(2px);
+    opacity: var(--orb-opacity);
+    animation: breathe 9s ease-in-out infinite;
+  }
+  @keyframes breathe { 0%,100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+
+  .bokeh {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    mix-blend-mode: var(--bokeh-blend);
+    opacity: var(--bokeh-opacity);
+  }
+  .bokeh.b1 {
+    width: 380px; height: 380px;
+    background: radial-gradient(circle, rgba(255,102,0,0.55), transparent 70%);
+    top: 18%; left: 8%;
+    animation: drift1 22s ease-in-out infinite;
+  }
+  .bokeh.b2 {
+    width: 320px; height: 320px;
+    background: radial-gradient(circle, rgba(0,156,182,0.55), transparent 70%);
+    top: 55%; left: 38%;
+    animation: drift2 28s ease-in-out infinite;
+  }
+  .bokeh.b3 {
+    width: 280px; height: 280px;
+    background: radial-gradient(circle, rgba(255,180,90,0.40), transparent 70%);
+    top: 72%; left: 78%;
+    animation: drift3 26s ease-in-out infinite;
+  }
+  @keyframes drift1 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(60px,-30px) scale(1.12); } }
+  @keyframes drift2 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-80px,40px) scale(1.08); } }
+  @keyframes drift3 { 0%,100% { transform: translate(0,0) scale(0.95); } 50% { transform: translate(40px,-50px) scale(1.05); } }
+
+  .ring {
+    position: absolute;
+    left: -200px; top: -200px;
+    width: 480px; height: 480px;
+    border: 2px solid rgba(0,156,182,0.45);
+    border-radius: 50%;
+  }
+
+  .accent-line {
+    position: absolute;
+    left: 110px; right: 110px; top: 240px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,102,0,0.85), rgba(0,156,182,0.65), transparent);
+    background-size: 200% 100%;
+    transform: scaleX(0);
+    transform-origin: left center;
+    animation: shimmer 6s linear infinite, lineIn 1.4s 0.5s cubic-bezier(.2,.7,.2,1) forwards;
+  }
+  @keyframes shimmer { 0% { background-position: 0% 0; } 100% { background-position: 200% 0; } }
+  @keyframes lineIn { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes slideInRight { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+  @keyframes letterIn {
+    from { opacity: 0; transform: translateY(40px) rotateX(-30deg); }
+    to   { opacity: 1; transform: translateY(0)  rotateX(0); }
+  }
+  @keyframes glowOrange {
+    0%, 100% { text-shadow: 0 0 18px rgba(255,102,0,0.0); }
+    50%      { text-shadow: 0 0 36px rgba(255,102,0,0.55); }
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.04); }
+  }
+  @keyframes countUp {
+    from { transform: translateY(40%); opacity: 0; }
+    to   { transform: translateY(0);   opacity: 1; }
+  }
+
+  .frame { position: absolute; inset: 0; padding: 64px 110px 56px; display: flex; flex-direction: column; }
+
+  .theme-toggle {
+    position: absolute;
+    top: 36px; right: 36px;
+    z-index: 12;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px;
+    font: inherit;
+    font-size: 13px; font-weight: 600;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--muted);
+    background: var(--card-bg);
+    border: 1px solid var(--pill-border);
+    border-radius: 999px;
+    cursor: pointer; user-select: none;
+    backdrop-filter: blur(8px);
+    opacity: 0;
+    animation: fadeUp 0.7s 0.3s ease-out forwards;
+  }
+  .theme-toggle:hover { color: var(--text); border-color: var(--orange); transform: translateY(-1px); }
+  .theme-toggle:focus-visible { outline: 2px solid var(--orange); outline-offset: 3px; }
+  .theme-toggle .glyph { font-size: 16px; line-height: 1; transform: translateY(-1px); }
+
+  .step-hint {
+    position: absolute;
+    top: 36px; left: 50%;
+    transform: translateX(-50%);
+    z-index: 11;
+    display: inline-flex;
+    align-items: center;
+    gap: 18px;
+    padding: 9px 20px;
+    font-size: 12px; font-weight: 600;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--muted);
+    background: var(--card-bg);
+    border: 1px solid var(--pill-border);
+    border-radius: 999px;
+    backdrop-filter: blur(8px);
+    opacity: 0;
+    animation: fadeUp 0.8s 1.7s ease-out forwards;
+  }
+  .step-hint .step-label { white-space: nowrap; }
+  .step-hint .step-dots { display: inline-flex; gap: 7px; }
+  .step-hint .step-dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: var(--rule);
+    border: 1px solid var(--pill-border);
+    cursor: pointer;
+  }
+  .step-hint .step-dot.active {
+    background: var(--orange);
+    border-color: var(--orange);
+    transform: scale(1.18);
+    box-shadow: 0 0 10px rgba(255,102,0,0.55);
+  }
+  .step-hint.is-done { color: var(--orange); border-color: var(--orange); }
+  .step-hint .step-count {
+    font-variant-numeric: tabular-nums;
+    color: var(--text);
+    min-width: 28px; text-align: right;
+  }
+
+  .eyebrow {
+    color: var(--orange);
+    font-size: 22px; font-weight: 600;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    margin-bottom: 14px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.1s ease-out forwards;
+  }
+
+  h1.title {
+    font-weight: 800;
+    font-size: 84px; line-height: 1.0;
+    margin: 0 0 8px;
+    letter-spacing: -0.02em;
+    perspective: 800px;
+  }
+  .title .word { display: inline-block; }
+  .title .ch {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(40px) rotateX(-30deg);
+    animation: letterIn 0.7s cubic-bezier(.2,.8,.2,1) forwards;
+  }
+  .title .accent { color: var(--orange); animation: glowOrange 4.5s ease-in-out 2.2s infinite; }
+
+  .sub {
+    font-size: 22px;
+    color: var(--muted);
+    margin: 0 0 24px;
+    letter-spacing: 0.04em;
+    opacity: 0;
+    animation: fadeUp 0.8s 1.5s ease-out forwards;
+    max-width: 1300px;
+  }
+
+  .body-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 460px;
+    gap: 40px;
+    min-height: 0;
+    align-items: stretch;
+  }
+
+  .chart-card {
+    position: relative;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 24px 28px 20px;
+    backdrop-filter: blur(8px);
+    opacity: 0;
+    animation: fadeUp 0.9s 1.5s cubic-bezier(.2,.7,.2,1) forwards;
+    display: flex;
+    flex-direction: column;
+  }
+  .chart-card svg { width: 100%; flex: 1; display: block; }
+
+  .chart-legend {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    padding: 4px 4px 14px;
+    color: var(--text-soft);
+    font-size: 16px;
+    letter-spacing: 0.04em;
+  }
+  .legend-item { display: inline-flex; align-items: center; gap: 10px; }
+  .legend-swatch {
+    width: 26px; height: 12px; border-radius: 3px;
+    box-shadow: 0 0 12px currentColor;
+  }
+  .legend-swatch.solid-base   { background: var(--c-base);   color: var(--c-base); }
+  .legend-swatch.solid-target { background: var(--c-target); color: var(--c-target); }
+  .legend-swatch.gap-fill {
+    background: var(--c-target-soft);
+    color: var(--c-target);
+    border: 1px dashed var(--c-target);
+    box-shadow: none;
+  }
+  .legend-divider { width: 1px; height: 18px; background: var(--rule); }
+
+  /* axes */
+  .grid-line { stroke: var(--grid); stroke-width: 1; }
+  .grid-line.grid-axis { stroke: var(--grid-axis); }
+  .axis-text { fill: var(--muted); font-size: 18px; }
+  .axis-text-strong { fill: var(--text); font-weight: 600; }
+
+  .grid-line, .axis-text {
+    opacity: 0;
+    animation: fadeIn 0.8s 1.8s ease-out forwards;
+  }
+
+  /* bars */
+  .bar {
+    transform-box: fill-box;
+    transform-origin: bottom center;
+    transform: scaleY(0);
+    opacity: 0;
+    filter: drop-shadow(var(--bar-shadow));
+  }
+  .bar.is-revealed { animation: barGrow 0.85s cubic-bezier(.2,.8,.25,1) forwards; }
+  @keyframes barGrow {
+    from { transform: scaleY(0); opacity: 0; }
+    50%  { opacity: 1; }
+    to   { transform: scaleY(1); opacity: 1; }
+  }
+  .bar-base   { fill: var(--c-base); }
+  .bar-target { fill: var(--c-target); }
+  .bar-base-fc {
+    fill: none;
+    stroke: var(--c-base);
+    stroke-width: 2;
+    stroke-dasharray: 4 4;
+  }
+
+  /* bar value labels */
+  .bar-label {
+    fill: var(--text);
+    font-weight: 700;
+    font-size: 17px;
+    text-anchor: middle;
+    opacity: 0;
+  }
+  .bar-label.is-revealed { animation: fadeUp 0.5s ease-out forwards; }
+  .bar-label.label-base { fill: var(--c-base); }
+  .bar-label.label-target { fill: var(--c-target); }
+
+  /* target line + gap shading */
+  .target-line {
+    stroke: var(--c-target);
+    stroke-width: 2;
+    stroke-dasharray: 6 5;
+    stroke-dashoffset: 1500;
+    opacity: 0;
+  }
+  .target-line.is-revealed {
+    opacity: 1;
+    animation: drawDash 1.0s cubic-bezier(.55,.1,.25,1) forwards;
+  }
+  @keyframes drawDash { to { stroke-dashoffset: 0; } }
+
+  .target-label {
+    fill: var(--c-target);
+    font-weight: 800;
+    font-size: 18px;
+    letter-spacing: 0.04em;
+    opacity: 0;
+  }
+  .target-label.is-revealed { animation: fadeUp 0.7s 0.5s ease-out forwards; }
+
+  /* gap band — between baseline 2028 and target 2028 */
+  .gap-band {
+    fill: var(--c-gap);
+    stroke: var(--c-target);
+    stroke-width: 1.5;
+    stroke-dasharray: 4 4;
+    opacity: 0;
+  }
+  .gap-band.is-revealed { animation: fadeIn 0.7s ease-out forwards; }
+
+  .gap-callout {
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  .gap-callout.is-revealed { animation: fadeUp 0.7s 0.3s cubic-bezier(.2,1.4,.4,1) forwards; }
+  .gap-callout-bg {
+    fill: var(--card-bg-hi);
+    stroke: var(--c-target);
+    stroke-width: 1.5;
+  }
+  .gap-callout-text {
+    fill: var(--text);
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: -0.01em;
+  }
+  .gap-callout-sub {
+    fill: var(--muted);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  /* big CAGR ring */
+  .cagr-hero {
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  .cagr-hero.is-revealed { animation: fadeUp 0.9s cubic-bezier(.2,1.4,.4,1) forwards; }
+  .cagr-ring-track {
+    fill: none;
+    stroke: var(--rule);
+    stroke-width: 4;
+  }
+  .cagr-ring-arc {
+    fill: none;
+    stroke: var(--c-target);
+    stroke-width: 6;
+    stroke-linecap: round;
+    filter: drop-shadow(0 0 12px var(--c-target-glow));
+    transform-box: fill-box;
+    transform-origin: center;
+    transform: rotate(-90deg);
+  }
+  .cagr-ring-num {
+    fill: var(--c-target);
+    font-weight: 900;
+    font-size: 36px;
+    letter-spacing: -0.02em;
+    text-shadow: 0 0 24px rgba(255,102,0,0.4);
+  }
+  .cagr-ring-label {
+    fill: var(--text);
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
+
+  /* stats */
+  .stats {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-height: 0;
+  }
+  .stat-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 18px 22px;
+    backdrop-filter: blur(8px);
+    opacity: 0;
+    transform: translateX(40px);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-card.is-revealed {
+    animation: slideInRight 0.7s cubic-bezier(.2,.8,.25,1) forwards;
+  }
+  .stat-card.is-revealed.is-final {
+    animation: slideInRight 0.7s cubic-bezier(.2,.8,.25,1) forwards, pulse 3.5s 1.0s ease-in-out infinite;
+  }
+  .stat-card .label {
+    color: var(--muted);
+    font-size: 13px; font-weight: 700;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .stat-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    align-items: center;
+  }
+  .stat-cell { display: flex; flex-direction: column; gap: 4px; }
+  .stat-name {
+    font-size: 13px; font-weight: 600;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .stat-name.is-base   { color: var(--c-base); }
+  .stat-name.is-target { color: var(--c-target); }
+  .stat-value {
+    font-size: 44px; font-weight: 800;
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    color: var(--text);
+  }
+  .stat-unit {
+    font-size: 22px; font-weight: 700;
+    color: var(--muted);
+    margin-left: 4px;
+    letter-spacing: 0;
+  }
+  .stat-meta {
+    font-size: 14px; color: var(--muted);
+    margin-top: 4px;
+    letter-spacing: 0.04em;
+  }
+  .stat-card.is-final {
+    background: linear-gradient(135deg, rgba(255,102,0,0.18), rgba(255,102,0,0.04));
+    border-color: var(--c-target);
+    box-shadow: 0 0 24px rgba(255,102,0,0.18);
+  }
+  .stat-card.is-final .label { color: var(--c-target); }
+  .stat-card.is-final .stat-value { color: var(--c-target); text-shadow: 0 0 26px rgba(255,102,0,0.28); }
+  .stat-card.is-final .ribbon {
+    position: absolute;
+    top: 14px; right: -50px;
+    transform: rotate(35deg);
+    background: var(--c-target);
+    color: var(--text);
+    font-size: 11px; font-weight: 800;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    padding: 4px 60px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.18);
+  }
+  :root[data-theme="light"] .stat-card.is-final .ribbon { color: #fff; }
+
+  /* footer */
+  .footer {
+    margin-top: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--muted);
+    font-size: 16px;
+    letter-spacing: 0.08em;
+    opacity: 0;
+    animation: fadeUp 0.8s 2.0s ease-out forwards;
+  }
+  .pill {
+    display: inline-block;
+    padding: 6px 14px;
+    border: 1px solid var(--pill-border);
+    border-radius: 999px;
+    font-size: 14px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .back-link {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    border-bottom: 1px dashed var(--link-border);
+    padding-bottom: 2px;
+  }
+  .back-link:hover { color: var(--orange); border-color: var(--orange); }
+  .footer .footer-links { display: inline-flex; gap: 22px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001s !important;
+      animation-delay: 0s !important;
+      transition-duration: 0.001s !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<section class="slide" id="slide">
+  <div class="ring"></div>
+  <div class="orb"></div>
+  <div class="bokeh b1"></div>
+  <div class="bokeh b2"></div>
+  <div class="bokeh b3"></div>
+  <div class="accent-line"></div>
+
+  <button class="theme-toggle" id="theme-toggle" type="button" aria-pressed="false" aria-label="Toggle light mode">
+    <span class="glyph" id="theme-glyph">☀</span>
+    <span id="theme-label">Light</span>
+  </button>
+
+  <div class="step-hint" id="step-hint" role="status" aria-live="polite">
+    <span class="step-label" id="step-label">Click to step through the math</span>
+    <span class="step-dots" id="step-dots">
+      <span class="step-dot" data-step="0" title="Today"></span>
+      <span class="step-dot" data-step="1" title="2× target"></span>
+      <span class="step-dot" data-step="2" title="Current pace gap"></span>
+      <span class="step-dot" data-step="3" title="Required CAGR"></span>
+      <span class="step-dot" data-step="4" title="What it takes"></span>
+    </span>
+    <span class="step-count"><span id="prog-current">0</span>&nbsp;/&nbsp;5</span>
+  </div>
+
+  <div class="frame">
+    <div class="eyebrow">Y Soft · NALA · FY2026 → FY2028</div>
+    <h1 class="title" id="hero-title">Double <span class="accent">NALA</span> in 2 years.</h1>
+    <p class="sub">€8.3m today (NA + LATAM). €16.7m by FY2028. Required CAGR: <strong>41.4%</strong> — roughly 3.4× the current 12% pace, or 4.6× the recent 8.9% pace.</p>
+
+    <div class="body-grid">
+
+      <!-- ============================ CHART ============================ -->
+      <div class="chart-card" id="chart-card">
+        <div class="chart-legend">
+          <span class="legend-item"><span class="legend-swatch solid-base"></span>Current pace · 12% CAGR</span>
+          <span class="legend-item"><span class="legend-swatch solid-target"></span>Required pace · 41.4% CAGR</span>
+          <span class="legend-divider"></span>
+          <span class="legend-item"><span class="legend-swatch gap-fill"></span>Gap to 2× target</span>
+        </div>
+
+        <svg id="chart-svg" viewBox="0 0 1600 760" preserveAspectRatio="none"
+             aria-label="Bar chart, NALA revenue 2026 to 2028, current pace vs required pace">
+
+          <!-- gridlines + y labels (€M) -->
+          <g id="grid">
+            <line class="grid-line" x1="120" y1="80"  x2="1560" y2="80"/>
+            <text class="axis-text" x="104" y="86" text-anchor="end">€18m</text>
+            <line class="grid-line" x1="120" y1="190" x2="1560" y2="190"/>
+            <text class="axis-text" x="104" y="196" text-anchor="end">€15m</text>
+            <line class="grid-line" x1="120" y1="335" x2="1560" y2="335"/>
+            <text class="axis-text" x="104" y="341" text-anchor="end">€12m</text>
+            <line class="grid-line" x1="120" y1="475" x2="1560" y2="475"/>
+            <text class="axis-text" x="104" y="481" text-anchor="end">€9m</text>
+            <line class="grid-line" x1="120" y1="615" x2="1560" y2="615"/>
+            <text class="axis-text" x="104" y="621" text-anchor="end">€6m</text>
+            <line class="grid-line grid-axis" x1="120" y1="710" x2="1560" y2="710"/>
+            <text class="axis-text" x="104" y="716" text-anchor="end">€0</text>
+          </g>
+
+          <!-- bars + labels rendered by JS -->
+          <g id="bars-base"></g>
+          <g id="bars-target"></g>
+          <g id="bar-labels"></g>
+          <g id="axis-x"></g>
+
+          <!-- gap band -->
+          <g id="gap-layer"></g>
+
+          <!-- target line at 2× value -->
+          <line id="target-line" class="target-line" x1="120" y1="0" x2="1560" y2="0"/>
+          <text id="target-line-label" class="target-label" x="1550" y="0" text-anchor="end">2× target · €16.7m</text>
+
+          <!-- big CAGR hero ring -->
+          <g id="cagr-hero" class="cagr-hero" transform="translate(1380,160)">
+            <circle class="cagr-ring-track" r="86" />
+            <path  id="cagr-ring-arc" class="cagr-ring-arc" />
+            <text class="cagr-ring-num"   x="0" y="6"  text-anchor="middle">41.4%</text>
+            <text class="cagr-ring-label" x="0" y="40" text-anchor="middle">Required CAGR</text>
+          </g>
+        </svg>
+      </div>
+
+      <!-- ============================ STATS ============================ -->
+      <div class="stats">
+        <div class="stat-card" data-stat="0">
+          <div class="label">Today · 2026 NALA revenue</div>
+          <div class="stat-row">
+            <div class="stat-cell">
+              <span class="stat-name is-base">North America</span>
+              <div><span class="stat-value">€7.9</span><span class="stat-unit">m</span></div>
+              <span class="stat-meta">16% of global · 16 USA FTE</span>
+            </div>
+            <div class="stat-cell">
+              <span class="stat-name is-base">Latin America</span>
+              <div><span class="stat-value">€0.4</span><span class="stat-unit">m</span></div>
+              <span class="stat-meta">~0.9% of global</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="stat-card" data-stat="1">
+          <div class="label">2× Target · FY2028</div>
+          <div class="stat-row">
+            <div class="stat-cell">
+              <span class="stat-name is-target">From</span>
+              <div><span class="stat-value">€8.3</span><span class="stat-unit">m</span></div>
+              <span class="stat-meta">2026 NALA combined</span>
+            </div>
+            <div class="stat-cell">
+              <span class="stat-name is-target">To</span>
+              <div><span class="stat-value">€16.7</span><span class="stat-unit">m</span></div>
+              <span class="stat-meta">2× in 2 years</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="stat-card" data-stat="2">
+          <div class="label">Gap · current pace ≠ enough</div>
+          <div class="stat-row">
+            <div class="stat-cell">
+              <span class="stat-name is-base">@ 12% CAGR</span>
+              <div><span class="stat-value">€10.4</span><span class="stat-unit">m</span></div>
+              <span class="stat-meta">2028 if status quo holds</span>
+            </div>
+            <div class="stat-cell">
+              <span class="stat-name is-target">Shortfall</span>
+              <div><span class="stat-value">€6.3</span><span class="stat-unit">m</span></div>
+              <span class="stat-meta">vs 2× target</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="stat-card is-final" data-stat="3">
+          <div class="ribbon">Path</div>
+          <div class="label">What 41.4% CAGR takes</div>
+          <div class="stat-row">
+            <div class="stat-cell">
+              <span class="stat-name is-target">Headcount</span>
+              <div><span class="stat-value">32</span><span class="stat-unit">FTE</span></div>
+              <span class="stat-meta">2× team @ same productivity</span>
+            </div>
+            <div class="stat-cell">
+              <span class="stat-name is-target">…or productivity</span>
+              <div><span class="stat-value">€1.0</span><span class="stat-unit">m / FTE</span></div>
+              <span class="stat-meta">match Europe @ 16 FTE</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <span class="pill">Y Soft · NALA · 2× in 2 years · 41.4% CAGR</span>
+      <span class="footer-links">
+        <a class="back-link" href="regional-share.html">← USA opportunity</a>
+        <a class="back-link" href="index.html">NALA agenda</a>
+      </span>
+    </div>
+  </div>
+</section>
+
+<script>
+  // ===== auto-fit 1920x1080 to viewport =====
+  (function autoFit() {
+    const root = document.documentElement;
+    const fit = () => {
+      const s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+      root.style.setProperty('--scale', s);
+    };
+    fit();
+    window.addEventListener('resize', fit, { passive: true });
+    window.addEventListener('orientationchange', fit, { passive: true });
+  })();
+
+  // ===== theme toggle =====
+  (function themeToggle() {
+    const root = document.documentElement;
+    const btn = document.getElementById('theme-toggle');
+    const glyph = document.getElementById('theme-glyph');
+    const label = document.getElementById('theme-label');
+    const KEY = 'nala-double-theme';
+
+    const apply = (theme) => {
+      if (theme === 'light') root.setAttribute('data-theme', 'light');
+      else root.removeAttribute('data-theme');
+      const isLight = theme === 'light';
+      btn.setAttribute('aria-pressed', String(isLight));
+      glyph.textContent = isLight ? '☾' : '☀';
+      label.textContent = isLight ? 'Dark' : 'Light';
+    };
+    const initial = localStorage.getItem(KEY) === 'light' ? 'light' : 'dark';
+    apply(initial);
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+      apply(next);
+      localStorage.setItem(KEY, next);
+    });
+  })();
+
+  // ===== letter-by-letter title =====
+  (function splitTitle() {
+    const h1 = document.getElementById('hero-title');
+    if (!h1) return;
+    const nodes = [...h1.childNodes];
+    h1.replaceChildren();
+    let i = 0;
+    const addLetters = (text, target) => {
+      [...text].forEach(ch => {
+        const s = document.createElement('span');
+        s.className = 'ch';
+        s.textContent = ch === ' ' ? ' ' : ch;
+        s.style.animationDelay = (0.25 + i * 0.045) + 's';
+        i++;
+        target.appendChild(s);
+      });
+    };
+    nodes.forEach(node => {
+      if (node.nodeType === 3) {
+        node.textContent.split(' ').forEach((word, wIdx, arr) => {
+          if (word.length) {
+            const w = document.createElement('span');
+            w.className = 'word';
+            addLetters(word, w);
+            h1.appendChild(w);
+          }
+          if (wIdx < arr.length - 1) h1.appendChild(document.createTextNode(' '));
+        });
+      } else if (node.nodeType === 1) {
+        const wrap = document.createElement('span');
+        wrap.className = 'word ' + node.className;
+        addLetters(node.textContent, wrap);
+        h1.appendChild(wrap);
+      }
+    });
+  })();
+
+  // ===== chart geometry & data =====
+  const SVG_NS = 'http://www.w3.org/2000/svg';
+
+  // NALA = North America (€7.9m) + LATAM (€0.4m) ≈ €8.3m in FY2026
+  const START = 8.3;
+  const TARGET_2028 = START * 2; // €16.6 — round to €16.7m for storytelling
+  const RATE_BASE = 0.12;        // current 12% NA CAGR
+  const RATE_TARGET = Math.pow(2, 1/2) - 1; // ~41.4%
+
+  const YEARS = [2026, 2027, 2028];
+  const baseSeries   = YEARS.map((_, i) => +(START * Math.pow(1 + RATE_BASE,   i)).toFixed(2));
+  const targetSeries = YEARS.map((_, i) => +(START * Math.pow(1 + RATE_TARGET, i)).toFixed(2));
+
+  // viewBox 1600 x 760
+  // y: 0 → 18m maps to 710 → 80
+  const PLOT_TOP = 80, PLOT_BOTTOM = 710, Y_MAX_M = 18;
+  const yFor = (vM) => PLOT_BOTTOM - (vM / Y_MAX_M) * (PLOT_BOTTOM - PLOT_TOP);
+  const yPx  = (vM) => (vM / Y_MAX_M) * (PLOT_BOTTOM - PLOT_TOP);
+
+  const PLOT_LEFT = 160, PLOT_RIGHT = 1560;
+  const PLOT_W = PLOT_RIGHT - PLOT_LEFT;
+  const N = YEARS.length;
+  const groupW = PLOT_W / N;
+  const groupCenter = (i) => PLOT_LEFT + (i + 0.5) * groupW;
+  const BAR_W = 130;
+  const BAR_GAP = 16;
+  const barX_base   = (i) => groupCenter(i) - (BAR_W + BAR_GAP / 2);
+  const barX_target = (i) => groupCenter(i) + (BAR_GAP / 2);
+
+  function makeBar({ x, y, w, h, klass, rx = 6 }) {
+    const r = document.createElementNS(SVG_NS, 'rect');
+    r.setAttribute('x', x);
+    r.setAttribute('y', y);
+    r.setAttribute('width', w);
+    r.setAttribute('height', Math.max(h, 0));
+    r.setAttribute('rx', rx);
+    r.setAttribute('class', klass);
+    return r;
+  }
+
+  // x-axis labels
+  (function renderAxis() {
+    const axis = document.getElementById('axis-x');
+    YEARS.forEach((yr, i) => {
+      const t = document.createElementNS(SVG_NS, 'text');
+      t.setAttribute('x', groupCenter(i));
+      t.setAttribute('y', 745);
+      t.setAttribute('text-anchor', 'middle');
+      t.setAttribute('class', 'axis-text' + (i === N - 1 ? ' axis-text-strong' : ''));
+      t.textContent = yr;
+      axis.appendChild(t);
+    });
+  })();
+
+  // base bars (current pace) — revealed at start
+  (function renderBaseBars() {
+    const layer = document.getElementById('bars-base');
+    YEARS.forEach((_, i) => {
+      const v = baseSeries[i];
+      const bar = makeBar({ x: barX_base(i), y: yFor(v), w: BAR_W, h: yPx(v), klass: 'bar bar-base' });
+      bar.style.animationDelay = (1.65 + i * 0.08) + 's';
+      bar.classList.add('is-revealed');
+      layer.appendChild(bar);
+
+      const lbl = document.createElementNS(SVG_NS, 'text');
+      lbl.setAttribute('class', 'bar-label label-base is-revealed');
+      lbl.setAttribute('x', barX_base(i) + BAR_W / 2);
+      lbl.setAttribute('y', yFor(v) - 10);
+      lbl.style.animationDelay = (2.0 + i * 0.08) + 's';
+      lbl.textContent = '€' + v.toFixed(1) + 'm';
+      document.getElementById('bar-labels').appendChild(lbl);
+    });
+  })();
+
+  // target bars — revealed step >= 2
+  (function renderTargetBars() {
+    const layer = document.getElementById('bars-target');
+    const labels = document.getElementById('bar-labels');
+    YEARS.forEach((_, i) => {
+      const v = targetSeries[i];
+      const bar = makeBar({ x: barX_target(i), y: yFor(v), w: BAR_W, h: yPx(v), klass: 'bar bar-target' });
+      bar.dataset.role = 'target-bar';
+      bar.style.animationDelay = (i * 0.08) + 's';
+      layer.appendChild(bar);
+
+      const lbl = document.createElementNS(SVG_NS, 'text');
+      lbl.setAttribute('class', 'bar-label label-target');
+      lbl.dataset.role = 'target-label-bar';
+      lbl.setAttribute('x', barX_target(i) + BAR_W / 2);
+      lbl.setAttribute('y', yFor(v) - 10);
+      lbl.style.animationDelay = (0.4 + i * 0.08) + 's';
+      lbl.textContent = '€' + v.toFixed(1) + 'm';
+      labels.appendChild(lbl);
+    });
+  })();
+
+  // gap band — between baseline 2028 top and target 2028 top, spanning the 2028 column
+  (function renderGap() {
+    const layer = document.getElementById('gap-layer');
+    const i = N - 1; // 2028
+    const xLeft = barX_base(i);
+    const xRight = barX_target(i) + BAR_W;
+    const yTopOfBase = yFor(baseSeries[i]);
+    const yTopOfTarget = yFor(targetSeries[i]);
+
+    const path = document.createElementNS(SVG_NS, 'rect');
+    path.setAttribute('class', 'gap-band');
+    path.setAttribute('x', xLeft);
+    path.setAttribute('y', yTopOfTarget);
+    path.setAttribute('width', xRight - xLeft);
+    path.setAttribute('height', yTopOfBase - yTopOfTarget);
+    path.setAttribute('rx', 6);
+    layer.appendChild(path);
+
+    // gap callout
+    const callout = document.createElementNS(SVG_NS, 'g');
+    callout.setAttribute('class', 'gap-callout');
+    const cx = (xLeft + xRight) / 2;
+    const cy = (yTopOfBase + yTopOfTarget) / 2;
+    callout.setAttribute('transform', `translate(${cx},${cy})`);
+
+    const cw = 220, ch = 70;
+    const bg = document.createElementNS(SVG_NS, 'rect');
+    bg.setAttribute('class', 'gap-callout-bg');
+    bg.setAttribute('x', -cw / 2); bg.setAttribute('y', -ch / 2);
+    bg.setAttribute('width', cw);  bg.setAttribute('height', ch);
+    bg.setAttribute('rx', 12);
+    callout.appendChild(bg);
+
+    const t1 = document.createElementNS(SVG_NS, 'text');
+    t1.setAttribute('class', 'gap-callout-text');
+    t1.setAttribute('x', 0); t1.setAttribute('y', -2);
+    t1.setAttribute('text-anchor', 'middle');
+    t1.textContent = 'Short by €6.3m';
+    callout.appendChild(t1);
+
+    const t2 = document.createElementNS(SVG_NS, 'text');
+    t2.setAttribute('class', 'gap-callout-sub');
+    t2.setAttribute('x', 0); t2.setAttribute('y', 22);
+    t2.setAttribute('text-anchor', 'middle');
+    t2.textContent = 'at current 12% pace';
+    callout.appendChild(t2);
+
+    layer.appendChild(callout);
+  })();
+
+  // target line at €16.7m
+  (function setTargetLine() {
+    const y = yFor(TARGET_2028);
+    const line = document.getElementById('target-line');
+    line.setAttribute('y1', y);
+    line.setAttribute('y2', y);
+    const lbl = document.getElementById('target-line-label');
+    lbl.setAttribute('y', y - 10);
+  })();
+
+  // CAGR hero ring — animate arc to full circle when revealed
+  (function setCagrArc() {
+    const r = 86;
+    const c = 2 * Math.PI * r;
+    const arc = document.getElementById('cagr-ring-arc');
+    arc.setAttribute('d',
+      `M 0 ${-r}
+       a ${r} ${r} 0 1 1 0 ${2 * r}
+       a ${r} ${r} 0 1 1 0 ${-2 * r}`);
+    arc.style.strokeDasharray = c;
+    arc.style.strokeDashoffset = c;
+    arc.style.transition = 'stroke-dashoffset 1.4s cubic-bezier(.4,.1,.2,1)';
+    arc.dataset.full = c;
+    arc.dataset.target = (c * 0.586).toFixed(2); // 41.4% drawn (1 - 0.414)
+  })();
+
+  // ===== click reveal =====
+  (function clickReveal() {
+    const slide = document.getElementById('slide');
+    const hint = document.getElementById('step-hint');
+    const label = document.getElementById('step-label');
+    const counter = document.getElementById('prog-current');
+    const dots = [...document.querySelectorAll('.step-hint .step-dot')];
+    const stepLabels = [
+      'Today’s NALA revenue revealed',
+      '2× target by 2028 revealed',
+      'Current-pace gap revealed',
+      'Required CAGR revealed',
+      'Path to 41.4% revealed',
+    ];
+    const TOTAL = 5;
+    let step = 0;
+
+    const cards = [...document.querySelectorAll('.stat-card')];
+    const targetBars = [...document.querySelectorAll('[data-role="target-bar"]')];
+    const targetBarLabels = [...document.querySelectorAll('[data-role="target-label-bar"]')];
+    const gapBand = document.querySelector('.gap-band');
+    const gapCallout = document.querySelector('.gap-callout');
+    const targetLine = document.getElementById('target-line');
+    const targetLineLabel = document.getElementById('target-line-label');
+    const cagrHero = document.getElementById('cagr-hero');
+    const cagrArc = document.getElementById('cagr-ring-arc');
+
+    const setRevealed = (el, on) => el && el.classList.toggle('is-revealed', on);
+
+    const apply = () => {
+      cards.forEach((c, i) => setRevealed(c, i < step));
+
+      // step >= 2 → target bars + target line
+      [targetLine, targetLineLabel].forEach(e => setRevealed(e, step >= 2));
+      targetBars.forEach((b, i) => { b.style.animationDelay = (i * 0.08) + 's'; setRevealed(b, step >= 2); });
+      targetBarLabels.forEach((l, i) => { l.style.animationDelay = (0.4 + i * 0.08) + 's'; setRevealed(l, step >= 2); });
+
+      // step >= 3 → gap band + callout
+      setRevealed(gapBand, step >= 3);
+      setRevealed(gapCallout, step >= 3);
+
+      // step >= 4 → CAGR hero ring + arc draws
+      setRevealed(cagrHero, step >= 4);
+      if (cagrArc) {
+        cagrArc.style.strokeDashoffset = step >= 4 ? cagrArc.dataset.target : cagrArc.dataset.full;
+      }
+
+      counter.textContent = step;
+      dots.forEach((d, i) => d.classList.toggle('active', i < step));
+      if (step === 0) {
+        label.textContent = 'Click to step through the math';
+        hint.classList.remove('is-done');
+        slide.classList.remove('is-done');
+      } else if (step >= TOTAL) {
+        label.textContent = stepLabels[TOTAL - 1];
+        hint.classList.add('is-done');
+        slide.classList.add('is-done');
+      } else {
+        label.textContent = stepLabels[step - 1];
+        hint.classList.remove('is-done');
+        slide.classList.remove('is-done');
+      }
+    };
+
+    const advance = () => { if (step < TOTAL) { step++; apply(); } };
+    const back    = () => { if (step > 0)     { step--; apply(); } };
+    const jumpTo  = (t) => { step = Math.max(0, Math.min(TOTAL, t)); apply(); };
+
+    const isInteractive = (target) => !!target.closest('button, a, .step-dot');
+
+    slide.addEventListener('click', (e) => {
+      if (isInteractive(e.target)) return;
+      advance();
+    });
+
+    dots.forEach((dot, i) => {
+      dot.addEventListener('click', (e) => { e.stopPropagation(); jumpTo(i + 1); });
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A') return;
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') { e.preventDefault(); advance(); }
+      else if (e.key === 'ArrowLeft' || e.key === 'Backspace') { e.preventDefault(); back(); }
+      else if (e.key === 'Escape' || e.key === 'r' || e.key === 'R' || e.key === '0') { jumpTo(0); }
+      else if (/^[1-5]$/.test(e.key)) { jumpTo(parseInt(e.key, 10)); }
+    });
+
+    apply();
+  })();
+</script>
+
+</body>
+</html>
