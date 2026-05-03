@@ -654,14 +654,14 @@
   <div class="frame">
     <div class="eyebrow">Y Soft · NALA · FY2026 → FY2028</div>
     <h1 class="title" id="hero-title">Double <span class="accent">NALA</span> in 2 years.</h1>
-    <p class="sub">€8.3m today (NA + LATAM). €16.7m by FY2028. Required CAGR: <strong>41.4%</strong> — roughly 3.4× the current 12% pace, or 4.6× the recent 8.9% pace.</p>
+    <p class="sub">€8.3m today (NA €7.9m + LATAM €0.4m). €16.6m by FY2028. Required CAGR: <strong>41.4%</strong> — roughly 4.8× NALA’s blended 8.6% pace (NA +12%, LATAM −11%).</p>
 
     <div class="body-grid">
 
       <!-- ============================ CHART ============================ -->
       <div class="chart-card" id="chart-card">
         <div class="chart-legend">
-          <span class="legend-item"><span class="legend-swatch solid-base"></span>Current pace · 12% CAGR</span>
+          <span class="legend-item"><span class="legend-swatch solid-base"></span>Current pace · 8.6% blended NALA CAGR</span>
           <span class="legend-item"><span class="legend-swatch solid-target"></span>Required pace · 41.4% CAGR</span>
           <span class="legend-divider"></span>
           <span class="legend-item"><span class="legend-swatch gap-fill"></span>Gap to 2× target</span>
@@ -697,7 +697,7 @@
 
           <!-- target line at 2× value -->
           <line id="target-line" class="target-line" x1="120" y1="0" x2="1560" y2="0"/>
-          <text id="target-line-label" class="target-label" x="1550" y="0" text-anchor="end">2× target · €16.7m</text>
+          <text id="target-line-label" class="target-label" x="1550" y="0" text-anchor="end">2× target · €16.6m</text>
 
           <!-- (CAGR hero number is shown in the stat card on the right) -->
         </svg>
@@ -711,12 +711,12 @@
             <div class="stat-cell">
               <span class="stat-name is-base">North America</span>
               <div><span class="stat-value">€7.9</span><span class="stat-unit">m</span></div>
-              <span class="stat-meta">16% of global · 16 USA FTE</span>
+              <span class="stat-meta">16% global · +12% CAGR · 16 USA FTE</span>
             </div>
             <div class="stat-cell">
               <span class="stat-name is-base">Latin America</span>
               <div><span class="stat-value">€0.4</span><span class="stat-unit">m</span></div>
-              <span class="stat-meta">~0.9% of global</span>
+              <span class="stat-meta">~0.9% global · −11% CAGR (declining)</span>
             </div>
           </div>
         </div>
@@ -731,7 +731,7 @@
             </div>
             <div class="stat-cell">
               <span class="stat-name is-target">To</span>
-              <div><span class="stat-value">€16.7</span><span class="stat-unit">m</span></div>
+              <div><span class="stat-value">€16.6</span><span class="stat-unit">m</span></div>
               <span class="stat-meta">2× in 2 years</span>
             </div>
           </div>
@@ -741,13 +741,13 @@
           <div class="label">Gap · current pace ≠ enough</div>
           <div class="stat-row">
             <div class="stat-cell">
-              <span class="stat-name is-base">@ 12% CAGR</span>
-              <div><span class="stat-value">€10.4</span><span class="stat-unit">m</span></div>
-              <span class="stat-meta">2028 if status quo holds</span>
+              <span class="stat-name is-base">@ 8.6% blended</span>
+              <div><span class="stat-value">€9.8</span><span class="stat-unit">m</span></div>
+              <span class="stat-meta">2028 if NALA holds status quo</span>
             </div>
             <div class="stat-cell">
               <span class="stat-name is-target">Shortfall</span>
-              <div><span class="stat-value">€6.3</span><span class="stat-unit">m</span></div>
+              <div><span class="stat-value">€6.8</span><span class="stat-unit">m</span></div>
               <span class="stat-meta">vs 2× target</span>
             </div>
           </div>
@@ -866,11 +866,13 @@
   // ===== chart geometry & data =====
   const SVG_NS = 'http://www.w3.org/2000/svg';
 
-  // NALA = North America (€7.9m) + LATAM (€0.4m) ≈ €8.3m in FY2026
-  const START = 8.3;
-  const TARGET_2028 = START * 2; // €16.6 — round to €16.7m for storytelling
-  const RATE_BASE = 0.12;        // current 12% NA CAGR
-  const RATE_TARGET = Math.pow(2, 1/2) - 1; // ~41.4%
+  // Real data (€): NA 2026 = 7,873,210; LATAM 2026 = 438,010; NALA = 8,311,220 ≈ €8.31m
+  const START = 8.31;
+  const TARGET_2028 = +(START * 2).toFixed(2); // €16.62m
+  // NALA blended CAGR 2018→2026: NALA 2018 = NA 3,185,568 + LATAM 1,116,349 = 4,301,917
+  // (8,311,220 / 4,301,917)^(1/8) - 1 = 8.57% — NA grows +12%, LATAM declines −11%
+  const RATE_BASE = 0.0857;
+  const RATE_TARGET = Math.pow(2, 1/2) - 1; // 41.42%
 
   const YEARS = [2026, 2027, 2028];
   const baseSeries   = YEARS.map((_, i) => +(START * Math.pow(1 + RATE_BASE,   i)).toFixed(2));
@@ -996,14 +998,14 @@
     t1.setAttribute('class', 'gap-callout-text');
     t1.setAttribute('x', 0); t1.setAttribute('y', -2);
     t1.setAttribute('text-anchor', 'middle');
-    t1.textContent = 'Short by €6.3m';
+    t1.textContent = 'Short by €6.8m';
     callout.appendChild(t1);
 
     const t2 = document.createElementNS(SVG_NS, 'text');
     t2.setAttribute('class', 'gap-callout-sub');
     t2.setAttribute('x', 0); t2.setAttribute('y', 22);
     t2.setAttribute('text-anchor', 'middle');
-    t2.textContent = 'at current 12% pace';
+    t2.textContent = 'at NALA’s 8.6% blended pace';
     callout.appendChild(t2);
 
     layer.appendChild(callout);
