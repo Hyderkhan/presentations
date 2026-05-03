@@ -406,12 +406,9 @@
   }
   .gap-band.is-revealed { animation: fadeIn 0.7s ease-out forwards; }
 
-  .gap-callout {
-    opacity: 0;
-    transform-box: fill-box;
-    transform-origin: center;
-  }
-  .gap-callout.is-revealed { animation: fadeUp 0.7s 0.3s cubic-bezier(.2,1.4,.4,1) forwards; }
+  /* gap callout uses SVG attribute transform for positioning — animate opacity only */
+  .gap-callout { opacity: 0; }
+  .gap-callout.is-revealed { animation: fadeIn 0.7s 0.3s ease-out forwards; }
   .gap-callout-bg {
     fill: var(--card-bg-hi);
     stroke: var(--c-target);
@@ -428,43 +425,6 @@
     font-size: 12px;
     font-weight: 600;
     letter-spacing: 0.16em;
-    text-transform: uppercase;
-  }
-
-  /* big CAGR ring */
-  .cagr-hero {
-    opacity: 0;
-    transform-box: fill-box;
-    transform-origin: center;
-  }
-  .cagr-hero.is-revealed { animation: fadeUp 0.9s cubic-bezier(.2,1.4,.4,1) forwards; }
-  .cagr-ring-track {
-    fill: none;
-    stroke: var(--rule);
-    stroke-width: 4;
-  }
-  .cagr-ring-arc {
-    fill: none;
-    stroke: var(--c-target);
-    stroke-width: 6;
-    stroke-linecap: round;
-    filter: drop-shadow(0 0 12px var(--c-target-glow));
-    transform-box: fill-box;
-    transform-origin: center;
-    transform: rotate(-90deg);
-  }
-  .cagr-ring-num {
-    fill: var(--c-target);
-    font-weight: 900;
-    font-size: 36px;
-    letter-spacing: -0.02em;
-    text-shadow: 0 0 24px rgba(255,102,0,0.4);
-  }
-  .cagr-ring-label {
-    fill: var(--text);
-    font-weight: 700;
-    font-size: 11px;
-    letter-spacing: 0.22em;
     text-transform: uppercase;
   }
 
@@ -554,6 +514,76 @@
   }
   :root[data-theme="light"] .stat-card.is-final .ribbon { color: #fff; }
 
+  /* final card: hero number + path stack */
+  .final-row {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 18px;
+    align-items: center;
+  }
+  .hero-cell { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+  .hero-num {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 2px;
+    font-size: 76px;
+    font-weight: 900;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+    color: var(--c-target);
+    text-shadow: 0 0 30px rgba(255,102,0,0.32);
+  }
+  .hero-num .hero-unit {
+    font-size: 38px;
+    font-weight: 800;
+    margin-left: 2px;
+    color: var(--c-target);
+  }
+  .hero-sub {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .path-cell { display: flex; flex-direction: column; gap: 8px; }
+  .path-row {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+  .path-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .path-value {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+  .path-value em {
+    font-style: normal;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-left: 2px;
+  }
+  .path-or {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--c-target);
+    text-align: center;
+    padding: 2px 0;
+  }
+
   /* footer */
   .footer {
     margin-top: 18px;
@@ -616,10 +646,9 @@
       <span class="step-dot" data-step="0" title="Today"></span>
       <span class="step-dot" data-step="1" title="2× target"></span>
       <span class="step-dot" data-step="2" title="Current pace gap"></span>
-      <span class="step-dot" data-step="3" title="Required CAGR"></span>
-      <span class="step-dot" data-step="4" title="What it takes"></span>
+      <span class="step-dot" data-step="3" title="Required CAGR + path"></span>
     </span>
-    <span class="step-count"><span id="prog-current">0</span>&nbsp;/&nbsp;5</span>
+    <span class="step-count"><span id="prog-current">0</span>&nbsp;/&nbsp;4</span>
   </div>
 
   <div class="frame">
@@ -670,13 +699,7 @@
           <line id="target-line" class="target-line" x1="120" y1="0" x2="1560" y2="0"/>
           <text id="target-line-label" class="target-label" x="1550" y="0" text-anchor="end">2× target · €16.7m</text>
 
-          <!-- big CAGR hero ring -->
-          <g id="cagr-hero" class="cagr-hero" transform="translate(1380,160)">
-            <circle class="cagr-ring-track" r="86" />
-            <path  id="cagr-ring-arc" class="cagr-ring-arc" />
-            <text class="cagr-ring-num"   x="0" y="6"  text-anchor="middle">41.4%</text>
-            <text class="cagr-ring-label" x="0" y="40" text-anchor="middle">Required CAGR</text>
-          </g>
+          <!-- (CAGR hero number is shown in the stat card on the right) -->
         </svg>
       </div>
 
@@ -731,18 +754,23 @@
         </div>
 
         <div class="stat-card is-final" data-stat="3">
-          <div class="ribbon">Path</div>
-          <div class="label">What 41.4% CAGR takes</div>
-          <div class="stat-row">
-            <div class="stat-cell">
-              <span class="stat-name is-target">Headcount</span>
-              <div><span class="stat-value">32</span><span class="stat-unit">FTE</span></div>
-              <span class="stat-meta">2× team @ same productivity</span>
+          <div class="ribbon">Ask</div>
+          <div class="label">Required CAGR · path forward</div>
+          <div class="final-row">
+            <div class="hero-cell">
+              <div class="hero-num"><span>41.4</span><span class="hero-unit">%</span></div>
+              <div class="hero-sub">to double in 2 yrs</div>
             </div>
-            <div class="stat-cell">
-              <span class="stat-name is-target">…or productivity</span>
-              <div><span class="stat-value">€1.0</span><span class="stat-unit">m / FTE</span></div>
-              <span class="stat-meta">match Europe @ 16 FTE</span>
+            <div class="path-cell">
+              <div class="path-row">
+                <span class="path-label">2× team</span>
+                <span class="path-value">32 <em>FTE</em></span>
+              </div>
+              <div class="path-or">— or —</div>
+              <div class="path-row">
+                <span class="path-label">match Europe</span>
+                <span class="path-value">€1.0m <em>/ FTE</em></span>
+              </div>
             </div>
           </div>
         </div>
@@ -991,22 +1019,6 @@
     lbl.setAttribute('y', y - 10);
   })();
 
-  // CAGR hero ring — animate arc to full circle when revealed
-  (function setCagrArc() {
-    const r = 86;
-    const c = 2 * Math.PI * r;
-    const arc = document.getElementById('cagr-ring-arc');
-    arc.setAttribute('d',
-      `M 0 ${-r}
-       a ${r} ${r} 0 1 1 0 ${2 * r}
-       a ${r} ${r} 0 1 1 0 ${-2 * r}`);
-    arc.style.strokeDasharray = c;
-    arc.style.strokeDashoffset = c;
-    arc.style.transition = 'stroke-dashoffset 1.4s cubic-bezier(.4,.1,.2,1)';
-    arc.dataset.full = c;
-    arc.dataset.target = (c * 0.586).toFixed(2); // 41.4% drawn (1 - 0.414)
-  })();
-
   // ===== click reveal =====
   (function clickReveal() {
     const slide = document.getElementById('slide');
@@ -1018,10 +1030,9 @@
       'Today’s NALA revenue revealed',
       '2× target by 2028 revealed',
       'Current-pace gap revealed',
-      'Required CAGR revealed',
-      'Path to 41.4% revealed',
+      'Required CAGR + path revealed',
     ];
-    const TOTAL = 5;
+    const TOTAL = 4;
     let step = 0;
 
     const cards = [...document.querySelectorAll('.stat-card')];
@@ -1031,8 +1042,6 @@
     const gapCallout = document.querySelector('.gap-callout');
     const targetLine = document.getElementById('target-line');
     const targetLineLabel = document.getElementById('target-line-label');
-    const cagrHero = document.getElementById('cagr-hero');
-    const cagrArc = document.getElementById('cagr-ring-arc');
 
     const setRevealed = (el, on) => el && el.classList.toggle('is-revealed', on);
 
@@ -1047,12 +1056,6 @@
       // step >= 3 → gap band + callout
       setRevealed(gapBand, step >= 3);
       setRevealed(gapCallout, step >= 3);
-
-      // step >= 4 → CAGR hero ring + arc draws
-      setRevealed(cagrHero, step >= 4);
-      if (cagrArc) {
-        cagrArc.style.strokeDashoffset = step >= 4 ? cagrArc.dataset.target : cagrArc.dataset.full;
-      }
 
       counter.textContent = step;
       dots.forEach((d, i) => d.classList.toggle('active', i < step));
@@ -1091,7 +1094,7 @@
       if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') { e.preventDefault(); advance(); }
       else if (e.key === 'ArrowLeft' || e.key === 'Backspace') { e.preventDefault(); back(); }
       else if (e.key === 'Escape' || e.key === 'r' || e.key === 'R' || e.key === '0') { jumpTo(0); }
-      else if (/^[1-5]$/.test(e.key)) { jumpTo(parseInt(e.key, 10)); }
+      else if (/^[1-4]$/.test(e.key)) { jumpTo(parseInt(e.key, 10)); }
     });
 
     apply();
