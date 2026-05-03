@@ -332,6 +332,61 @@
     pointer-events: none;
   }
 
+  /* Download button (injected by JS) */
+  .card-download {
+    position: absolute;
+    top: 10px; right: 10px;
+    z-index: 3;
+    width: 34px; height: 34px;
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 0;
+    background: rgba(15,18,24,0.62);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 8px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity .22s ease, transform .22s ease, background .18s ease, border-color .18s ease, color .18s ease, width .22s ease;
+    font: 600 11px/1 'Inter', system-ui, sans-serif;
+    letter-spacing: .04em;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .card:hover .card-download,
+  .card-download:focus-visible,
+  .card-download.is-busy,
+  .card-download.is-done,
+  .card-download.is-error { opacity: 1; transform: none; }
+  .card-download:hover {
+    background: var(--ys-orange);
+    border-color: var(--ys-orange);
+    color: #fff;
+  }
+  .card-download svg { width: 16px; height: 16px; display: block; }
+  .card-download .label { display: none; padding: 0 10px; }
+  .card-download.is-busy,
+  .card-download.is-done,
+  .card-download.is-error {
+    width: auto;
+    padding: 0 4px 0 10px;
+    background: rgba(15,18,24,0.78);
+    border-color: rgba(255,255,255,0.22);
+  }
+  .card-download.is-busy .label,
+  .card-download.is-done .label,
+  .card-download.is-error .label { display: inline; }
+  .card-download.is-busy svg,
+  .card-download.is-done svg,
+  .card-download.is-error svg { margin-left: 6px; }
+  .card-download.is-busy { background: rgba(15,18,24,0.78); }
+  .card-download.is-busy svg { animation: cd-spin 1s linear infinite; }
+  .card-download.is-done { background: rgba(34,140,82,0.92); border-color: rgba(34,140,82,0.92); }
+  .card-download.is-error { background: rgba(180,52,52,0.92); border-color: rgba(180,52,52,0.92); }
+  @keyframes cd-spin { to { transform: rotate(360deg); } }
+
   .card-body { padding: 20px 22px 18px; display: flex; flex-direction: column; flex: 1; }
 
   .card-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 13px; }
@@ -1084,6 +1139,204 @@
     } else if (e.key === 'Escape' && document.activeElement === input) {
       input.value = ''; applyFilter(''); input.blur();
     }
+  });
+
+  // ---- Self-contained presentation download ----
+  function parseSvgIcon(str) {
+    return new DOMParser().parseFromString(str, 'image/svg+xml').documentElement;
+  }
+  const ICON_DOWNLOAD = parseSvgIcon('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12"/><path d="m6 12 6 6 6-6"/><path d="M5 20h14"/></svg>');
+  const ICON_SPIN     = parseSvgIcon('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9" opacity="0.25"/><path d="M21 12a9 9 0 0 0-9-9"/></svg>');
+  const ICON_CHECK    = parseSvgIcon('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-11"/></svg>');
+  const ICON_X        = parseSvgIcon('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>');
+
+  function setIcon(host, svgTemplate) {
+    host.replaceChildren(svgTemplate.cloneNode(true));
+  }
+
+  const isExternalUrl = (u) => !u || /^(https?:|data:|blob:|\/\/|#|mailto:|tel:)/i.test(u);
+
+  function fileToDataUri(blob) {
+    return new Promise((res, rej) => {
+      const r = new FileReader();
+      r.onload = () => res(r.result);
+      r.onerror = () => rej(r.error || new Error('FileReader error'));
+      r.readAsDataURL(blob);
+    });
+  }
+
+  async function fetchAsDataUri(url) {
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error('HTTP ' + resp.status + ' for ' + url);
+    return fileToDataUri(await resp.blob());
+  }
+
+  async function replaceAsync(str, regex, fn) {
+    const tasks = [];
+    str.replace(regex, (...args) => { tasks.push(Promise.resolve(fn(...args))); return ''; });
+    const results = await Promise.all(tasks);
+    return str.replace(regex, () => results.shift());
+  }
+
+  async function inlineCssUrls(cssText, cssBaseUrl, onProgress) {
+    cssText = await replaceAsync(cssText, /@import\s+url\(\s*['"]?([^'")]+)['"]?\s*\)\s*;?/g, async (m, u) => {
+      if (isExternalUrl(u)) return m;
+      const target = new URL(u, cssBaseUrl);
+      const r = await fetch(target);
+      if (!r.ok) return m;
+      const txt = await r.text();
+      onProgress && onProgress();
+      return await inlineCssUrls(txt, target, onProgress);
+    });
+    cssText = await replaceAsync(cssText, /url\(\s*(['"]?)([^'")]+)\1\s*\)/g, async (m, q, u) => {
+      if (isExternalUrl(u)) return m;
+      try {
+        const d = await fetchAsDataUri(new URL(u, cssBaseUrl));
+        onProgress && onProgress();
+        return 'url("' + d + '")';
+      } catch { return m; }
+    });
+    return cssText;
+  }
+
+  async function bundlePresentation(folderHref, btn) {
+    const baseUrl  = new URL(folderHref, document.baseURI);
+    const indexUrl = new URL('index.html', baseUrl);
+
+    const labelEl = btn.querySelector('.label');
+    const iconEl  = btn.querySelector('.icon');
+    const setState = (cls, label, icon) => {
+      btn.classList.remove('is-busy', 'is-done', 'is-error');
+      if (cls) btn.classList.add(cls);
+      if (labelEl) labelEl.textContent = label || '';
+      if (iconEl)  setIcon(iconEl, icon);
+    };
+
+    setState('is-busy', 'Fetching…', ICON_SPIN);
+
+    try {
+      const resp = await fetch(indexUrl);
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      const html = await resp.text();
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+
+      let processed = 0;
+      const tick = () => { processed++; if (labelEl) labelEl.textContent = 'Bundling ' + processed + '…'; };
+
+      const linkSheets = [...doc.querySelectorAll('link[rel="stylesheet"][href]')].filter(l => !isExternalUrl(l.getAttribute('href')));
+      const scripts    = [...doc.querySelectorAll('script[src]')].filter(s => !isExternalUrl(s.getAttribute('src')));
+      const media      = [...doc.querySelectorAll('img[src], video[src], audio[src], source[src], track[src]')].filter(e => !isExternalUrl(e.getAttribute('src')));
+      const posters    = [...doc.querySelectorAll('video[poster]')].filter(e => !isExternalUrl(e.getAttribute('poster')));
+      const icons      = [...doc.querySelectorAll('link[rel*="icon"][href], link[rel="apple-touch-icon"][href], link[rel="manifest"][href]')].filter(e => !isExternalUrl(e.getAttribute('href')));
+      const styled     = [...doc.querySelectorAll('[style*="url("]')];
+
+      await Promise.all(linkSheets.map(async (link) => {
+        const cssUrl = new URL(link.getAttribute('href'), indexUrl);
+        const r = await fetch(cssUrl);
+        if (!r.ok) throw new Error('CSS ' + r.status + ' ' + cssUrl);
+        let css = await r.text();
+        css = await inlineCssUrls(css, cssUrl, tick);
+        const style = doc.createElement('style');
+        style.textContent = css;
+        link.replaceWith(style);
+        tick();
+      }));
+
+      await Promise.all(scripts.map(async (script) => {
+        const u = new URL(script.getAttribute('src'), indexUrl);
+        const r = await fetch(u);
+        if (!r.ok) throw new Error('JS ' + r.status + ' ' + u);
+        const code = await r.text();
+        const ns = doc.createElement('script');
+        for (const a of [...script.attributes]) {
+          if (a.name !== 'src') ns.setAttribute(a.name, a.value);
+        }
+        ns.textContent = code;
+        script.replaceWith(ns);
+        tick();
+      }));
+
+      // Process media one at a time to keep memory pressure manageable for big videos.
+      // Missing assets are non-fatal — leave the original src so the bundle still saves.
+      let skipped = 0;
+      for (const el of media) {
+        try {
+          el.setAttribute('src', await fetchAsDataUri(new URL(el.getAttribute('src'), indexUrl)));
+          tick();
+        } catch (e) { console.warn('[bundle] skip media', el.getAttribute('src'), e.message); skipped++; }
+      }
+      for (const el of posters) {
+        try {
+          el.setAttribute('poster', await fetchAsDataUri(new URL(el.getAttribute('poster'), indexUrl)));
+          tick();
+        } catch (e) { console.warn('[bundle] skip poster', el.getAttribute('poster'), e.message); skipped++; }
+      }
+      for (const el of icons) {
+        try {
+          el.setAttribute('href', await fetchAsDataUri(new URL(el.getAttribute('href'), indexUrl)));
+          tick();
+        } catch (e) { console.warn('[bundle] skip icon', el.getAttribute('href'), e.message); skipped++; }
+      }
+      for (const el of styled) {
+        let s = el.getAttribute('style');
+        s = await replaceAsync(s, /url\(\s*(['"]?)([^'")]+)\1\s*\)/g, async (m, q, u) => {
+          if (isExternalUrl(u)) return m;
+          try {
+            const d = await fetchAsDataUri(new URL(u, indexUrl));
+            tick();
+            return 'url("' + d + '")';
+          } catch { return m; }
+        });
+        el.setAttribute('style', s);
+      }
+
+      doc.documentElement.setAttribute('data-bundled', new Date().toISOString());
+
+      const finalHtml = '<!DOCTYPE html>\n' + doc.documentElement.outerHTML;
+      const slug = folderHref.replace(/^\.\//, '').replace(/\/+$/, '') || 'presentation';
+      const blob = new Blob([finalHtml], { type: 'text/html;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = slug + '.html';
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1500);
+
+      setState('is-done', skipped ? 'Saved (' + skipped + ' missing)' : 'Saved', ICON_CHECK);
+    } catch (err) {
+      console.error('[bundle]', err);
+      setState('is-error', 'Failed', ICON_X);
+    } finally {
+      setTimeout(() => {
+        btn.classList.remove('is-busy', 'is-done', 'is-error');
+        if (iconEl)  setIcon(iconEl, ICON_DOWNLOAD);
+        if (labelEl) labelEl.textContent = '';
+      }, 2400);
+    }
+  }
+
+  cards.forEach((card) => {
+    const href = card.getAttribute('href');
+    if (!href || /^(https?:|#)/i.test(href)) return;
+    const thumb = card.querySelector('.card-thumb');
+    if (!thumb) return;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'card-download';
+    btn.setAttribute('aria-label', 'Download as self-contained HTML');
+    btn.title = 'Download as self-contained HTML';
+    const labelSpan = document.createElement('span');
+    labelSpan.className = 'label';
+    const iconSpan = document.createElement('span');
+    iconSpan.className = 'icon';
+    setIcon(iconSpan, ICON_DOWNLOAD);
+    btn.append(labelSpan, iconSpan);
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (btn.classList.contains('is-busy')) return;
+      bundlePresentation(href, btn);
+    });
+    thumb.appendChild(btn);
   });
 })();
 </script>
