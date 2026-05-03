@@ -17,13 +17,112 @@
     --font-body: "Inter", "Helvetica Neue", Arial, sans-serif;
   }
   * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; background: #000; color: #fff; font-family: var(--font-body); }
+  html, body { margin: 0; padding: 0; background: #000; color: #fff; font-family: var(--font-body); width: 100%; height: 100%; overflow: hidden; }
+
+  /* ============ THEME TOGGLE BUTTON ============ */
+  .theme-btn {
+    position: fixed;
+    top: 14px; right: 14px;
+    z-index: 10000;
+    width: 40px; height: 40px;
+    background: rgba(0,0,0,0.55);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 10px;
+    color: rgba(255,255,255,0.85);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    backdrop-filter: blur(8px);
+    transition: background 0.25s ease, transform 0.2s ease, color 0.25s ease, border-color 0.25s ease;
+  }
+  .theme-btn:hover { background: rgba(255,102,0,0.18); border-color: rgba(255,102,0,0.55); color: var(--orange); transform: scale(1.06) rotate(15deg); }
+  .theme-btn .th-sun  { display: block; }
+  .theme-btn .th-moon { display: none; }
+  [data-theme="light"] .theme-btn .th-sun  { display: none; }
+  [data-theme="light"] .theme-btn .th-moon { display: block; }
+
+  /* ============ SMOOTH THEME TRANSITION ============ */
+  body, .slide, .day, ul.agenda li, .day-name, h1.title, .sub, .eyebrow,
+  .footer, .pill, .day-tag, .day-hours, .ref-link, .theme-btn {
+    transition: background 0.45s ease, color 0.45s ease, border-color 0.45s ease;
+  }
+
+  /* ============ LIGHT THEME OVERRIDES ============ */
+  [data-theme="light"] body { color: #0E1116; background: #fff; }
+
+  [data-theme="light"] .slide {
+    background:
+      radial-gradient(ellipse 1100px 820px at 92% 6%,  rgba(255,102,0,0.18) 0%, rgba(255,102,0,0) 58%),
+      radial-gradient(ellipse 760px 600px  at 6%  102%, rgba(0,156,182,0.14) 0%, rgba(0,156,182,0) 55%),
+      linear-gradient(135deg, #FBF9F4 0%, #FFFFFF 100%);
+  }
+  [data-theme="light"] .orb {
+    background: radial-gradient(circle at 30% 30%, rgba(255,102,0,0.40), rgba(255,102,0,0.08) 55%, rgba(255,102,0,0) 75%);
+  }
+  [data-theme="light"] .bokeh.b1 { background: radial-gradient(circle, rgba(255,102,0,0.20), transparent 70%); mix-blend-mode: multiply; }
+  [data-theme="light"] .bokeh.b2 { background: radial-gradient(circle, rgba(0,156,182,0.18), transparent 70%); mix-blend-mode: multiply; }
+  [data-theme="light"] .bokeh.b3 { background: radial-gradient(circle, rgba(255,180,90,0.14), transparent 70%); mix-blend-mode: multiply; }
+  [data-theme="light"] .ring { border-color: rgba(0,156,182,0.30); }
+  [data-theme="light"] .accent-line {
+    background: linear-gradient(90deg, transparent, rgba(255,102,0,0.55), rgba(0,156,182,0.45), transparent);
+    background-size: 200% 100%;
+  }
+
+  [data-theme="light"] .eyebrow { color: var(--orange); }
+  [data-theme="light"] h1.title { color: #0E1116; }
+  [data-theme="light"] h1.title .accent { color: var(--orange); }
+  [data-theme="light"] .sub { color: rgba(14,17,22,0.62); }
+
+  [data-theme="light"] .day {
+    background: rgba(14,17,22,0.025);
+    border-color: rgba(14,17,22,0.10);
+  }
+  [data-theme="light"] .day-header { border-bottom-color: rgba(14,17,22,0.10); }
+  [data-theme="light"] .day-tag { color: var(--teal); }
+  [data-theme="light"] .day-name { color: #0E1116; }
+  [data-theme="light"] .day-hours { color: rgba(14,17,22,0.55); }
+
+  [data-theme="light"] ul.agenda li { border-bottom-color: rgba(14,17,22,0.07); }
+  [data-theme="light"] ul.agenda li:hover { background: rgba(14,17,22,0.04); }
+  [data-theme="light"] ul.agenda .time  { color: #0E1116; }
+  [data-theme="light"] ul.agenda .topic { color: rgba(14,17,22,0.92); }
+  [data-theme="light"] ul.agenda .dur   { color: rgba(14,17,22,0.55); }
+  [data-theme="light"] ul.agenda li.brk {
+    background: linear-gradient(90deg, rgba(0,156,182,0.10), rgba(0,156,182,0));
+    border-bottom-color: rgba(0,156,182,0.22);
+  }
+  [data-theme="light"] ul.agenda li.brk .topic { color: #016578; }
+  [data-theme="light"] ul.agenda li.brk .time  { color: #016578; }
+
+  [data-theme="light"] .footer { color: rgba(14,17,22,0.55); }
+  [data-theme="light"] .pill {
+    border-color: rgba(14,17,22,0.16);
+    color: rgba(14,17,22,0.62);
+  }
+  [data-theme="light"] .ref-link {
+    color: #B45000;
+    border-color: rgba(255,102,0,0.55);
+  }
+  [data-theme="light"] .ref-link:hover { color: #fff; }
+
+  [data-theme="light"] .theme-btn {
+    background: rgba(255,255,255,0.75);
+    border-color: rgba(14,17,22,0.14);
+    color: rgba(14,17,22,0.75);
+  }
+  [data-theme="light"] .theme-btn:hover {
+    background: rgba(255,102,0,0.12);
+    border-color: rgba(255,102,0,0.55);
+    color: var(--orange);
+  }
 
   .slide {
-    position: relative;
+    position: absolute;
+    top: 50%; left: 50%;
     width: 1920px;
     height: 1080px;
-    margin: 0 auto;
+    margin-left: -960px;
+    margin-top: -540px;
+    transform-origin: 50% 50%;
     overflow: hidden;
     background:
       radial-gradient(ellipse 1100px 820px at 92% 6%, rgba(255,102,0,0.42) 0%, rgba(255,102,0,0) 58%),
@@ -382,6 +481,11 @@
 </head>
 <body>
 
+<button class="theme-btn" id="themeBtn" title="Toggle light/dark (T)" aria-label="Toggle theme">
+  <svg class="th-sun"  width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+  <svg class="th-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+
 <section class="slide">
   <div class="ring"></div>
   <div class="orb"></div>
@@ -492,6 +596,46 @@
       li.style.animationDelay = (baseDelay + i * 0.06) + 's';
     });
   });
+
+  // ===== Auto-fit slide to viewport =====
+  (function autoFit() {
+    const slide = document.querySelector('.slide');
+    if (!slide) return;
+    function fit() {
+      const s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+      slide.style.transform = 'scale(' + s + ')';
+    }
+    window.addEventListener('resize', fit);
+    fit();
+  })();
+
+  // ===== Theme toggle (light / dark) =====
+  (function theme() {
+    const btn = document.getElementById('themeBtn');
+    if (!btn) return;
+    function apply(t) {
+      if (t === 'light') document.documentElement.setAttribute('data-theme', 'light');
+      else document.documentElement.removeAttribute('data-theme');
+    }
+    try {
+      const saved = localStorage.getItem('theme');
+      if (saved === 'light' || saved === 'dark') apply(saved);
+    } catch (e) {}
+    btn.addEventListener('click', function() {
+      const cur = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+      const next = cur === 'light' ? 'dark' : 'light';
+      apply(next);
+      try { localStorage.setItem('theme', next); } catch (e) {}
+    });
+    document.addEventListener('keydown', function(e) {
+      const tag = (e.target && e.target.tagName) || '';
+      if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+      if ((e.key === 't' || e.key === 'T') && !e.metaKey && !e.ctrlKey && !e.altKey) {
+        e.preventDefault();
+        btn.click();
+      }
+    });
+  })();
 </script>
 
 </body>
