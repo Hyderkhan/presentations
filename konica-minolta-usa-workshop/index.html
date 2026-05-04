@@ -300,31 +300,31 @@
     border-radius: 50%;
   }
 
-  .frame { position: absolute; inset: 0; padding: 80px 110px; display: flex; flex-direction: column; }
+  .frame { position: absolute; inset: 0; padding: 56px 110px 48px; display: flex; flex-direction: column; }
 
   .eyebrow {
     color: var(--orange);
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 600;
     letter-spacing: 0.22em;
     text-transform: uppercase;
-    margin-bottom: 14px;
+    margin-bottom: 10px;
   }
 
   h1.title {
     font-family: var(--font-display);
     font-weight: 800;
-    font-size: 92px;
+    font-size: 76px;
     line-height: 1.0;
-    margin: 0 0 8px;
+    margin: 0 0 6px;
     letter-spacing: -0.02em;
   }
   .title .accent { color: var(--orange); }
 
   .sub {
-    font-size: 22px;
+    font-size: 20px;
     color: var(--muted);
-    margin: 0 0 36px;
+    margin: 0 0 22px;
     letter-spacing: 0.04em;
   }
 
@@ -341,7 +341,7 @@
     background: rgba(255,255,255,0.04);
     border: 1px solid var(--rule);
     border-radius: 16px;
-    padding: 34px 40px 28px;
+    padding: 24px 36px 22px;
     backdrop-filter: blur(8px);
     display: flex;
     flex-direction: column;
@@ -351,21 +351,21 @@
     display: flex;
     align-items: baseline;
     justify-content: space-between;
-    margin-bottom: 20px;
-    padding-bottom: 18px;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
     border-bottom: 1px solid var(--rule);
   }
   .col-tag {
     color: var(--teal);
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 600;
     letter-spacing: 0.22em;
     text-transform: uppercase;
   }
   .col-name {
-    font-size: 36px;
+    font-size: 30px;
     font-weight: 700;
-    margin: 4px 0 0;
+    margin: 2px 0 0;
     letter-spacing: -0.01em;
   }
   .col-meta {
@@ -379,10 +379,10 @@
   ul.agenda { list-style: none; padding: 0; margin: 0; flex: 1; }
   ul.agenda li {
     display: grid;
-    grid-template-columns: 64px 1fr auto;
-    column-gap: 22px;
+    grid-template-columns: 56px 1fr auto;
+    column-gap: 20px;
     align-items: start;
-    padding: 16px 10px;
+    padding: 7px 10px;
     border-bottom: 1px dashed rgba(255,255,255,0.07);
   }
   ul.agenda li:last-child { border-bottom: none; }
@@ -390,30 +390,30 @@
   .num {
     font-family: var(--font-display);
     font-weight: 800;
-    font-size: 30px;
+    font-size: 26px;
     color: var(--orange);
     line-height: 1;
     letter-spacing: -0.02em;
     font-variant-numeric: tabular-nums;
   }
   .body .topic {
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 700;
     color: #fff;
     line-height: 1.2;
     letter-spacing: -0.005em;
   }
   .body .desc {
-    margin-top: 6px;
-    font-size: 15px;
+    margin-top: 5px;
+    font-size: 14px;
     color: var(--muted);
-    line-height: 1.45;
+    line-height: 1.4;
   }
   .body .tags {
-    margin-top: 10px;
+    margin-top: 8px;
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 6px;
   }
   .body .tag {
     font-size: 12px;
@@ -532,7 +532,7 @@
             <div class="col-tag">Morning</div>
             <div class="col-name">Strategy &amp; Roadmap</div>
           </div>
-          <div class="col-meta">Sessions 01 – 03</div>
+          <div class="col-meta">Sessions 01 – 05</div>
         </div>
         <ul class="agenda">
           <li class="linked" onclick="if(event.target.tagName!=='A')location.href='./magic-deployment.html'">
@@ -577,6 +577,32 @@
             </div>
             <span class="chip-link">View roadmap</span>
           </li>
+          <li>
+            <span class="num">04</span>
+            <div class="body">
+              <div class="topic">Pipeline Sharing</div>
+              <div class="desc">Joint visibility on active opportunities — where IWS shows up, what's qualified, and how we co-sell into the next quarter.</div>
+              <div class="tags">
+                <span class="tag">Joint pipeline</span>
+                <span class="tag">Co-sell motion</span>
+                <span class="tag">Forecast alignment</span>
+              </div>
+            </div>
+            <span></span>
+          </li>
+          <li>
+            <span class="num">05</span>
+            <div class="body">
+              <div class="topic">Konica Devices for Testing in Y Soft Offices</div>
+              <div class="desc">Standing up KM hardware in Y Soft engineering and demo offices — accelerate certification, reproduce field issues, and shorten the loop on new firmware.</div>
+              <div class="tags">
+                <span class="tag">Engineering enablement</span>
+                <span class="tag">Certification</span>
+                <span class="tag">Demo &amp; QA</span>
+              </div>
+            </div>
+            <span></span>
+          </li>
         </ul>
       </div>
 
@@ -587,11 +613,11 @@
             <div class="col-tag">Afternoon</div>
             <div class="col-name">Value Prop &amp; Print Modernization</div>
           </div>
-          <div class="col-meta">Sessions 04 – 07</div>
+          <div class="col-meta">Sessions 06 – 09</div>
         </div>
         <ul class="agenda">
           <li>
-            <span class="num">04</span>
+            <span class="num">06</span>
             <div class="body">
               <div class="topic">SAFEQ Cloud Value Prop &middot; Advanced &amp; Security</div>
               <div class="desc">Positioning for security-led buyers — zero-trust print, encryption, audit, and the Advanced tier capabilities that win regulated workloads.</div>
@@ -604,7 +630,7 @@
             <span></span>
           </li>
           <li>
-            <span class="num">05</span>
+            <span class="num">07</span>
             <div class="body">
               <div class="topic">SAFEQ Cloud Value Prop &middot; Enterprise</div>
               <div class="desc">Why Enterprise wins the largest accounts — multi-tenant scale, identity, governance, and the workflows KM's enterprise customers expect.</div>
@@ -617,7 +643,7 @@
             <span></span>
           </li>
           <li>
-            <span class="num">06</span>
+            <span class="num">08</span>
             <div class="body">
               <div class="topic">Universal Print</div>
               <div class="desc">Windows Protected Print and Microsoft's print driver direction — what it means for KM customers.</div>
@@ -630,7 +656,7 @@
             <span></span>
           </li>
           <li>
-            <span class="num">07</span>
+            <span class="num">09</span>
             <div class="body">
               <div class="topic">Discussion &amp; Next Steps</div>
               <div class="desc">Open Q&amp;A, prioritization, follow-ups, and owners for the joint motion.</div>
@@ -648,7 +674,7 @@
 
     <div class="footer">
       <span class="pill">Y Soft &middot; SAFEQ Cloud &middot; 2026</span>
-      <span>7 sessions &nbsp;&middot;&nbsp; Onsite at Konica Minolta USA</span>
+      <span>9 sessions &nbsp;&middot;&nbsp; Onsite at Konica Minolta USA</span>
     </div>
   </div>
 </section>
