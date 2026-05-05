@@ -15,6 +15,7 @@
     --muted: rgba(255,255,255,0.62);
     --font-display: "Inter", "Helvetica Neue", Arial, sans-serif;
     --font-body: "Inter", "Helvetica Neue", Arial, sans-serif;
+    --text-scale: 1;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; background: #000; color: #fff; font-family: var(--font-body); width: 100%; height: 100%; overflow: hidden; }
@@ -38,6 +39,38 @@
   .fs-btn .fs-exit { display: none; }
   .fs-btn.is-fs .fs-enter { display: none; }
   .fs-btn.is-fs .fs-exit  { display: block; }
+
+  /* ============ FONT-SIZE BUTTONS ============ */
+  .font-btn {
+    position: fixed;
+    top: 14px;
+    z-index: 10000;
+    width: 40px; height: 40px;
+    background: rgba(0,0,0,0.55);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 10px;
+    color: rgba(255,255,255,0.85);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    backdrop-filter: blur(8px);
+    transition: background 0.25s ease, transform 0.2s ease, color 0.25s ease, border-color 0.25s ease;
+    font-family: var(--font-display);
+    font-weight: 700;
+    user-select: none;
+  }
+  .font-btn:hover { background: rgba(255,102,0,0.18); border-color: rgba(255,102,0,0.55); color: var(--orange); transform: scale(1.06); }
+  .font-btn.font-dec { right: 164px; font-size: 13px; }
+  .font-btn.font-inc { right: 114px; font-size: 17px; }
+  [data-theme="light"] .font-btn {
+    background: rgba(255,255,255,0.75);
+    border-color: rgba(14,17,22,0.14);
+    color: rgba(14,17,22,0.75);
+  }
+  [data-theme="light"] .font-btn:hover {
+    background: rgba(255,102,0,0.12);
+    border-color: rgba(255,102,0,0.55);
+    color: var(--orange);
+  }
 
   /* ============ THEME TOGGLE BUTTON ============ */
   .theme-btn {
@@ -300,31 +333,31 @@
     border-radius: 50%;
   }
 
-  .frame { position: absolute; inset: 0; padding: 56px 110px 48px; display: flex; flex-direction: column; }
+  .frame { position: absolute; inset: 0; padding: 64px 110px 56px; display: flex; flex-direction: column; }
 
   .eyebrow {
     color: var(--orange);
-    font-size: 20px;
+    font-size: calc(20px * var(--text-scale));
     font-weight: 600;
     letter-spacing: 0.22em;
     text-transform: uppercase;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
   }
 
   h1.title {
     font-family: var(--font-display);
     font-weight: 800;
-    font-size: 76px;
+    font-size: calc(82px * var(--text-scale));
     line-height: 1.0;
-    margin: 0 0 6px;
+    margin: 0 0 8px;
     letter-spacing: -0.02em;
   }
   .title .accent { color: var(--orange); }
 
   .sub {
-    font-size: 20px;
+    font-size: calc(20px * var(--text-scale));
     color: var(--muted);
-    margin: 0 0 22px;
+    margin: 0 0 26px;
     letter-spacing: 0.04em;
   }
 
@@ -341,7 +374,7 @@
     background: rgba(255,255,255,0.04);
     border: 1px solid var(--rule);
     border-radius: 16px;
-    padding: 24px 36px 22px;
+    padding: 30px 40px 26px;
     backdrop-filter: blur(8px);
     display: flex;
     flex-direction: column;
@@ -351,38 +384,46 @@
     display: flex;
     align-items: baseline;
     justify-content: space-between;
-    margin-bottom: 14px;
-    padding-bottom: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 14px;
     border-bottom: 1px solid var(--rule);
   }
   .col-tag {
     color: var(--teal);
-    font-size: 14px;
+    font-size: calc(15px * var(--text-scale));
     font-weight: 600;
     letter-spacing: 0.22em;
     text-transform: uppercase;
   }
   .col-name {
-    font-size: 30px;
+    font-size: calc(34px * var(--text-scale));
     font-weight: 700;
     margin: 2px 0 0;
     letter-spacing: -0.01em;
   }
   .col-meta {
-    font-size: 16px;
+    font-size: calc(15px * var(--text-scale));
     color: var(--muted);
     font-variant-numeric: tabular-nums;
     letter-spacing: 0.06em;
     text-transform: uppercase;
   }
 
-  ul.agenda { list-style: none; padding: 0; margin: 0; flex: 1; }
+  ul.agenda {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
   ul.agenda li {
     display: grid;
-    grid-template-columns: 56px 1fr auto;
-    column-gap: 20px;
+    grid-template-columns: calc(60px * var(--text-scale)) 1fr auto;
+    column-gap: 22px;
     align-items: start;
-    padding: 7px 10px;
+    padding: 10px 10px;
     border-bottom: 1px dashed rgba(255,255,255,0.07);
   }
   ul.agenda li:last-child { border-bottom: none; }
@@ -390,22 +431,22 @@
   .num {
     font-family: var(--font-display);
     font-weight: 800;
-    font-size: 26px;
+    font-size: calc(28px * var(--text-scale));
     color: var(--orange);
     line-height: 1;
     letter-spacing: -0.02em;
     font-variant-numeric: tabular-nums;
   }
   .body .topic {
-    font-size: 20px;
+    font-size: calc(22px * var(--text-scale));
     font-weight: 700;
     color: #fff;
     line-height: 1.2;
     letter-spacing: -0.005em;
   }
   .body .desc {
-    margin-top: 5px;
-    font-size: 14px;
+    margin-top: 6px;
+    font-size: calc(15px * var(--text-scale));
     color: var(--muted);
     line-height: 1.4;
   }
@@ -449,7 +490,7 @@
   }
   .chip-link {
     align-self: start;
-    font-size: 12px;
+    font-size: calc(12px * var(--text-scale));
     font-weight: 700;
     letter-spacing: 0.18em;
     text-transform: uppercase;
@@ -484,7 +525,7 @@
     justify-content: space-between;
     align-items: center;
     color: var(--muted);
-    font-size: 16px;
+    font-size: calc(16px * var(--text-scale));
     letter-spacing: 0.08em;
   }
   .pill {
@@ -492,7 +533,7 @@
     padding: 6px 14px;
     border: 1px solid rgba(255,255,255,0.18);
     border-radius: 999px;
-    font-size: 14px;
+    font-size: calc(14px * var(--text-scale));
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--muted);
@@ -500,6 +541,9 @@
 </style>
 </head>
 <body>
+
+<button class="font-btn font-dec" id="fontDecBtn" title="Decrease text size (-)" aria-label="Decrease text size">A&minus;</button>
+<button class="font-btn font-inc" id="fontIncBtn" title="Increase text size (+)" aria-label="Increase text size">A+</button>
 
 <button class="theme-btn" id="themeBtn" title="Toggle light/dark (T)" aria-label="Toggle theme">
   <svg class="th-sun"  width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
@@ -756,6 +800,44 @@
         e.preventDefault();
         btn.click();
       }
+    });
+  })();
+
+  // ===== Font-size scale (A- / A+) =====
+  (function fontScale() {
+    const dec = document.getElementById('fontDecBtn');
+    const inc = document.getElementById('fontIncBtn');
+    if (!dec || !inc) return;
+    const STEPS = [0.80, 0.90, 1.00, 1.10, 1.20];
+    let idx = STEPS.indexOf(1.00);
+    function apply() {
+      document.documentElement.style.setProperty('--text-scale', STEPS[idx]);
+      dec.disabled = idx <= 0;
+      inc.disabled = idx >= STEPS.length - 1;
+      dec.style.opacity = dec.disabled ? 0.4 : '';
+      inc.style.opacity = inc.disabled ? 0.4 : '';
+    }
+    try {
+      const saved = parseFloat(localStorage.getItem('km-text-scale'));
+      if (!isNaN(saved)) {
+        const found = STEPS.indexOf(saved);
+        if (found !== -1) idx = found;
+      }
+    } catch (e) {}
+    apply();
+    dec.addEventListener('click', function() {
+      if (idx > 0) { idx--; apply(); try { localStorage.setItem('km-text-scale', STEPS[idx]); } catch (e) {} }
+    });
+    inc.addEventListener('click', function() {
+      if (idx < STEPS.length - 1) { idx++; apply(); try { localStorage.setItem('km-text-scale', STEPS[idx]); } catch (e) {} }
+    });
+    document.addEventListener('keydown', function(e) {
+      const tag = (e.target && e.target.tagName) || '';
+      if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (e.key === '+' || e.key === '=') { e.preventDefault(); inc.click(); }
+      else if (e.key === '-' || e.key === '_') { e.preventDefault(); dec.click(); }
+      else if (e.key === '0') { e.preventDefault(); idx = STEPS.indexOf(1.00); apply(); try { localStorage.setItem('km-text-scale', STEPS[idx]); } catch (e) {} }
     });
   })();
 </script>
