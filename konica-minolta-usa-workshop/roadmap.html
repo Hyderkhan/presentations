@@ -387,7 +387,7 @@
 
   .qheaders {
     display: grid;
-    grid-template-columns: 220px repeat(5, 1fr);
+    grid-template-columns: 220px 1067fr 335fr 971fr 653fr 653fr 675fr 769fr 1330fr 455fr 310fr 653fr 653fr 653fr 653fr 653fr;
     gap: 12px;
     padding: 0 0 8px 0;
     margin-bottom: 10px;
@@ -449,7 +449,7 @@
   }
   .cat-row {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: 1067fr 335fr 971fr 653fr 653fr 675fr 769fr 1330fr 455fr 310fr 653fr 653fr 653fr 653fr 653fr;
     gap: 10px;
     align-items: stretch;
   }
@@ -847,11 +847,11 @@
       <!-- ===== Quarter Headers ===== -->
       <div class="qheaders">
         <div></div>
-        <div class="qhead" style="animation-delay:.85s">January 2026 <span class="arr">&rarr;</span> March 2026</div>
-        <div class="qhead current" style="animation-delay:.95s">April 2026 <span class="arr">&rarr;</span> June 2026</div>
-        <div class="qhead" style="animation-delay:1.05s">July 2026 <span class="arr">&rarr;</span> September 2026</div>
-        <div class="qhead" style="animation-delay:1.15s">October 2026 <span class="arr">&rarr;</span> December 2026</div>
-        <div class="qhead" style="animation-delay:1.25s">January 2027 <span class="arr">&rarr;</span> March 2027</div>
+        <div class="qhead" style="grid-column: 2 / span 3; animation-delay:.85s">January 2026 <span class="arr">&rarr;</span> March 2026</div>
+        <div class="qhead current" style="grid-column: 5 / span 3; animation-delay:.95s">April 2026 <span class="arr">&rarr;</span> June 2026</div>
+        <div class="qhead" style="grid-column: 8 / span 2; animation-delay:1.05s">July 2026 <span class="arr">&rarr;</span> September 2026</div>
+        <div class="qhead" style="grid-column: 10 / span 4; animation-delay:1.15s">October 2026 <span class="arr">&rarr;</span> December 2026</div>
+        <div class="qhead" style="grid-column: 14 / span 3; animation-delay:1.25s">January 2027 <span class="arr">&rarr;</span> March 2027</div>
       </div>
 
       <!-- ===== Cloud Stability and Scalability ===== -->
@@ -861,15 +861,15 @@
         </div>
         <div class="cat-rows">
           <div class="cat-row">
-            <div class="cell" style="grid-column: 1 / span 5">
+            <div class="cell" style="grid-column: 1 / span 15">
               <div class="item plan"><span class="dot"></span><span class="body">Continued optimization of technology, processes and operations for scalability, performance and stability</span></div>
             </div>
           </div>
           <div class="cat-row">
-            <div class="cell" style="grid-column: 1 / span 3">
+            <div class="cell" style="grid-column: 1 / span 8">
               <div class="item plan"><span class="dot"></span><span class="body">Product support for SOC2 Type 2 continuous audit and continuous security fixes and improvements</span></div>
             </div>
-            <div class="cell" style="grid-column: 4">
+            <div class="cell" style="grid-column: 9 / span 7">
               <div class="item plan"><span class="dot"></span><span class="body">Continuous security fixes and improvements</span></div>
             </div>
           </div>
@@ -883,36 +883,36 @@
         </div>
         <div class="cat-rows">
           <div class="cat-row">
-            <div class="cell" style="grid-column: 1">
+            <div class="cell" style="grid-column: 1 / span 5">
               <div class="item wip"><span class="dot"></span><span class="body">KM IWS Magical Deployment</span></div>
             </div>
-            <div class="cell" style="grid-column: 3">
+            <div class="cell" style="grid-column: 6 / span 3">
               <div class="item plan"><span class="dot"></span><span class="body">Brother Pure Cloud Terminal &mdash; Print and Scan</span></div>
             </div>
           </div>
           <div class="cat-row">
-            <div class="cell" style="grid-column: 1 / span 2">
+            <div class="cell" style="grid-column: 1 / span 5">
               <div class="item wip"><span class="dot"></span><span class="body">Canon Pure Cloud Terminal &mdash; Print, Deployment and Accounting</span></div>
             </div>
-            <div class="cell" style="grid-column: 3">
+            <div class="cell" style="grid-column: 6 / span 3">
               <div class="item plan"><span class="dot"></span><span class="body">Canon Pure Cloud Terminal &mdash; Scan</span></div>
             </div>
-            <div class="cell" style="grid-column: 4">
+            <div class="cell" style="grid-column: 9 / span 4">
               <div class="item plan"><span class="dot"></span><span class="body">Canon Pure Cloud Terminal &ndash; ALP Platform</span></div>
             </div>
           </div>
           <div class="cat-row">
-            <div class="cell" style="grid-column: 3">
+            <div class="cell" style="grid-column: 6 / span 8">
               <div class="item plan"><span class="dot"></span><span class="body">Kyocera Pure Cloud Terminal &mdash; Print and Scan</span></div>
             </div>
           </div>
           <div class="cat-row">
-            <div class="cell" style="grid-column: 3">
+            <div class="cell" style="grid-column: 6 / span 8">
               <div class="item plan"><span class="dot"></span><span class="body">Lexmark Pure Cloud Terminal &mdash; Print and Scan</span></div>
             </div>
           </div>
           <div class="cat-row">
-            <div class="cell" style="grid-column: 3">
+            <div class="cell" style="grid-column: 6 / span 4">
               <div class="item plan"><span class="dot"></span><span class="body">Xerox Cloud Terminal locking</span></div>
             </div>
           </div>
@@ -926,34 +926,34 @@
         </div>
         <div class="cat-rows">
           <div class="cat-row">
-            <div class="cell" style="grid-column: 1">
+            <div class="cell" style="grid-column: 1 / span 2">
               <div class="item wip"><span class="dot"></span><span class="body">Simplify Cloud Terminal deployments (Ricoh, Sharp, Fujifilm BI, HP, Xerox, Canon) <span class="chip breeze">Breeze</span></span></div>
             </div>
-            <div class="cell" style="grid-column: 2">
+            <div class="cell" style="grid-column: 3 / span 2">
               <div class="item wip"><span class="dot"></span><span class="body">Automated Device Discovery</span></div>
               <div class="item wip"><span class="dot"></span><span class="body">Simplify Cloud Terminal deployments (Ricoh, Sharp, Fujifilm BI, HP, Xerox, Canon) <span class="chip pro">Pro</span></span></div>
               <div class="item wip"><span class="dot"></span><span class="body">Print &amp; scan access removed on license expiration</span></div>
             </div>
-            <div class="cell" style="grid-column: 3">
+            <div class="cell" style="grid-column: 5 / span 2">
               <div class="item wip"><span class="dot"></span><span class="body">Improved printing experience when cloud connection is lost</span></div>
             </div>
           </div>
           <div class="cat-row">
-            <div class="cell" style="grid-column: 2">
+            <div class="cell" style="grid-column: 2 / span 5">
               <div class="item plan"><span class="dot"></span><span class="body">Education market MVP &mdash; quotas in cloud including simple 3rd&nbsp;party integration API</span></div>
             </div>
-            <div class="cell" style="grid-column: 3">
+            <div class="cell" style="grid-column: 7 / span 5">
               <div class="item plan"><span class="dot"></span><span class="body">Education market &mdash; billing codes support</span></div>
             </div>
           </div>
           <div class="cat-row">
-            <div class="cell" style="grid-column: 1 / span 2">
+            <div class="cell" style="grid-column: 1 / span 4">
               <div class="item plan"><span class="dot"></span><span class="body">Updated license view in UI to support multiple license expiration dates for device groups &amp; improved notifications for expirations and tenant deletions</span></div>
             </div>
-            <div class="cell" style="grid-column: 3">
+            <div class="cell" style="grid-column: 5 / span 3">
               <div class="item plan"><span class="dot"></span><span class="body">Entra ID SCIM user provisioning &amp; de-provisioning in Cloud</span></div>
             </div>
-            <div class="cell" style="grid-column: 4">
+            <div class="cell" style="grid-column: 8 / span 6">
               <div class="item plan"><span class="dot"></span><span class="body">Education market payment systems integrations</span></div>
             </div>
           </div>
@@ -967,23 +967,23 @@
         </div>
         <div class="cat-rows">
           <div class="cat-row">
-            <div class="cell" style="grid-column: 1 / span 2">
+            <div class="cell" style="grid-column: 1 / span 6">
               <div class="item plan"><span class="dot"></span><span class="body">Enable partners, in Cloud Portal, to see expired SAFEQ&nbsp;6 customers, their vulnerabilities and easily quote transition to cloud and license extensions</span></div>
             </div>
           </div>
           <div class="cat-row">
-            <div class="cell" style="grid-column: 1 / span 2">
+            <div class="cell" style="grid-column: 1 / span 6">
               <div class="item plan"><span class="dot"></span><span class="body">Cloud portal essentials &mdash; Unified login experience (YSoft&nbsp;ID) and seamless integration with quoting toolset</span></div>
             </div>
-            <div class="cell" style="grid-column: 4">
+            <div class="cell" style="grid-column: 7 / span 6">
               <div class="item plan"><span class="dot"></span><span class="body">Partner portal replacement &mdash; single place for partners and dealers to go to for all YSOFT business</span></div>
             </div>
           </div>
           <div class="cat-row">
-            <div class="cell" style="grid-column: 1">
+            <div class="cell" style="grid-column: 1 / span 4">
               <div class="item plan"><span class="dot"></span><span class="body">SQ6: Support for Cloud Transition license</span></div>
             </div>
-            <div class="cell" style="grid-column: 4">
+            <div class="cell" style="grid-column: 7 / span 6">
               <div class="item plan"><span class="dot"></span><span class="body">SQ6 non-co-termination license behaviour</span></div>
             </div>
           </div>
@@ -997,21 +997,21 @@
         </div>
         <div class="cat-rows">
           <div class="cat-row">
-            <div class="cell" style="grid-column: 1">
+            <div class="cell" style="grid-column: 1 / span 4">
               <div class="item plan"><span class="dot"></span><span class="body">Scan metadata enhancements or extensions</span></div>
             </div>
-            <div class="cell" style="grid-column: 3">
+            <div class="cell" style="grid-column: 5 / span 3">
               <div class="item plan"><span class="dot"></span><span class="body">Scan in Cloud to SAP repository and initial API</span></div>
             </div>
-            <div class="cell" style="grid-column: 4">
+            <div class="cell" style="grid-column: 8 / span 5">
               <div class="item plan"><span class="dot"></span><span class="body">Scan to multiple destinations, zonal OCR, data extraction, mobile scanning&hellip;</span></div>
             </div>
           </div>
           <div class="cat-row">
-            <div class="cell" style="grid-column: 1">
+            <div class="cell" style="grid-column: 1 / span 4">
               <div class="item plan"><span class="dot"></span><span class="body">End&#8209;to&#8209;end scan workflows prototype</span></div>
             </div>
-            <div class="cell" style="grid-column: 3">
+            <div class="cell" style="grid-column: 5 / span 11">
               <div class="item plan"><span class="dot"></span><span class="body">End&#8209;to&#8209;end scan workflows</span></div>
             </div>
           </div>
