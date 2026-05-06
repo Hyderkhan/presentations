@@ -2,7 +2,6 @@
 .DS_Store
 .wrangler/
 node_modules/
-hca-healthcare/assets/sq-location-aware-print.mp4
 **/*.pptx
 **/~$*
 # Internal HR/people decks — never publish
