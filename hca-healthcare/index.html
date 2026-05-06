@@ -1230,14 +1230,227 @@
        on leave. object-fit: contain so the whole frame is visible.
        ============================================================ -->
   <section class="slide" data-label="Location-aware print" style="background: #000; padding: 0;">
-    <video src="assets/sq-location-aware-print.mp4"
+    <video class="law-video"
+           src="assets/sq-location-aware-print.mp4"
            playsinline
            loop
-           controls
            preload="auto"
            data-autoplay
            style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #000;"></video>
+
+    <!-- Custom controls — live inside the slide so they scale with deck-stage's transform -->
+    <div class="law-controls" role="group" aria-label="Video controls">
+      <button class="law-btn law-play" type="button" aria-label="Play / pause">
+        <svg class="law-ico law-ico-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+        <svg class="law-ico law-ico-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+      </button>
+      <span class="law-time law-time-current">0:00</span>
+      <input class="law-progress" type="range" min="0" max="100" step="0.01" value="0" aria-label="Seek" />
+      <span class="law-time law-time-total">0:00</span>
+      <button class="law-btn law-mute" type="button" aria-label="Mute / unmute">
+        <svg class="law-ico law-ico-vol" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.5-4.03v8.05A4.5 4.5 0 0 0 16.5 12zM14 3.23v2.06a7 7 0 0 1 0 13.42v2.06a9 9 0 0 0 0-17.54z"/></svg>
+        <svg class="law-ico law-ico-mute" viewBox="0 0 24 24" aria-hidden="true"><path d="M16.5 12a4.5 4.5 0 0 0-2.5-4.03v2.21l2.45 2.45c.03-.21.05-.42.05-.63zM19 12c0 .94-.2 1.82-.54 2.64l1.51 1.51A8.96 8.96 0 0 0 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3 3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06a8.99 8.99 0 0 0 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4 9.91 6.09 12 8.18V4z"/></svg>
+      </button>
+      <input class="law-volume" type="range" min="0" max="1" step="0.05" value="1" aria-label="Volume" />
+      <button class="law-btn law-fs" type="button" aria-label="Fullscreen">
+        <svg class="law-ico law-ico-fs" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+        <svg class="law-ico law-ico-fs-exit" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/></svg>
+      </button>
+    </div>
   </section>
+
+  <style>
+    .law-controls {
+      position: absolute;
+      left: 28px; right: 28px; bottom: 28px;
+      display: flex; align-items: center; gap: 16px;
+      padding: 14px 22px;
+      background: rgba(15, 18, 22, 0.62);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 14px;
+      font-family: var(--font-display, "Inter", sans-serif);
+      color: #fff;
+      z-index: 10;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 220ms ease, transform 220ms ease;
+      pointer-events: none;
+    }
+    section[data-label="Location-aware print"]:hover .law-controls,
+    section[data-label="Location-aware print"] .law-controls.is-active {
+      opacity: 1; transform: translateY(0); pointer-events: auto;
+    }
+    .law-btn {
+      background: transparent; border: 0; color: #fff; cursor: pointer;
+      width: 38px; height: 38px; border-radius: 8px;
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 0; transition: background 160ms ease;
+    }
+    .law-btn:hover { background: rgba(255,255,255,0.12); }
+    .law-ico { width: 22px; height: 22px; fill: currentColor; }
+    .law-ico-pause, .law-ico-mute, .law-ico-fs-exit { display: none; }
+    .law-controls.is-playing .law-ico-play { display: none; }
+    .law-controls.is-playing .law-ico-pause { display: block; }
+    .law-controls.is-muted .law-ico-vol { display: none; }
+    .law-controls.is-muted .law-ico-mute { display: block; }
+    .law-controls.is-fullscreen .law-ico-fs { display: none; }
+    .law-controls.is-fullscreen .law-ico-fs-exit { display: block; }
+
+    .law-time {
+      font-variant-numeric: tabular-nums;
+      font-size: 14px; letter-spacing: 0.02em;
+      min-width: 44px; text-align: center;
+      color: rgba(255,255,255,0.85);
+    }
+
+    /* Range styling — Chrome / Safari + Firefox */
+    .law-progress, .law-volume {
+      -webkit-appearance: none; appearance: none;
+      background: transparent;
+      cursor: pointer;
+    }
+    .law-progress { flex: 1; height: 22px; }
+    .law-volume { width: 90px; height: 22px; }
+    .law-progress::-webkit-slider-runnable-track,
+    .law-volume::-webkit-slider-runnable-track {
+      height: 4px; border-radius: 999px;
+      background: linear-gradient(to right, var(--orange, #FF6600) var(--law-fill, 0%), rgba(255,255,255,0.25) var(--law-fill, 0%));
+    }
+    .law-progress::-moz-range-track,
+    .law-volume::-moz-range-track {
+      height: 4px; border-radius: 999px; background: rgba(255,255,255,0.25);
+    }
+    .law-progress::-moz-range-progress,
+    .law-volume::-moz-range-progress {
+      height: 4px; border-radius: 999px; background: var(--orange, #FF6600);
+    }
+    .law-progress::-webkit-slider-thumb,
+    .law-volume::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none;
+      width: 14px; height: 14px; border-radius: 50%;
+      background: #fff; border: 2px solid var(--orange, #FF6600);
+      margin-top: -5px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.35);
+    }
+    .law-progress::-moz-range-thumb,
+    .law-volume::-moz-range-thumb {
+      width: 14px; height: 14px; border-radius: 50%;
+      background: #fff; border: 2px solid var(--orange, #FF6600);
+    }
+  </style>
+
+  <script>
+  (function lawVideoControls() {
+    const slide = document.querySelector('section[data-label="Location-aware print"]');
+    if (!slide) return;
+    const video = slide.querySelector('video.law-video');
+    const controls = slide.querySelector('.law-controls');
+    if (!video || !controls) return;
+
+    const playBtn = controls.querySelector('.law-play');
+    const muteBtn = controls.querySelector('.law-mute');
+    const fsBtn = controls.querySelector('.law-fs');
+    const progress = controls.querySelector('.law-progress');
+    const volume = controls.querySelector('.law-volume');
+    const tNow = controls.querySelector('.law-time-current');
+    const tTot = controls.querySelector('.law-time-total');
+
+    const fmt = (s) => {
+      if (!isFinite(s) || s < 0) s = 0;
+      const m = Math.floor(s / 60);
+      const r = Math.floor(s % 60);
+      return m + ':' + String(r).padStart(2, '0');
+    };
+    const setFill = (el, pct) => el.style.setProperty('--law-fill', pct + '%');
+
+    // Play / pause
+    playBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (video.paused) video.play(); else video.pause();
+    });
+    video.addEventListener('play',  () => controls.classList.add('is-playing'));
+    video.addEventListener('pause', () => controls.classList.remove('is-playing'));
+
+    // Mute / unmute
+    muteBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      video.muted = !video.muted;
+    });
+    video.addEventListener('volumechange', () => {
+      controls.classList.toggle('is-muted', video.muted || video.volume === 0);
+      volume.value = video.muted ? 0 : video.volume;
+      setFill(volume, (video.muted ? 0 : video.volume) * 100);
+    });
+
+    // Volume slider
+    volume.addEventListener('input', (e) => {
+      e.stopPropagation();
+      video.volume = parseFloat(volume.value);
+      if (video.volume > 0) video.muted = false;
+      setFill(volume, video.volume * 100);
+    });
+
+    // Progress / seek
+    let scrubbing = false;
+    const onMeta = () => {
+      tTot.textContent = fmt(video.duration);
+      progress.max = isFinite(video.duration) ? video.duration : 100;
+    };
+    if (video.readyState >= 1) onMeta();
+    video.addEventListener('loadedmetadata', onMeta);
+    video.addEventListener('timeupdate', () => {
+      if (!scrubbing) {
+        progress.value = video.currentTime;
+        const pct = video.duration ? (video.currentTime / video.duration) * 100 : 0;
+        setFill(progress, pct);
+      }
+      tNow.textContent = fmt(video.currentTime);
+    });
+    progress.addEventListener('input', (e) => {
+      e.stopPropagation();
+      scrubbing = true;
+      const pct = video.duration ? (parseFloat(progress.value) / video.duration) * 100 : 0;
+      setFill(progress, pct);
+      tNow.textContent = fmt(parseFloat(progress.value));
+    });
+    progress.addEventListener('change', (e) => {
+      e.stopPropagation();
+      video.currentTime = parseFloat(progress.value);
+      scrubbing = false;
+    });
+
+    // Fullscreen — fullscreen the slide so the custom controls scale with it
+    fsBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else if (slide.requestFullscreen) {
+        slide.requestFullscreen();
+      }
+    });
+    document.addEventListener('fullscreenchange', () => {
+      controls.classList.toggle('is-fullscreen', document.fullscreenElement === slide);
+    });
+
+    // Show/hide on activity; always visible when paused
+    let hideTimer;
+    const show = () => {
+      controls.classList.add('is-active');
+      clearTimeout(hideTimer);
+      hideTimer = setTimeout(() => {
+        if (!video.paused) controls.classList.remove('is-active');
+      }, 2600);
+    };
+    slide.addEventListener('mousemove', show);
+    slide.addEventListener('click', show);
+    show();
+
+    // Keep deck navigation from triggering when interacting with controls
+    controls.addEventListener('click', (e) => e.stopPropagation());
+    controls.addEventListener('mousedown', (e) => e.stopPropagation());
+  })();
+  </script>
 
   <!-- ============================================================
        23 · THANK YOU
