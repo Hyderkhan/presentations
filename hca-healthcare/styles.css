@@ -1208,6 +1208,11 @@ body.hide-footer .footer { display: none; }
 .customer-wall--logos .customer-tile img.logo-lg {
   max-height: 110px;
 }
+/* Logos shipped as white-on-transparent: flip white -> dark while keeping
+   chromatic accents (green leaf etc.) intact via offsetting hue rotation. */
+.customer-wall--logos .customer-tile img.logo-invert {
+  filter: invert(1) hue-rotate(180deg);
+}
 .customer-tile {
   display: flex;
   align-items: center;
