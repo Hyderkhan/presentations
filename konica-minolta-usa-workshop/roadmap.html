@@ -16,6 +16,7 @@
     --muted-2: rgba(255,255,255,0.42);
     --font-display: "Inter", "Helvetica Neue", Arial, sans-serif;
     --font-body:    "Inter", "Helvetica Neue", Arial, sans-serif;
+    --rm-fs:   1;     /* user-controlled type scale (0.7 – 1.6) */
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; background: #000; color: #fff; font-family: var(--font-body); width: 100%; height: 100%; overflow: hidden; }
@@ -56,6 +57,51 @@
     transition: background 0.25s ease, transform 0.2s ease, color 0.25s ease, border-color 0.25s ease;
   }
   .theme-btn:hover { background: rgba(255,102,0,0.18); border-color: rgba(255,102,0,0.55); color: var(--orange); transform: scale(1.06) rotate(15deg); }
+
+  /* ============ FONT-SCALE PILL ============ */
+  .rm-fs-pill {
+    position: fixed;
+    top: 14px; right: 114px;
+    z-index: 10000;
+    display: flex; align-items: stretch;
+    background: rgba(0,0,0,0.55);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 10px;
+    color: rgba(255,255,255,0.85);
+    backdrop-filter: blur(8px);
+    overflow: hidden;
+    height: 40px;
+    transition: border-color 0.2s;
+  }
+  .rm-fs-pill button {
+    background: transparent;
+    border: 0;
+    color: inherit;
+    cursor: pointer;
+    padding: 0 12px;
+    min-width: 40px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display);
+    font-weight: 600;
+    transition: background 0.18s, color 0.18s;
+  }
+  .rm-fs-pill button + button { border-left: 1px solid rgba(255,255,255,0.12); }
+  .rm-fs-pill button:hover { background: rgba(255,102,0,0.18); color: var(--orange); }
+  .rm-fs-pill button:disabled { opacity: 0.35; cursor: not-allowed; }
+  .rm-fs-pill .rm-dec { font-size: 18px; }
+  .rm-fs-pill .rm-inc { font-size: 22px; }
+  .rm-fs-pill .rm-val {
+    min-width: 56px;
+    font-variant-numeric: tabular-nums;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+  }
+  [data-theme="light"] .rm-fs-pill {
+    background: rgba(255,255,255,0.75);
+    border-color: rgba(14,17,22,0.14);
+    color: rgba(14,17,22,0.85);
+  }
+  [data-theme="light"] .rm-fs-pill button + button { border-left-color: rgba(14,17,22,0.10); }
   .theme-btn .th-sun  { display: block; }
   .theme-btn .th-moon { display: none; }
   [data-theme="light"] .theme-btn .th-sun  { display: none; }
@@ -290,7 +336,7 @@
     position: absolute;
     top: 22px; left: 70px;
     color: var(--muted);
-    font-size: 13px;
+    font-size: calc(13px * var(--rm-fs, 1));
     letter-spacing: 0.16em;
     text-transform: uppercase;
     text-decoration: none;
@@ -313,7 +359,7 @@
 
   .eyebrow {
     color: var(--orange);
-    font-size: 14px;
+    font-size: calc(14px * var(--rm-fs, 1));
     font-weight: 600;
     letter-spacing: 0.22em;
     text-transform: uppercase;
@@ -324,7 +370,7 @@
   h1 {
     font-family: var(--font-display);
     font-weight: 800;
-    font-size: 48px;
+    font-size: calc(48px * var(--rm-fs, 1));
     line-height: 1.0;
     margin: 0 0 6px;
     letter-spacing: -0.02em;
@@ -334,7 +380,7 @@
   h1 .accent-orange { color: var(--orange); }
   h1 .accent-teal   { color: var(--teal-2); }
   .sub {
-    font-size: 17px;
+    font-size: calc(17px * var(--rm-fs, 1));
     color: var(--muted);
     margin: 0;
     letter-spacing: 0.04em;
@@ -350,7 +396,7 @@
     padding: 12px 18px;
     text-align: right;
     color: #fff;
-    font-size: 14px;
+    font-size: calc(14px * var(--rm-fs, 1));
     font-weight: 700;
     letter-spacing: 0.02em;
     line-height: 1.3;
@@ -371,7 +417,7 @@
     display: block;
     margin-top: 4px;
     color: var(--muted);
-    font-size: 12px;
+    font-size: calc(12px * var(--rm-fs, 1));
     font-weight: 500;
     letter-spacing: 0.06em;
   }
@@ -395,7 +441,7 @@
   }
   .qheaders > div:first-child { /* empty corner */ }
   .qhead {
-    font-size: 13px;
+    font-size: calc(13px * var(--rm-fs, 1));
     font-weight: 700;
     letter-spacing: 0.08em;
     color: var(--muted);
@@ -420,7 +466,7 @@
   .category:last-of-type { border-bottom: none; }
 
   .cat-label {
-    font-size: 14px;
+    font-size: calc(14px * var(--rm-fs, 1));
     line-height: 1.35;
     color: var(--muted);
     padding: 4px 12px 4px 0;
@@ -436,7 +482,7 @@
     color: #fff;
     font-weight: 700;
     display: block;
-    font-size: 16px;
+    font-size: calc(16px * var(--rm-fs, 1));
     letter-spacing: -0.005em;
   }
   .cat-label .lbl-wrap { display: block; }
@@ -467,7 +513,7 @@
     align-items: flex-start;
     gap: 7px;
     padding: 6px 11px 6px 12px;
-    font-size: 12px;
+    font-size: calc(12px * var(--rm-fs, 1));
     line-height: 1.28;
     border-radius: 7px;
     background: rgba(255,255,255,0.03);
@@ -517,7 +563,7 @@
     display: inline-block;
     margin-left: 6px;
     padding: 1px 7px 2px;
-    font-size: 10px;
+    font-size: calc(10px * var(--rm-fs, 1));
     font-weight: 800;
     letter-spacing: 0.10em;
     text-transform: uppercase;
@@ -552,7 +598,7 @@
     gap: 10px;
     padding: 6px 14px 6px 12px;
     border-radius: 999px;
-    font-size: 13px;
+    font-size: calc(13px * var(--rm-fs, 1));
     font-weight: 700;
     letter-spacing: 0.06em;
     border: 1px solid var(--rule);
@@ -561,11 +607,11 @@
   }
   .count-pill .num {
     font-variant-numeric: tabular-nums;
-    font-size: 18px;
+    font-size: calc(18px * var(--rm-fs, 1));
     font-weight: 800;
     letter-spacing: -0.01em;
   }
-  .count-pill .lbl { color: var(--muted); font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; font-size: 11px; }
+  .count-pill .lbl { color: var(--muted); font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; font-size: calc(11px * var(--rm-fs, 1)); }
   .count-pill .dot {
     width: 9px; height: 9px;
     border-radius: 50%;
@@ -599,7 +645,7 @@
     gap: 8px;
     padding: 6px 14px;
     border-radius: 999px;
-    font-size: 13px;
+    font-size: calc(13px * var(--rm-fs, 1));
     font-weight: 700;
     letter-spacing: 0.16em;
     text-transform: uppercase;
@@ -611,7 +657,7 @@
     transition: opacity 0.5s ease, transform 0.5s ease;
   }
   body.show-plan .total-pill { opacity: 1; transform: translateX(0); transition-delay: 1.3s; }
-  .total-pill .num { font-variant-numeric: tabular-nums; font-size: 16px; }
+  .total-pill .num { font-variant-numeric: tabular-nums; font-size: calc(16px * var(--rm-fs, 1)); }
 
   /* ============ REVEAL BUTTON ============ */
   .reveal-btn {
@@ -625,7 +671,7 @@
     background: linear-gradient(135deg, #0DAEC9 0%, var(--teal) 70%);
     color: #fff;
     font-family: inherit;
-    font-size: 13px;
+    font-size: calc(13px * var(--rm-fs, 1));
     font-weight: 800;
     letter-spacing: 0.18em;
     text-transform: uppercase;
@@ -646,7 +692,7 @@
   .reveal-btn .arr {
     display: inline-block;
     transition: transform 0.25s ease;
-    font-size: 16px;
+    font-size: calc(16px * var(--rm-fs, 1));
     line-height: 1;
   }
   .reveal-btn:hover { transform: translateY(-2px) scale(1.04); box-shadow: 0 12px 30px rgba(0,156,182,0.55); }
@@ -656,7 +702,7 @@
     padding: 2px 8px;
     border-radius: 999px;
     font-variant-numeric: tabular-nums;
-    font-size: 12px;
+    font-size: calc(12px * var(--rm-fs, 1));
     letter-spacing: 0.08em;
   }
   body.show-plan .reveal-btn { animation: btnExit 0.6s cubic-bezier(.6,0,.4,1) forwards; pointer-events: none; }
@@ -708,7 +754,7 @@
     transform: translateX(-50%);
     background: var(--orange);
     color: #fff;
-    font-size: 9px;
+    font-size: calc(9px * var(--rm-fs, 1));
     font-weight: 800;
     letter-spacing: 0.2em;
     padding: 2px 8px;
@@ -743,7 +789,7 @@
     align-items: center;
     gap: 10px;
     padding: 6px 12px;
-    font-size: 11px;
+    font-size: calc(11px * var(--rm-fs, 1));
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: rgba(0,156,182,0.55);
@@ -775,7 +821,7 @@
     justify-content: space-between;
     gap: 24px;
     color: var(--muted);
-    font-size: 13px;
+    font-size: calc(13px * var(--rm-fs, 1));
     opacity: 0;
     animation: fadeUp 0.7s 1.6s ease-out forwards;
   }
@@ -806,6 +852,12 @@
   <svg class="fs-enter" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9V3h6M21 9V3h-6M3 15v6h6M21 15v6h-6"/></svg>
   <svg class="fs-exit"  width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3v6H3M15 3v6h6M9 21v-6H3M15 21v-6h6"/></svg>
 </button>
+
+<div class="rm-fs-pill" role="group" aria-label="Text size">
+  <button class="rm-dec" id="rmDec" type="button" title="Smaller text (-)" aria-label="Decrease text size">A−</button>
+  <button class="rm-val" id="rmVal" type="button" title="Reset text size (0)" aria-label="Reset text size">100%</button>
+  <button class="rm-inc" id="rmInc" type="button" title="Larger text (+)" aria-label="Increase text size">A+</button>
+</div>
 
 <section class="slide">
   <div class="ring"></div>
@@ -1220,6 +1272,47 @@
         btn.click();
       }
     });
+  })();
+
+  /* ============ FONT-SCALE CONTROL ============ */
+  (function rmTextScale() {
+    const root = document.documentElement;
+    const dec  = document.getElementById('rmDec');
+    const inc  = document.getElementById('rmInc');
+    const val  = document.getElementById('rmVal');
+    if (!root || !dec || !inc || !val) return;
+
+    const MIN = 0.7, MAX = 1.6, STEP = 0.1, KEY = 'roadmap.fontScale';
+    let scale = 1;
+    try {
+      const saved = parseFloat(localStorage.getItem(KEY));
+      if (!isNaN(saved) && saved >= MIN && saved <= MAX) scale = saved;
+    } catch (e) {}
+
+    const round = (v) => Math.round(v * 100) / 100;
+    const apply = () => {
+      scale = round(Math.max(MIN, Math.min(MAX, scale)));
+      root.style.setProperty('--rm-fs', String(scale));
+      val.textContent = Math.round(scale * 100) + '%';
+      dec.disabled = scale <= MIN + 1e-6;
+      inc.disabled = scale >= MAX - 1e-6;
+      try { localStorage.setItem(KEY, String(scale)); } catch (e) {}
+    };
+
+    dec.addEventListener('click', (e) => { e.preventDefault(); scale -= STEP; apply(); });
+    inc.addEventListener('click', (e) => { e.preventDefault(); scale += STEP; apply(); });
+    val.addEventListener('click', (e) => { e.preventDefault(); scale = 1;     apply(); });
+
+    document.addEventListener('keydown', (e) => {
+      const tag = (e.target && e.target.tagName) || '';
+      if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (e.key === '+' || e.key === '=') { e.preventDefault(); scale += STEP; apply(); }
+      else if (e.key === '-' || e.key === '_') { e.preventDefault(); scale -= STEP; apply(); }
+      else if (e.key === '0') { e.preventDefault(); scale = 1; apply(); }
+    });
+
+    apply();
   })();
 </script>
 
