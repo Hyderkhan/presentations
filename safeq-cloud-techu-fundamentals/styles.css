@@ -326,9 +326,9 @@
 }
 .agenda-meta {
   font-family: var(--font-sans);
-  font-weight: 500;
+  font-weight: 600;
   font-size: 20px;
-  color: var(--grey-7);
+  color: var(--grey-11);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
