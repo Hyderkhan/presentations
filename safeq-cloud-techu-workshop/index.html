@@ -612,8 +612,8 @@
           <ul class="bullet-list" style="font-size: 22px; line-height: 1.55;">
             <li><strong>No capability for secure cloud authentication</strong> on the device itself.</li>
             <li><strong>No capability to "download" print jobs</strong> from the cloud directly.</li>
-            <li><strong>Applies to printers and older MFP APIs</strong> &mdash; HP OXPD, Konica Minolta Open API.</li>
-            <li><strong>Note:</strong> HP WorkPath and KM IWS already support zero-trust natively.</li>
+            <li><strong>Applies to printers and older MFP APIs</strong> &mdash; HP OXPD and similar legacy device APIs.</li>
+            <li><strong>Note:</strong> HP WorkPath already supports zero-trust natively on newer devices.</li>
           </ul>
         </div>
       </div>
@@ -675,22 +675,79 @@
     <div class="logo-tr"><img class="hp-dark" src="assets/hp-techu-logo.png" alt="HP TechU 2026 World Cup Edition" /><img class="hp-light" src="assets/hp-techu-logo-white.png" alt="HP TechU 2026 World Cup Edition" /></div>
     <img src="assets/safeq-cloud-logo-orange.svg" class="logo-tl" alt="SAFEQ Cloud" />
     <div class="frame">
-      <div class="eyebrow">Hosting option 01 &middot; Public hosted by Y Soft</div>
-      <h1 class="display h-title" style="margin-bottom: 14px;">Data sovereignty &amp; residency, by region.</h1>
-      <p class="perex" style="margin-bottom: 24px; max-width: 1600px;">
-        Many jurisdictions and public-sector frameworks require data to remain within national borders or under direct control. Pick the region; we host the tenant there.
+      <div class="eyebrow">SAFEQ Cloud &middot; Data sovereignty &amp; residency</div>
+      <h1 class="display h-title" style="margin-bottom: 28px; max-width: 1500px;">Data stays where the law says it should.</h1>
+      <p class="perex" style="margin-bottom: 36px; max-width: 1500px;">
+        Many jurisdictions and public-sector frameworks require data to remain within national borders or under direct control. SAFEQ Cloud is provisioned across <strong>9 active regions</strong>, with <strong>3 more under evaluation</strong>.
       </p>
 
-      <div style="background: #fff; border: 2px solid var(--border); border-radius: 14px; padding: 18px; flex: 1; min-height: 0; box-shadow: 0 16px 50px rgba(0,0,0,0.06); display: flex; align-items: center; justify-content: center;">
-        <img src="assets/public-hosting-map.png" alt="Y Soft public hosting regions worldwide" style="width: 100%; height: 100%; max-height: 620px; object-fit: contain; display: block;" />
-      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1.6fr; gap: 56px; flex: 1; align-items: start;">
+        <div>
+          <div style="border-top: 2px solid var(--ink);">
+            <div style="display: grid; grid-template-columns: auto 1fr; gap: 28px; align-items: center; padding: 22px 0; border-bottom: 1px solid var(--border);">
+              <div class="stat-big" style="font-size: 72px; color: var(--orange); line-height: 1;">9</div>
+              <div>
+                <div style="font-family: var(--font-display); font-weight: 700; text-transform: uppercase; font-size: 24px;">Active regions</div>
+                <div style="font-size: 18px; color: var(--grey-7);">Dublin &middot; London &middot; Frankfurt&times;2 &middot; Stockholm &middot; Montreal &middot; Virginia &middot; Singapore &middot; Sydney</div>
+              </div>
+            </div>
+            <div style="display: grid; grid-template-columns: auto 1fr; gap: 28px; align-items: center; padding: 22px 0; border-bottom: 1px solid var(--border);">
+              <div class="stat-big" style="font-size: 72px; color: #F2B600; line-height: 1;">3</div>
+              <div>
+                <div style="font-family: var(--font-display); font-weight: 700; text-transform: uppercase; font-size: 24px;">In consideration</div>
+                <div style="font-size: 18px; color: var(--grey-7);">India &middot; Saudi Arabia &middot; China</div>
+              </div>
+            </div>
+            <div style="display: grid; grid-template-columns: auto 1fr; gap: 28px; align-items: center; padding: 22px 0; border-bottom: 1px solid var(--border);">
+              <div class="stat-big" style="font-size: 72px; color: var(--ink); line-height: 1;">3&times;</div>
+              <div>
+                <div style="font-family: var(--font-display); font-weight: 700; text-transform: uppercase; font-size: 24px;">Availability zones</div>
+                <div style="font-size: 18px; color: var(--grey-7);">Per active region</div>
+              </div>
+            </div>
+          </div>
 
-      <div style="display: flex; gap: 32px; margin-top: 20px; font-size: 18px; color: var(--grey-11);">
-        <div style="display: inline-flex; gap: 12px; align-items: center;"><span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:var(--orange);"></span><strong>Live regions</strong> &middot; Dublin, London, Frankfurt (AWS &amp; EU Sovereign), Stockholm, Montreal, Virginia, Singapore, Sydney</div>
-        <div style="display: inline-flex; gap: 12px; align-items: center;"><span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:#FFC93C;"></span><strong>In consideration</strong> &middot; Brazil, Saudi Arabia, Japan, China</div>
+          <div style="margin-top: 24px; display: flex; gap: 22px; align-items: center;">
+            <span style="display: inline-flex; gap: 8px; align-items: center; font-size: 16px; color: var(--grey-11);"><span style="display:inline-block; width:14px; height:14px; border-radius:50%; background:var(--orange);"></span> Active</span>
+            <span style="display: inline-flex; gap: 8px; align-items: center; font-size: 16px; color: var(--grey-11);"><span style="display:inline-block; width:14px; height:14px; border-radius:50%; background:#F2B600;"></span> In consideration</span>
+          </div>
+        </div>
+
+        <div style="align-self: stretch; display: flex; flex-direction: column; justify-content: center;">
+          <div style="position: relative; width: 100%;">
+            <img src="assets/world-map.svg" alt="World map" style="width: 100%; height: auto; display: block;" />
+            <svg viewBox="0 0 950 620" preserveAspectRatio="xMidYMid meet" style="position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none;" xmlns="http://www.w3.org/2000/svg">
+              <g font-family="Inter, Arial, sans-serif" font-size="14" fill="#000">
+                <circle cx="479" cy="178" r="22" fill="#FF6600" opacity="0.22"/>
+                <circle cx="479" cy="178" r="9" fill="#FF6600"/>
+                <text x="499" y="180" font-weight="600">Frankfurt &times;2</text>
+                <circle cx="450" cy="178" r="6" fill="#FF6600"/>
+                <text x="438" y="183" text-anchor="end">London</text>
+                <circle cx="433" cy="169" r="6" fill="#FF6600"/>
+                <text x="420" y="160" text-anchor="end">Dublin</text>
+                <circle cx="498" cy="145" r="6" fill="#FF6600"/>
+                <text x="510" y="141">Stockholm</text>
+                <circle cx="255" cy="200" r="6" fill="#FF6600"/>
+                <text x="247" y="196" text-anchor="end">Virginia</text>
+                <circle cx="258" cy="175" r="6" fill="#FF6600"/>
+                <text x="250" y="170" text-anchor="end">Montreal</text>
+                <circle cx="742" cy="333" r="6" fill="#FF6600"/>
+                <text x="753" y="337">Singapore</text>
+                <circle cx="862" cy="458" r="6" fill="#FF6600"/>
+                <text x="871" y="462">Sydney</text>
+                <circle cx="595" cy="290" r="6" fill="#F2B600"/>
+                <text x="604" y="294">Saudi Arabia</text>
+                <circle cx="680" cy="275" r="6" fill="#F2B600"/>
+                <text x="690" y="279">India</text>
+                <circle cx="780" cy="270" r="6" fill="#F2B600"/>
+                <text x="772" y="266" text-anchor="end">China</text>
+              </g>
+            </svg>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="footer"><span class="page-no">19 &middot; Hosting</span><span>Public hosting &middot; data residency</span></div>
+    <div class="footer"><span class="page-no">19 &middot; Hosting</span><span>Public hosting &middot; Data residency</span></div>
   </section>
 
   <!-- ============================================================
@@ -821,7 +878,7 @@
       <div class="eyebrow">Open discussion</div>
       <h1 class="display h-title" style="margin-bottom: 16px;">Customer scenarios &mdash; on the table.</h1>
       <p class="perex" style="margin-bottom: 36px; max-width: 1600px;">
-        Three live deployments, two in flight, plus whatever the room brings. Each one stresses a different mode of the platform.
+        Three live deployments, plus whatever the room brings. Each one stresses a different mode of the platform.
       </p>
 
       <div style="display: grid; grid-template-columns: 2fr 1.4fr; gap: 40px; flex: 1;">
@@ -841,18 +898,6 @@
               <p style="font-size: 17px; line-height: 1.45; color: var(--grey-7); margin: 0;">Senior living communities &middot; distributed campuses</p>
             </div>
           </div>
-
-          <div style="font-family: var(--font-display); font-weight: 700; text-transform: uppercase; color: var(--turq); font-size: 18px; letter-spacing: 0.08em; margin: 40px 0 18px;">Prospective customers</div>
-          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
-            <div style="background: #fff; border: 2px solid var(--border); border-left: 6px solid var(--turq); border-radius: 14px; padding: 24px;">
-              <div style="font-family: var(--font-display); font-weight: 700; font-size: 28px; line-height: 1.05; margin-bottom: 8px;">HCA Healthcare</div>
-              <p style="font-size: 17px; line-height: 1.45; color: var(--grey-7); margin: 0;">182 hospitals &middot; 2,400+ care sites</p>
-            </div>
-            <div style="background: #fff; border: 2px solid var(--border); border-left: 6px solid var(--turq); border-radius: 14px; padding: 24px;">
-              <div style="font-family: var(--font-display); font-weight: 700; font-size: 28px; line-height: 1.05; margin-bottom: 8px;">American Airlines</div>
-              <p style="font-size: 17px; line-height: 1.45; color: var(--grey-7); margin: 0;">Major US carrier &middot; HQ &amp; airport fleet</p>
-            </div>
-          </div>
         </div>
 
         <div>
@@ -864,7 +909,7 @@
         </div>
       </div>
     </div>
-    <div class="footer"><span class="page-no">23 &middot; Scenarios</span><span>Open discussion &middot; current &amp; prospective</span></div>
+    <div class="footer"><span class="page-no">23 &middot; Scenarios</span><span>Open discussion &middot; current customers</span></div>
   </section>
 
   <!-- ============================================================
