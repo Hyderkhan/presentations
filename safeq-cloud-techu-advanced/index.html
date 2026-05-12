@@ -1726,6 +1726,14 @@
     transition-delay: 950ms;
   }
 
+  /* Print-job document flyers — kept hidden until the slide has enough
+     reveal state for the relevant source + destination nodes to be on
+     screen. Each flyer carries its own data-min-step; JS toggles
+     display in tryAdvance so the docs never fly through empty space.
+     pointer-events:none so they don't intercept click reveals. */
+  .ws-doc-flyer { pointer-events: none; }
+  .ws-doc-flyer[data-hidden="1"] { display: none; }
+
   /* CLUSTER SHIMMER — when a stack of identical cards (Primary Server
      copies, KBs copies, Customer Network copies) is built up, each
      subsequent card runs a slow breathing brightness pulse, staggered
@@ -1929,6 +1937,50 @@ window.workshopTimelines = {
       svg.insertBefore(defs, svg.firstChild);
     }
     return defs;
+  }
+  /* Spawn a small flying paper-document icon along a path. Used for
+     print-job semantic flows (e.g. PC Client → MFP). The doc fades in
+     at the start of each cycle and fades out near the end so the
+     teleport-back to start (inherent to repeatCount="indefinite") is
+     never visible. Stays upright (no rotate) so it always reads as
+     "a sheet of paper". */
+  function spawnDocFlyer(svg, from, to, dur, beginDelay, minStep) {
+    const g = document.createElementNS(SVG_NS, 'g');
+    g.setAttribute('class', 'ws-doc-flyer');
+    g.setAttribute('filter', 'url(#ws-shadow)');
+    g.setAttribute('data-min-step', String(minStep || 0));
+    g.setAttribute('data-hidden', '1');  // start hidden; JS reveals once curStep ≥ minStep
+    g.innerHTML = `
+      <rect x="-9" y="-11" width="18" height="22" rx="2"
+            fill="#FFFFFF" stroke="#0073E6" stroke-width="1.6"/>
+      <polygon points="4,-11 9,-6 9,-11" fill="#0073E6" opacity="0.45"/>
+      <line x1="-5" y1="-6" x2="3" y2="-6"
+            stroke="#0073E6" stroke-width="1.1" stroke-linecap="round"/>
+      <line x1="-5" y1="-2" x2="5" y2="-2"
+            stroke="#0073E6" stroke-width="1.1" stroke-linecap="round"/>
+      <line x1="-5" y1="2" x2="5" y2="2"
+            stroke="#0073E6" stroke-width="1.1" stroke-linecap="round"/>
+      <line x1="-5" y1="6" x2="2" y2="6"
+            stroke="#0073E6" stroke-width="1.1" stroke-linecap="round"/>
+    `;
+    const motion = document.createElementNS(SVG_NS, 'animateMotion');
+    motion.setAttribute('path', `M ${from.x.toFixed(2)} ${from.y.toFixed(2)} L ${to.x.toFixed(2)} ${to.y.toFixed(2)}`);
+    motion.setAttribute('dur', dur.toFixed(2) + 's');
+    motion.setAttribute('begin', beginDelay.toFixed(2) + 's');
+    motion.setAttribute('repeatCount', 'indefinite');
+    motion.setAttribute('rotate', '0');
+    g.appendChild(motion);
+    const fade = document.createElementNS(SVG_NS, 'animate');
+    fade.setAttribute('attributeName', 'opacity');
+    fade.setAttribute('values', '0;1;1;0');
+    fade.setAttribute('keyTimes', '0;0.10;0.86;1');
+    fade.setAttribute('dur', dur.toFixed(2) + 's');
+    fade.setAttribute('begin', beginDelay.toFixed(2) + 's');
+    fade.setAttribute('repeatCount', 'indefinite');
+    g.appendChild(fade);
+    g.setAttribute('opacity', '0');  // hidden until first fade-in keyframe runs
+    svg.appendChild(g);
+    return g;
   }
   function modernizeSvg(svg) {
     if (svg.dataset.modernized === '1') return;
@@ -2200,6 +2252,55 @@ window.workshopTimelines = {
       line.parentNode.appendChild(dot);
     });
 
+    // --- DOCUMENT FLYERS (slide 25 only) -------------------------------
+    /* On the Architecture overview slide, three print-job paths get a
+       small paper-document icon flying along them in addition to the
+       generic data dots. Reads as "print job traveling from source to
+       printer/destination", which is the semantic the diagram conveys.
+         • PC Client → MFP        (horizontal in Customer Network)
+         • Primary Server → MFP   (diagonal across Data Centre → CN)
+         • WPS & OCR → OneDrive   (top-right cloud destination)
+       The flyers loop continuously with a fade-in at start and
+       fade-out near the destination so the per-cycle teleport is
+       invisible. Begin times are offset per route so multiple flyers
+       don't move in lock-step. */
+    // Detect slide number from the first content/layout element. The
+    // exporter uses s{N}-{spid} for content shapes and sL{N}-{spid} for
+    // layout shapes — both start with 's'. The [id^="s"] selector skips
+    // defs entries like ws-shadow/arr-primary that start with other letters.
+    const sn = svg.querySelector('[id^="s"]')?.id?.match(/^s[L]?(\d+)/)?.[1];
+    if (sn === '1') {
+      // Look up positions of named text labels — fall back to coordinate
+      // estimates for elements like OneDrive that have no text label.
+      const labelPos = {};
+      svg.querySelectorAll('text').forEach(t => {
+        const txt = (t.textContent || '').trim();
+        const x = parseFloat(t.getAttribute('x') || '0');
+        const y = parseFloat(t.getAttribute('y') || '0');
+        if (!labelPos[txt]) labelPos[txt] = { x, y };
+      });
+      // OneDrive image lives at x≈1741, y≈283 with w≈57, h≈57 — use centre.
+      const oneDrive = { x: 1770, y: 312 };
+
+      /* minStep values reflect when both endpoints are revealed by the
+         timeline (slide 25 click order). The flyer stays hidden until
+         the user has clicked through enough to see the connection
+         makes sense. */
+      const routes = [
+        // PC Client + MFP both revealed at click 3
+        { from: labelPos['PC Client'],      to: labelPos['MFP'], dur: 3.6, begin: 0.0, minStep: 3, label: 'pc-mfp' },
+        // Primary Server revealed at click 4 (MFP already in by 3)
+        { from: labelPos['Primary Server'], to: labelPos['MFP'], dur: 4.4, begin: 1.4, minStep: 4, label: 'srv-mfp' },
+        // WPS & OCR + OneDrive cluster revealed around click 15
+        { from: labelPos['WPS & OCR'],      to: oneDrive,        dur: 3.0, begin: 0.7, minStep: 15, label: 'wps-od' },
+      ];
+
+      routes.forEach(r => {
+        if (!r.from || !r.to) return;
+        spawnDocFlyer(svg, r.from, r.to, r.dur, r.begin, r.minStep);
+      });
+    }
+
     // --- Text polish + HALOS -------------------------------------------
     /* PowerPoint exports plain <text> with no halo, so connector lines
        running behind a label cut through the letters. Adding a white
@@ -2254,6 +2355,14 @@ window.workshopTimelines = {
       else if (cur === 0) label.textContent = 'Click to reveal';
       else label.textContent = 'Next step';
     }
+    // Document-flyer visibility: each flyer carries a data-min-step;
+    // show it once the user has clicked that far so the doc never
+    // flies through still-empty space.
+    slide.querySelectorAll('.ws-doc-flyer').forEach(g => {
+      const min = parseInt(g.getAttribute('data-min-step') || '0', 10);
+      if (cur >= min) g.removeAttribute('data-hidden');
+      else g.setAttribute('data-hidden', '1');
+    });
   }
 
   function tryAdvance(dir) {
