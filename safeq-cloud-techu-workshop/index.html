@@ -1968,5 +1968,157 @@
 })();
 </script>
 
+<script>
+// Containers in motion — live animated stage
+(() => {
+  const ctnSlide = document.querySelector('section[data-label="Containers in motion"]');
+  if (!ctnSlide) return;
+  const grid = ctnSlide.querySelector('.ctn-grid');
+  const azFills = {
+    A: ctnSlide.querySelector('[data-az="A"]'),
+    B: ctnSlide.querySelector('[data-az="B"]'),
+    C: ctnSlide.querySelector('[data-az="C"]'),
+  };
+  const azPctEls = {
+    A: ctnSlide.querySelector('[data-az-pct="A"]'),
+    B: ctnSlide.querySelector('[data-az-pct="B"]'),
+    C: ctnSlide.querySelector('[data-az-pct="C"]'),
+  };
+  const SLOTS = 36;
+  const PEAK = 32;
+  const AZ_WINDOW = 60;
+
+  for (let i = 0; i < SLOTS; i++) {
+    const s = document.createElement('div');
+    s.className = 'ctn-slot';
+    s.dataset.state = 'empty';
+    grid.appendChild(s);
+  }
+  const slotEls = grid.querySelectorAll('.ctn-slot');
+  const activeEl = ctnSlide.querySelector('.ctn-active');
+  const rpsEl = ctnSlide.querySelector('.ctn-rps');
+  const healsEl = ctnSlide.querySelector('.ctn-heals');
+
+  const ZONES = [
+    { name: 'A', weight: 0.36 },
+    { name: 'B', weight: 0.34 },
+    { name: 'C', weight: 0.30 },
+  ];
+  function pickZone() {
+    let r = Math.random();
+    for (const z of ZONES) { r -= z.weight; if (r < 0) return z; }
+    return ZONES[0];
+  }
+
+  let active = new Set();
+  let healCount = 0;
+  let stateTimer = null, azTimer = null;
+  let startMs = 0, lastSpawn = 0, lastFail = 0;
+  let azWindow = [];
+
+  const setState = (i, st) => { slotEls[i].dataset.state = st; };
+  const pickEmpty = () => {
+    const e = [];
+    for (let i = 0; i < SLOTS; i++) if (!active.has(i)) e.push(i);
+    return e.length ? e[Math.floor(Math.random() * e.length)] : -1;
+  };
+  const pickActive = () => {
+    const a = [...active];
+    return a.length ? a[Math.floor(Math.random() * a.length)] : -1;
+  };
+  function spawn() {
+    const i = pickEmpty();
+    if (i < 0) return;
+    active.add(i);
+    setState(i, 'healing');
+    setTimeout(() => { if (active.has(i)) setState(i, 'healthy'); }, 360);
+  }
+  function fail() {
+    const i = pickActive();
+    if (i < 0) return;
+    setState(i, 'failed');
+    setTimeout(() => {
+      if (active.has(i)) {
+        setState(i, 'healing');
+        setTimeout(() => { if (active.has(i)) setState(i, 'healthy'); }, 360);
+      }
+    }, 480);
+    healCount++;
+  }
+  function despawn() {
+    const i = pickActive();
+    if (i < 0) return;
+    active.delete(i);
+    setState(i, 'empty');
+  }
+  function updateCounters() {
+    activeEl.textContent = active.size;
+    rpsEl.textContent = (active.size * 247 + Math.floor(Math.random() * 80)).toLocaleString('en-US');
+    healsEl.textContent = healCount;
+  }
+  function tick() {
+    const now = performance.now();
+    const t = (now - startMs) % 22000;
+    if (t < 4000) {
+      if (active.size < 12 && now - lastSpawn > 240) { spawn(); lastSpawn = now; }
+    } else if (t < 8000) {
+      if (active.size < 22 && now - lastSpawn > 320) { spawn(); lastSpawn = now; }
+    } else if (t < 12000) {
+      if (active.size < PEAK && now - lastSpawn > 420) { spawn(); lastSpawn = now; }
+    } else if (t < 18000) {
+      if (now - lastFail > 900 + Math.random() * 600) { fail(); lastFail = now; }
+    } else {
+      if (active.size > 12 && now - lastSpawn > 380) { despawn(); lastSpawn = now; }
+    }
+    updateCounters();
+  }
+  function recordZone(zoneName) {
+    azWindow.push(zoneName);
+    if (azWindow.length > AZ_WINDOW) azWindow.shift();
+    const counts = { A: 0, B: 0, C: 0 };
+    azWindow.forEach((z) => counts[z]++);
+    const total = azWindow.length || 1;
+    ['A', 'B', 'C'].forEach((n) => {
+      const pct = (counts[n] / total) * 100;
+      if (azFills[n]) azFills[n].style.width = pct.toFixed(1) + '%';
+      if (azPctEls[n]) azPctEls[n].textContent = Math.round(pct) + '%';
+    });
+  }
+  function tickZone() { recordZone(pickZone().name); }
+
+  function startAnim() {
+    if (stateTimer) return;
+    active.clear();
+    healCount = 0;
+    azWindow = [];
+    for (let i = 0; i < SLOTS; i++) setState(i, 'empty');
+    ['A', 'B', 'C'].forEach((n) => {
+      if (azFills[n]) azFills[n].style.width = '0%';
+      if (azPctEls[n]) azPctEls[n].textContent = '0%';
+    });
+    updateCounters();
+    startMs = performance.now();
+    lastSpawn = startMs;
+    lastFail = startMs;
+    stateTimer = setInterval(tick, 180);
+    tick();
+    setTimeout(() => { azTimer = setInterval(tickZone, 220); }, 600);
+  }
+  function stopAnim() {
+    if (stateTimer) { clearInterval(stateTimer); stateTimer = null; }
+    if (azTimer) { clearInterval(azTimer); azTimer = null; }
+  }
+
+  const deck = document.querySelector('deck-stage');
+  if (!deck) return;
+  deck.addEventListener('slidechange', (e) => {
+    if (e.detail.slide === ctnSlide) startAnim();
+    else stopAnim();
+  });
+  if (deck.querySelector('[data-deck-active]') === ctnSlide) startAnim();
+})();
+</script>
+
+
 </body>
 </html>
