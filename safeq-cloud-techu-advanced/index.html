@@ -1700,17 +1700,43 @@
   /* Line drawing: any line/path/stroked-rect prepared with data-draw-len has
      its stroke-dasharray + stroke-dashoffset set inline by modernizeSvg.
      Toggling .is-revealed transitions dashoffset → 0, "drawing" the line.
-     Going back reverses smoothly. */
+     Going back reverses smoothly. NOTE: no !important here — that would
+     block the data-flow keyframe animation from cycling the dashoffset
+     once the line is drawn. CSS animations only override the static
+     value during play, so the transition target stays 0 at rest. */
   .ws-anim [data-draw-len] {
     transition: stroke-dashoffset 780ms cubic-bezier(.45,.05,.2,1);
   }
   .ws-anim.is-revealed [data-draw-len] {
-    stroke-dashoffset: 0 !important;
+    stroke-dashoffset: 0;
+  }
+
+  /* DATA FLOW — after each connector line finishes drawing, a moving dash
+     pattern cycles continuously in the line's natural direction (forward
+     for marker-end lines, reverse for marker-start). Reads like a packet
+     pulsing down the wire. The animation overrides the static dasharray
+     from the line-draw step, so we delay it ~900ms (line-draw is 780ms +
+     a 120ms breath) to avoid the dash pattern appearing before the line
+     is fully drawn. */
+  @keyframes ws-flow-fwd {
+    from { stroke-dasharray: 7 14; stroke-dashoffset: 0; }
+    to   { stroke-dasharray: 7 14; stroke-dashoffset: -21; }
+  }
+  @keyframes ws-flow-rev {
+    from { stroke-dasharray: 7 14; stroke-dashoffset: 0; }
+    to   { stroke-dasharray: 7 14; stroke-dashoffset: 21; }
+  }
+  .ws-anim.is-revealed [data-flow-dir="f"] {
+    animation: ws-flow-fwd 1.6s linear 900ms infinite;
+  }
+  .ws-anim.is-revealed [data-flow-dir="r"] {
+    animation: ws-flow-rev 1.6s linear 900ms infinite;
   }
 
   @media (prefers-reduced-motion: reduce) {
     .ws-anim, .ws-anim.is-revealed { animation: none !important; transition: opacity 120ms ease; }
     .ws-anim [data-draw-len] { transition: none !important; stroke-dashoffset: 0 !important; }
+    .ws-anim.is-revealed [data-flow-dir] { animation: none !important; }
   }
 
   /* Hide the standard footer on workshop slides (the SVG includes its own title) */
@@ -2021,6 +2047,25 @@ window.workshopTimelines = {
       // Skip the inline arrow marker path itself (lives inside <defs>)
       if (p.closest('marker')) return;
       upgradeStrokeNode(p);
+    });
+
+    // --- DATA-FLOW DIRECTION TAGGING -----------------------------------
+    /* Any connector line that already had an arrowhead is a data path.
+       Tag it with the flow direction so CSS can animate a moving dash
+       pattern in the right direction after the line finishes drawing.
+       Lines without arrows (container outlines, decorative dividers)
+       are NOT tagged — they stay static. */
+    svg.querySelectorAll('line, path').forEach(el => {
+      if (el.closest('marker')) return;
+      const stroke = el.getAttribute('stroke');
+      if (!stroke || stroke.toUpperCase() === 'NONE') return;
+      const hasEnd = el.getAttribute('marker-end');
+      const hasStart = el.getAttribute('marker-start');
+      if (hasEnd) {
+        el.setAttribute('data-flow-dir', 'f');
+      } else if (hasStart) {
+        el.setAttribute('data-flow-dir', 'r');
+      }
     });
 
     // --- LINE-DRAW PREP ------------------------------------------------
