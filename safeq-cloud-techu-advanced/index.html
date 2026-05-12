@@ -1711,32 +1711,40 @@
     stroke-dashoffset: 0;
   }
 
-  /* DATA FLOW — after each connector line finishes drawing, a moving dash
-     pattern cycles continuously in the line's natural direction (forward
-     for marker-end lines, reverse for marker-start). Reads like a packet
-     pulsing down the wire. The animation overrides the static dasharray
-     from the line-draw step, so we delay it ~900ms (line-draw is 780ms +
-     a 120ms breath) to avoid the dash pattern appearing before the line
-     is fully drawn. */
-  @keyframes ws-flow-fwd {
-    from { stroke-dasharray: 7 14; stroke-dashoffset: 0; }
-    to   { stroke-dasharray: 7 14; stroke-dashoffset: -21; }
+  /* DATA FLOW — illuminated dots fly along each arrow line, in the
+     line's natural direction. SMIL animateMotion handles the path
+     traversal (works correctly in SVG coordinate space regardless of
+     render size). The dot stays invisible until 950ms after reveal so
+     the line has finished drawing first. */
+  .ws-flow-dot {
+    opacity: 0;
+    transition: opacity 280ms ease;
+    pointer-events: none;
   }
-  @keyframes ws-flow-rev {
-    from { stroke-dasharray: 7 14; stroke-dashoffset: 0; }
-    to   { stroke-dasharray: 7 14; stroke-dashoffset: 21; }
+  .ws-anim.is-revealed .ws-flow-dot {
+    opacity: 1;
+    transition-delay: 950ms;
   }
-  .ws-anim.is-revealed [data-flow-dir="f"] {
-    animation: ws-flow-fwd 1.6s linear 900ms infinite;
+
+  /* CLUSTER SHIMMER — when a stack of identical cards (Primary Server
+     copies, KBs copies, Customer Network copies) is built up, each
+     subsequent card runs a slow breathing brightness pulse, staggered
+     by its position in the stack. Reads like an active server cluster
+     rather than dead paper layers. */
+  @keyframes ws-cluster-pulse {
+    0%, 100% { filter: brightness(1) saturate(1); }
+    50%      { filter: brightness(1.10) saturate(1.12); }
   }
-  .ws-anim.is-revealed [data-flow-dir="r"] {
-    animation: ws-flow-rev 1.6s linear 900ms infinite;
+  .ws-anim.is-revealed[data-cluster-idx] {
+    animation:
+      ws-bloom 720ms cubic-bezier(.4,0,.55,1) 0s 1,
+      ws-cluster-pulse 2.6s ease-in-out var(--cluster-delay, 1.8s) infinite;
   }
 
   @media (prefers-reduced-motion: reduce) {
     .ws-anim, .ws-anim.is-revealed { animation: none !important; transition: opacity 120ms ease; }
     .ws-anim [data-draw-len] { transition: none !important; stroke-dashoffset: 0 !important; }
-    .ws-anim.is-revealed [data-flow-dir] { animation: none !important; }
+    .ws-flow-dot { display: none !important; }
   }
 
   /* Hide the standard footer on workshop slides (the SVG includes its own title) */
@@ -1922,21 +1930,43 @@ window.workshopTimelines = {
     // Wipe any auto-generated defs we want to replace (e.g. the original triangle "arrow" marker)
     defs.querySelectorAll('marker#arrow').forEach(n => n.remove());
 
-    // --- Drop shadow filter (very soft) ---------------------------------
-    /* Tight & low-opacity: slide 25 stacks 4–5 intentional copies of the
-       same card to convey multi-instance — a heavier shadow makes those
-       stacks read as visual noise. */
+    // --- Drop shadow filter (3D card depth) -----------------------------
+    /* Two-layer shadow: tight contact shadow at 2px + softer ambient at
+       10px. Reads as a card lifted off the surface with realistic
+       lighting. Only applied to the top card in any stack (de-duped
+       below) so layered copies don't compound into visual noise. */
     const shadow = document.createElementNS(SVG_NS, 'filter');
     shadow.setAttribute('id', 'ws-shadow');
-    shadow.setAttribute('x', '-10%'); shadow.setAttribute('y', '-10%');
-    shadow.setAttribute('width', '120%'); shadow.setAttribute('height', '120%');
+    shadow.setAttribute('x', '-15%'); shadow.setAttribute('y', '-15%');
+    shadow.setAttribute('width', '130%'); shadow.setAttribute('height', '130%');
     shadow.innerHTML = `
-      <feGaussianBlur in="SourceAlpha" stdDeviation="1.6"/>
-      <feOffset dx="0" dy="1.5" result="off"/>
-      <feComponentTransfer><feFuncA type="linear" slope="0.10"/></feComponentTransfer>
-      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+      <feGaussianBlur in="SourceAlpha" stdDeviation="1.2" result="b1"/>
+      <feOffset in="b1" dx="0" dy="1.5" result="o1"/>
+      <feComponentTransfer in="o1" result="s1"><feFuncA type="linear" slope="0.16"/></feComponentTransfer>
+      <feGaussianBlur in="SourceAlpha" stdDeviation="5" result="b2"/>
+      <feOffset in="b2" dx="0" dy="6" result="o2"/>
+      <feComponentTransfer in="o2" result="s2"><feFuncA type="linear" slope="0.10"/></feComponentTransfer>
+      <feMerge><feMergeNode in="s2"/><feMergeNode in="s1"/><feMergeNode in="SourceGraphic"/></feMerge>
     `;
     defs.appendChild(shadow);
+
+    // --- Glow filter for flying data-flow dots --------------------------
+    /* A small bright circle with a colored halo — feels like an electric
+       packet. The dot's own fill provides the core color; the blur
+       around it creates the glow. */
+    const dotGlow = document.createElementNS(SVG_NS, 'filter');
+    dotGlow.setAttribute('id', 'ws-dot-glow');
+    dotGlow.setAttribute('x', '-200%'); dotGlow.setAttribute('y', '-200%');
+    dotGlow.setAttribute('width', '500%'); dotGlow.setAttribute('height', '500%');
+    dotGlow.innerHTML = `
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3.2" result="glow"/>
+      <feMerge>
+        <feMergeNode in="glow"/>
+        <feMergeNode in="glow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    `;
+    defs.appendChild(dotGlow);
 
     // --- Modern arrowhead markers per stroke colour ---------------------
     const markerColors = {
@@ -1979,14 +2009,15 @@ window.workshopTimelines = {
       svg.setAttribute('style', svg.getAttribute('style').replace(/background\s*:\s*[^;]+;?/i, ''));
     }
 
-    // --- Modernise rectangles ------------------------------------------
-    /* Slide 25 contains 4–5 near-identical stacked copies of cards (the
-       "Primary Server", "KBs", "Customer Network" stacks). Each copy is
-       offset by ~10px from the previous — if we shadow every copy and
-       round every copy, the stack reads as chunky drift. So:
-         - only round rects with side ≥ 30
-         - only shadow the TOP filled rect of an overlap stack
-       We detect overlap by hashing fill+strokeRect within the same parent. */
+    // --- Modernise rectangles + CLUSTER DETECTION ----------------------
+    /* Stacked card copies (Primary Server, KBs, Customer Network on
+       slide 25) get two treatments:
+         1. Only the TOP card carries the drop-shadow filter — layered
+            shadows would compound into noise.
+         2. Each subsequent card in a stack is tagged with a cluster
+            index so CSS can run a staggered breathing pulse across
+            the whole stack, making it read as an active server
+            cluster instead of dead paper layers. */
     const seenStackKeys = new Map();
     svg.querySelectorAll('rect').forEach(r => {
       const fill = (r.getAttribute('fill') || '').toUpperCase();
@@ -1995,29 +2026,46 @@ window.workshopTimelines = {
       const h = parseFloat(r.getAttribute('height')) || 0;
       const x = parseFloat(r.getAttribute('x')) || 0;
       const y = parseFloat(r.getAttribute('y')) || 0;
-      // Ignore tiny rects (connector caps, label backings) and full-bleed plates
       const isTiny = w < 30 || h < 22;
       const isBleed = w > 1500 && h > 900;
-      // Gentle rounded corners (skip tiny labels so 9px-tall "metadata" tag stays clean)
+      // Rounded corners
       const hasRx = parseFloat(r.getAttribute('rx')) > 0;
       if (!hasRx && !isTiny && !isBleed) {
         const radius = Math.max(6, Math.min(14, Math.min(w, h) * 0.08));
         r.setAttribute('rx', radius.toFixed(2));
         r.setAttribute('ry', radius.toFixed(2));
       }
-      // Shadow only the FIRST rect of any near-identical group (de-duped by size+fill).
-      // Subsequent stack copies stay flat so they read as proper layered cards.
       const isFilled = fill && fill !== 'NONE' && fill !== '#FFFFFF';
-      if (isFilled && !isTiny && !isBleed) {
+      const isWhiteCard = fill === '#FFFFFF' && stroke && stroke !== 'NONE' && stroke !== '#FFFFFF';
+      const isCard = (isFilled || isWhiteCard) && !isTiny && !isBleed;
+      if (isCard) {
+        // Key by size + colour signature. Stacked card copies (Primary
+        // Server, KBs, Customer Network) all share identical dimensions
+        // and colours and only differ in x/y by ~10px.
         const key = `${Math.round(w/4)}x${Math.round(h/4)}_${fill}_${stroke}`;
         const prev = seenStackKeys.get(key);
-        // If a sibling rect of the same size/fill already exists within 40px, skip shadow
         if (!prev || Math.hypot(x - prev.x, y - prev.y) > 40) {
+          // First card of a (potential) stack — gets the 3D shadow
           r.setAttribute('filter', 'url(#ws-shadow)');
-          seenStackKeys.set(key, { x, y });
+          seenStackKeys.set(key, { x, y, idx: 0 });
+        } else {
+          // Stack member — tag the containing ws-anim group with cluster info
+          const entry = seenStackKeys.get(key);
+          entry.idx = (entry.idx || 0) + 1;
+          // Find the closest <g> ancestor that is the source-animated unit
+          let host = r.parentNode;
+          while (host && host !== svg && !(host.tagName === 'g' && host.id && host.id.startsWith('s'))) {
+            host = host.parentNode;
+          }
+          if (host && host.tagName === 'g') {
+            host.setAttribute('data-cluster-idx', String(entry.idx));
+            // Each subsequent card pulses ~0.45s after the previous,
+            // starting 1.8s after reveal so the line-draw + bloom finish first.
+            const delay = 1.8 + entry.idx * 0.45;
+            host.style.setProperty('--cluster-delay', delay.toFixed(2) + 's');
+          }
         }
       }
-      // Refine stroke join only — don't touch widths (preserve PowerPoint intent)
       if (stroke && stroke !== 'NONE') {
         r.setAttribute('stroke-linejoin', 'round');
       }
@@ -2105,15 +2153,67 @@ window.workshopTimelines = {
       prepareDraw(r);
     });
 
-    // --- Text polish ---------------------------------------------------
-    /* Don't touch positioning. PowerPoint's text placement is precise
-       relative to its sibling shapes; any letter-spacing change would
-       shift labels off their intended anchor. We only enable better
-       sub-pixel rendering. */
+    // --- FLYING DOTS ---------------------------------------------------
+    /* For every line tagged with a flow direction, spawn an illuminated
+       <circle> that travels the line's geometry via SMIL animateMotion.
+       The dot fades in 950ms after the parent group is revealed (after
+       line-draw completes), then loops continuously. Dot speed is
+       proportional to line length (~280 SVG units/sec) so short and
+       long connectors feel coherent. */
+    svg.querySelectorAll('line[data-flow-dir]').forEach(line => {
+      const stroke = line.getAttribute('stroke');
+      if (!stroke) return;
+      const x1 = parseFloat(line.getAttribute('x1') || '0');
+      const y1 = parseFloat(line.getAttribute('y1') || '0');
+      const x2 = parseFloat(line.getAttribute('x2') || '0');
+      const y2 = parseFloat(line.getAttribute('y2') || '0');
+      const dist = Math.hypot(x2 - x1, y2 - y1);
+      if (dist < 50) return; // skip tiny connector stubs
+      const dir = line.getAttribute('data-flow-dir');
+      const reversed = dir === 'r';
+      const fromX = reversed ? x2 : x1;
+      const fromY = reversed ? y2 : y1;
+      const toX   = reversed ? x1 : x2;
+      const toY   = reversed ? y1 : y2;
+      const dot = document.createElementNS(SVG_NS, 'circle');
+      dot.setAttribute('r', '3.5');
+      dot.setAttribute('fill', stroke);
+      dot.setAttribute('filter', 'url(#ws-dot-glow)');
+      dot.setAttribute('class', 'ws-flow-dot');
+      const motion = document.createElementNS(SVG_NS, 'animateMotion');
+      motion.setAttribute('path', `M ${fromX.toFixed(2)} ${fromY.toFixed(2)} L ${toX.toFixed(2)} ${toY.toFixed(2)}`);
+      motion.setAttribute('dur', Math.max(1.2, dist / 280).toFixed(2) + 's');
+      motion.setAttribute('repeatCount', 'indefinite');
+      motion.setAttribute('begin', '0s');
+      dot.appendChild(motion);
+      // Insert as the LAST child of the line's parent <g> so the dot renders on top
+      line.parentNode.appendChild(dot);
+    });
+
+    // --- Text polish + HALOS -------------------------------------------
+    /* PowerPoint exports plain <text> with no halo, so connector lines
+       running behind a label cut through the letters. Adding a white
+       stroke + paint-order:"stroke fill" punches a halo around each
+       glyph and renders the fill on top, so the visible text appears
+       to "interrupt" the line behind it — the classic map/diagram
+       cartographic halo trick. Halo width scales with font-size. */
     svg.querySelectorAll('text').forEach(t => {
       if (!t.getAttribute('text-rendering')) {
         t.setAttribute('text-rendering', 'geometricPrecision');
       }
+      // Skip giant title text (>40pt) — they don't need halos and the
+      // stroke would be visually distracting at that scale.
+      const fontSize = parseFloat(t.getAttribute('font-size') || '14');
+      if (fontSize > 40) return;
+      // Don't double-halo if the export already set a stroke.
+      if (t.getAttribute('stroke') && t.getAttribute('stroke') !== 'none') return;
+      const haloW = Math.max(2.2, fontSize * 0.22);
+      t.setAttribute('paint-order', 'stroke fill');
+      t.setAttribute('stroke', '#ffffff');
+      t.setAttribute('stroke-width', haloW.toFixed(1));
+      t.setAttribute('stroke-linejoin', 'round');
+      // Mark so re-running modernizeSvg doesn't re-apply
+      t.setAttribute('data-haloed', '1');
     });
   }
 
