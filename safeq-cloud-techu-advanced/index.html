@@ -1677,12 +1677,41 @@
   }
 
   /* Animated shapes start invisible — revealed by JS on click step.
-     IMPORTANT: pure-opacity only. The source diagram (especially slide 25) layers
-     dozens of intentional offset-copies whose positions must stay pixel-perfect;
-     any transform on a <g> snaps it relative to its own fill-box and breaks
-     alignment with its siblings. So we keep the entrance to a clean fade. */
-  .ws-anim { opacity: 0; transition: opacity 360ms cubic-bezier(.22,.9,.25,1); }
+     IMPORTANT: no transforms on <g>. The source diagram (especially slide 25)
+     layers dozens of intentional offset-copies whose positions must stay
+     pixel-perfect; any transform snaps the <g> relative to its own fill-box
+     and breaks alignment with its siblings. So "wow" lives in properties
+     that don't move the element: opacity, filter, and stroke-dashoffset. */
+  .ws-anim {
+    opacity: 0;
+    transition: opacity 420ms cubic-bezier(.22,.9,.25,1);
+  }
   .ws-anim.is-revealed { opacity: 1; }
+
+  /* Bloom: a brief brightness/saturation flash that plays once on reveal.
+     Filter doesn't shift geometry, so this is safe for stacked siblings. */
+  @keyframes ws-bloom {
+    0%   { filter: brightness(1.45) saturate(1.4); }
+    35%  { filter: brightness(1.20) saturate(1.2); }
+    100% { filter: none; }
+  }
+  .ws-anim.is-revealed { animation: ws-bloom 720ms cubic-bezier(.4,0,.55,1) 0s 1; }
+
+  /* Line drawing: any line/path/stroked-rect prepared with data-draw-len has
+     its stroke-dasharray + stroke-dashoffset set inline by modernizeSvg.
+     Toggling .is-revealed transitions dashoffset → 0, "drawing" the line.
+     Going back reverses smoothly. */
+  .ws-anim [data-draw-len] {
+    transition: stroke-dashoffset 780ms cubic-bezier(.45,.05,.2,1);
+  }
+  .ws-anim.is-revealed [data-draw-len] {
+    stroke-dashoffset: 0 !important;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ws-anim, .ws-anim.is-revealed { animation: none !important; transition: opacity 120ms ease; }
+    .ws-anim [data-draw-len] { transition: none !important; stroke-dashoffset: 0 !important; }
+  }
 
   /* Hide the standard footer on workshop slides (the SVG includes its own title) */
   section[data-workshop-step="true"] > .footer { display: none; }
@@ -1994,6 +2023,43 @@ window.workshopTimelines = {
       upgradeStrokeNode(p);
     });
 
+    // --- LINE-DRAW PREP ------------------------------------------------
+    /* For each stroked line/path/outline-only rect, compute total length
+       and pre-set stroke-dasharray + stroke-dashoffset so the CSS
+       transition can "draw" the stroke on reveal. Safe because dashoffset
+       changes the dash pattern, not the element's geometry. */
+    function prepareDraw(el) {
+      const stroke = el.getAttribute('stroke');
+      if (!stroke || stroke.toUpperCase() === 'NONE') return;
+      // Only stroke-only shapes are drawn; filled shapes appear via opacity
+      const f = (el.getAttribute('fill') || '').toUpperCase();
+      if (f && f !== 'NONE') return;
+      // Skip if this element isn't going to be animated (no .ws-anim ancestor yet — we add it below)
+      // We'll mark every line/path/rect inside the SVG; only those inside .ws-anim groups
+      // will actually animate via the CSS rule.
+      let len = 0;
+      try { len = el.getTotalLength ? el.getTotalLength() : 0; } catch (e) { return; }
+      if (!len || len < 6) return;
+      const hasDash = el.getAttribute('stroke-dasharray');
+      if (!hasDash) {
+        // Solid: set dasharray to length so dashoffset wipes the line
+        el.setAttribute('stroke-dasharray', len.toFixed(1));
+      }
+      // Both solid and dashed lines start fully offset (invisible / shifted off the front)
+      el.setAttribute('stroke-dashoffset', len.toFixed(1));
+      el.setAttribute('data-draw-len', len.toFixed(1));
+    }
+    svg.querySelectorAll('line, path').forEach(el => {
+      if (el.closest('marker')) return;
+      prepareDraw(el);
+    });
+    // Outline-only rectangles (containers like "Data Centre", "Customer Network")
+    // also draw their perimeter — getTotalLength works on <rect> in most browsers.
+    svg.querySelectorAll('rect').forEach(r => {
+      if (r.getAttribute('filter')) return; // skip shadowed (filled) cards
+      prepareDraw(r);
+    });
+
     // --- Text polish ---------------------------------------------------
     /* Don't touch positioning. PowerPoint's text placement is precise
        relative to its sibling shapes; any letter-spacing change would
@@ -2046,9 +2112,16 @@ window.workshopTimelines = {
     let cur = parseInt(slide.dataset.curStep || '0', 10);
     if (dir > 0 && cur < timeline.length) {
       const group = timeline[cur];
-      group.forEach(spid => {
+      /* Cascading reveal: stagger each shape in the group by 70ms so a
+         multi-shape click reveals as an orchestrated sweep rather than a
+         single instant flash. Lines start drawing as they appear → the
+         diagram looks like it's assembling itself in real time. */
+      group.forEach((spid, idx) => {
         const g = host.querySelector('#s' + num + '-' + spid);
-        if (g) g.classList.add('is-revealed');
+        if (!g) return;
+        const delay = Math.min(idx * 70, 700); // cap stagger so very long groups don't drag
+        if (delay === 0) g.classList.add('is-revealed');
+        else setTimeout(() => g.classList.add('is-revealed'), delay);
       });
       cur++;
       slide.dataset.curStep = String(cur);
@@ -2057,9 +2130,14 @@ window.workshopTimelines = {
     } else if (dir < 0 && cur > 0) {
       cur--;
       const group = timeline[cur];
-      group.forEach(spid => {
+      // Reverse cascade — shapes disappear in reverse order, smoother than instant.
+      const last = group.length - 1;
+      group.forEach((spid, idx) => {
         const g = host.querySelector('#s' + num + '-' + spid);
-        if (g) g.classList.remove('is-revealed');
+        if (!g) return;
+        const delay = Math.min((last - idx) * 35, 300);
+        if (delay === 0) g.classList.remove('is-revealed');
+        else setTimeout(() => g.classList.remove('is-revealed'), delay);
       });
       slide.dataset.curStep = String(cur);
       update(slide);
