@@ -738,6 +738,8 @@ body.hide-footer .footer { display: none; }
 [data-deck-active] .agenda-row:nth-child(3) { animation: deck-drift 460ms cubic-bezier(.22,.9,.25,1) 420ms both; }
 [data-deck-active] .agenda-row:nth-child(4) { animation: deck-drift 460ms cubic-bezier(.22,.9,.25,1) 500ms both; }
 [data-deck-active] .agenda-row:nth-child(5) { animation: deck-drift 460ms cubic-bezier(.22,.9,.25,1) 580ms both; }
+[data-deck-active] .agenda-row:nth-child(6) { animation: deck-drift 460ms cubic-bezier(.22,.9,.25,1) 660ms both; }
+[data-deck-active] .agenda-row:nth-child(7) { animation: deck-drift 460ms cubic-bezier(.22,.9,.25,1) 740ms both; }
 
 /* Data tables — fade in as a unit */
 [data-deck-active] .data-table { animation: deck-rise 620ms cubic-bezier(.22,.9,.25,1) 360ms both; }
