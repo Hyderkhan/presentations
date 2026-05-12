@@ -1944,12 +1944,17 @@ window.workshopTimelines = {
      teleport-back to start (inherent to repeatCount="indefinite") is
      never visible. Stays upright (no rotate) so it always reads as
      "a sheet of paper". */
-  function spawnDocFlyer(svg, from, to, dur, beginDelay, minStep) {
+  function spawnDocFlyer(svg, pathD, dur, minStep) {
+    /* Now takes a full SVG path string (M/L/C/Q etc.) so the document
+       can route along curved multi-segment paths that follow the
+       diagram's flow. Animations use begin="indefinite" — the runtime
+       calls beginElement() the first time curStep crosses minStep, so
+       each doc starts at the source of its path, not mid-flight. */
     const g = document.createElementNS(SVG_NS, 'g');
     g.setAttribute('class', 'ws-doc-flyer');
     g.setAttribute('filter', 'url(#ws-shadow)');
     g.setAttribute('data-min-step', String(minStep || 0));
-    g.setAttribute('data-hidden', '1');  // start hidden; JS reveals once curStep ≥ minStep
+    g.setAttribute('data-hidden', '1');
     g.innerHTML = `
       <rect x="-9" y="-11" width="18" height="22" rx="2"
             fill="#FFFFFF" stroke="#0073E6" stroke-width="1.6"/>
@@ -1964,9 +1969,9 @@ window.workshopTimelines = {
             stroke="#0073E6" stroke-width="1.1" stroke-linecap="round"/>
     `;
     const motion = document.createElementNS(SVG_NS, 'animateMotion');
-    motion.setAttribute('path', `M ${from.x.toFixed(2)} ${from.y.toFixed(2)} L ${to.x.toFixed(2)} ${to.y.toFixed(2)}`);
+    motion.setAttribute('path', pathD);
     motion.setAttribute('dur', dur.toFixed(2) + 's');
-    motion.setAttribute('begin', beginDelay.toFixed(2) + 's');
+    motion.setAttribute('begin', 'indefinite');
     motion.setAttribute('repeatCount', 'indefinite');
     motion.setAttribute('rotate', '0');
     g.appendChild(motion);
@@ -1975,10 +1980,10 @@ window.workshopTimelines = {
     fade.setAttribute('values', '0;1;1;0');
     fade.setAttribute('keyTimes', '0;0.10;0.86;1');
     fade.setAttribute('dur', dur.toFixed(2) + 's');
-    fade.setAttribute('begin', beginDelay.toFixed(2) + 's');
+    fade.setAttribute('begin', 'indefinite');
     fade.setAttribute('repeatCount', 'indefinite');
     g.appendChild(fade);
-    g.setAttribute('opacity', '0');  // hidden until first fade-in keyframe runs
+    g.setAttribute('opacity', '0');
     svg.appendChild(g);
     return g;
   }
@@ -2282,22 +2287,54 @@ window.workshopTimelines = {
       // OneDrive image lives at x≈1741, y≈283 with w≈57, h≈57 — use centre.
       const oneDrive = { x: 1770, y: 312 };
 
-      /* minStep values reflect when both endpoints are revealed by the
-         timeline (slide 25 click order). The flyer stays hidden until
-         the user has clicked through enough to see the connection
-         makes sense. */
-      const routes = [
-        // PC Client + MFP both revealed at click 3
-        { from: labelPos['PC Client'],      to: labelPos['MFP'], dur: 3.6, begin: 0.0, minStep: 3, label: 'pc-mfp' },
-        // Primary Server revealed at click 4 (MFP already in by 3)
-        { from: labelPos['Primary Server'], to: labelPos['MFP'], dur: 4.4, begin: 1.4, minStep: 4, label: 'srv-mfp' },
-        // WPS & OCR + OneDrive cluster revealed around click 15
-        { from: labelPos['WPS & OCR'],      to: oneDrive,        dur: 3.0, begin: 0.7, minStep: 15, label: 'wps-od' },
-      ];
+      /* Each route is a multi-segment SVG path that follows the actual
+         visual flow in the diagram — not a straight line between two
+         labels (which would cut diagonally through unrelated boxes).
+         Hand-routed via cubic beziers that arc up through the cloud
+         junction, across, and down to the destination, matching the
+         architecture's "client → cloud → printer" data path.
+
+         minStep values pick the click index where the connector lines
+         underlying the route are visibly drawn — so the document
+         literally rides the visible line, not empty space. */
+      const PC   = labelPos['PC Client'];
+      const MFP  = labelPos['MFP'];
+      const SRV  = labelPos['Primary Server'];
+      const WPS  = labelPos['WPS & OCR'];
+      const routes = [];
+
+      if (PC && MFP) {
+        // PC Client → MFP: arc up over the local-cloud junction (y≈800)
+        // and back down to the MFP column.
+        routes.push({
+          path: `M ${PC.x.toFixed(1)} ${(PC.y - 60).toFixed(1)} ` +
+                `C ${PC.x.toFixed(1)} 800 ${MFP.x.toFixed(1)} 800 ${MFP.x.toFixed(1)} ${(MFP.y - 60).toFixed(1)}`,
+          dur: 4.0, minStep: 5,
+        });
+      }
+      if (SRV && MFP) {
+        // Primary Server → MFP: straight down out of Data Centre, then
+        // sweep right to MFP in Customer Network.
+        routes.push({
+          path: `M ${SRV.x.toFixed(1)} ${(SRV.y + 30).toFixed(1)} ` +
+                `C ${SRV.x.toFixed(1)} 500 ${SRV.x.toFixed(1)} 760 ` +
+                `${MFP.x.toFixed(1)} ${(MFP.y - 60).toFixed(1)}`,
+          dur: 5.4, minStep: 5,
+        });
+      }
+      if (WPS) {
+        // WPS & OCR → OneDrive: gentle arc up-and-right to the cloud
+        // destination in the top-right corner.
+        routes.push({
+          path: `M ${WPS.x.toFixed(1)} ${WPS.y.toFixed(1)} ` +
+                `Q ${((WPS.x + oneDrive.x) / 2).toFixed(1)} 270 ` +
+                `${oneDrive.x.toFixed(1)} ${oneDrive.y.toFixed(1)}`,
+          dur: 3.4, minStep: 15,
+        });
+      }
 
       routes.forEach(r => {
-        if (!r.from || !r.to) return;
-        spawnDocFlyer(svg, r.from, r.to, r.dur, r.begin, r.minStep);
+        spawnDocFlyer(svg, r.path, r.dur, r.minStep);
       });
     }
 
@@ -2355,13 +2392,37 @@ window.workshopTimelines = {
       else if (cur === 0) label.textContent = 'Click to reveal';
       else label.textContent = 'Next step';
     }
-    // Document-flyer visibility: each flyer carries a data-min-step;
-    // show it once the user has clicked that far so the doc never
-    // flies through still-empty space.
+    // Document-flyer visibility + SMIL trigger. Each flyer's
+    // animations are begin="indefinite", so they only run when we
+    // call beginElement() — meaning each doc reliably starts at the
+    // source of its path, never mid-flight. We also delay the start
+    // by ~900ms after the click so the underlying connector lines
+    // finish their draw transition before the doc starts riding them.
     slide.querySelectorAll('.ws-doc-flyer').forEach(g => {
       const min = parseInt(g.getAttribute('data-min-step') || '0', 10);
-      if (cur >= min) g.removeAttribute('data-hidden');
-      else g.setAttribute('data-hidden', '1');
+      const isRunning = g.dataset.running === '1';
+      const shouldShow = cur >= min;
+      if (shouldShow && !isRunning) {
+        // Defer activation so line-draw (780ms) finishes first
+        const startToken = String((parseInt(g.dataset.startToken || '0', 10) || 0) + 1);
+        g.dataset.startToken = startToken;
+        setTimeout(() => {
+          // Verify state hasn't changed (user may have clicked back)
+          if (g.dataset.startToken !== startToken) return;
+          if (parseInt(slide.dataset.curStep || '0', 10) < min) return;
+          g.removeAttribute('data-hidden');
+          g.dataset.running = '1';
+          g.querySelectorAll('animateMotion, animate').forEach(a => {
+            try { a.beginElement(); } catch (e) {}
+          });
+        }, 900);
+      } else if (!shouldShow && isRunning) {
+        g.setAttribute('data-hidden', '1');
+        g.dataset.running = '0';
+        g.querySelectorAll('animateMotion, animate').forEach(a => {
+          try { a.endElement(); } catch (e) {}
+        });
+      }
     });
   }
 
