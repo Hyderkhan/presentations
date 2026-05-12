@@ -1653,15 +1653,41 @@
     inset: 0;
     width: 100%;
     height: 100%;
-    background: #fff;
+    /* Subtle vertical wash — pure-white centre fades to off-white edges for depth */
+    background:
+      radial-gradient(ellipse 1400px 900px at 50% 35%, #ffffff 0%, #fafafb 55%, #f4f5f7 100%);
     z-index: 1;
     display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
   }
-  .workshop-svg-host svg { width: 100%; height: 100%; display: block; }
+  .workshop-svg-host::before {
+    /* very faint dot grid for a designed feel — invisible up close, present at the edges */
+    content: "";
+    position: absolute; inset: 0;
+    background-image: radial-gradient(circle at 1px 1px, rgba(15,23,42,0.04) 1px, transparent 1.4px);
+    background-size: 28px 28px;
+    pointer-events: none;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, transparent 0%, #000 90%);
+    -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, transparent 0%, #000 90%);
+  }
+  .workshop-svg-host svg {
+    width: 100%; height: 100%; display: block;
+    position: relative;
+    background: transparent !important;
+  }
 
-  /* Animated shapes start invisible — revealed by JS on click step */
-  .ws-anim { opacity: 0; transition: opacity 320ms cubic-bezier(.22,.9,.25,1); }
-  .ws-anim.is-revealed { opacity: 1; }
+  /* Animated shapes start invisible — revealed by JS on click step with a richer entrance.
+     Modernised entrance: short fade + slight rise + scale-from-95% for cards, simple fade for lines. */
+  .ws-anim {
+    opacity: 0;
+    transform: translateY(6px) scale(0.985);
+    transform-origin: center center;
+    transform-box: fill-box;
+    transition: opacity 380ms cubic-bezier(.22,.9,.25,1), transform 380ms cubic-bezier(.22,.9,.25,1);
+  }
+  .ws-anim.is-revealed { opacity: 1; transform: translateY(0) scale(1); }
+  .ws-anim.is-line { transform: none; }
+  .ws-anim.is-line.is-revealed { transform: none; }
 
   /* Hide the standard footer on workshop slides (the SVG includes its own title) */
   section[data-workshop-step="true"] > .footer { display: none; }
@@ -1767,6 +1793,8 @@ window.workshopTimelines = {
     }
     host.innerHTML = text;
     host.dataset.loaded = '1';
+    const svg = host.querySelector('svg');
+    if (svg) modernizeSvg(svg);
     // Mark every animated shape across every click group
     const timeline = (window.workshopTimelines || {})[num] || [];
     timeline.forEach((group, clickIdx) => {
@@ -1775,8 +1803,213 @@ window.workshopTimelines = {
         if (g) {
           g.classList.add('ws-anim');
           g.dataset.clickIdx = String(clickIdx);
+          // Detect line-only groups so we skip the vertical-rise transform on connectors
+          const onlyConnectors = !g.querySelector('rect, ellipse, circle, image, text') &&
+                                 (g.querySelector('line, path'));
+          if (onlyConnectors) g.classList.add('is-line');
         }
       });
+    });
+  }
+
+  /* =====================================================================
+     MODERNISE — runs once per loaded SVG. Refines the PowerPoint-exported
+     primitives into a contemporary, designed look:
+       • Refined colour palette (richer reds, blues, slate text)
+       • Rounded rectangles + soft drop shadows for filled cards
+       • Round line caps/joins, slightly thicker strokes, gentler dashes
+       • Modern slim arrowheads, colour-matched per stroke
+       • Subtle inner highlight on dark-filled cards
+     ==================================================================== */
+  const SVG_NS = 'http://www.w3.org/2000/svg';
+  // PowerPoint export hex → modern palette
+  const COLOR_MAP = {
+    '#C9302C': '#E11D48',  // dusty brick → vibrant rose
+    '#FF0000': '#E11D48',  // pure red    → vibrant rose
+    '#0073E6': '#2563EB',  // flat blue   → indigo-blue
+    '#024AD8': '#1D4ED8',  // royal       → deeper indigo
+    '#F2B600': '#F59E0B',  // gold        → amber-500
+    '#37474F': '#1E293B',  // grey-blue   → slate-800
+    '#FF6600': '#FF6600',  // Y Soft orange — keep
+  };
+  function refineColor(c) {
+    if (!c) return c;
+    const up = c.toUpperCase();
+    return COLOR_MAP[up] || c;
+  }
+  function makeMarker(svg, id, color, kind) {
+    // kind: 'end' (default, points right) or 'start' (points left)
+    const m = document.createElementNS(SVG_NS, 'marker');
+    m.setAttribute('id', id);
+    m.setAttribute('viewBox', '0 0 12 12');
+    m.setAttribute('refX', kind === 'start' ? '2' : '10');
+    m.setAttribute('refY', '6');
+    m.setAttribute('markerWidth', '7');
+    m.setAttribute('markerHeight', '7');
+    m.setAttribute('orient', 'auto-start-reverse');
+    m.setAttribute('markerUnits', 'userSpaceOnUse');
+    const p = document.createElementNS(SVG_NS, 'path');
+    // Slim modern chevron with a slight inset back, soft tip
+    p.setAttribute('d', 'M1.5,1.5 L10.5,6 L1.5,10.5 L3.6,6 Z');
+    p.setAttribute('fill', color);
+    p.setAttribute('stroke', 'none');
+    m.appendChild(p);
+    return m;
+  }
+  function ensureDefs(svg) {
+    let defs = svg.querySelector(':scope > defs');
+    if (!defs) {
+      defs = document.createElementNS(SVG_NS, 'defs');
+      svg.insertBefore(defs, svg.firstChild);
+    }
+    return defs;
+  }
+  function modernizeSvg(svg) {
+    if (svg.dataset.modernized === '1') return;
+    svg.dataset.modernized = '1';
+
+    const defs = ensureDefs(svg);
+    // Wipe any auto-generated defs we want to replace (e.g. the original triangle "arrow" marker)
+    defs.querySelectorAll('marker#arrow').forEach(n => n.remove());
+
+    // --- Drop shadow filter (very soft, used for filled cards) -----------
+    const shadow = document.createElementNS(SVG_NS, 'filter');
+    shadow.setAttribute('id', 'ws-shadow');
+    shadow.setAttribute('x', '-20%'); shadow.setAttribute('y', '-20%');
+    shadow.setAttribute('width', '140%'); shadow.setAttribute('height', '140%');
+    shadow.innerHTML = `
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+      <feOffset dx="0" dy="3" result="off"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.18"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    `;
+    defs.appendChild(shadow);
+
+    // --- Crisp shadow filter for white/light cards on the wash background ---
+    const shadowLight = document.createElementNS(SVG_NS, 'filter');
+    shadowLight.setAttribute('id', 'ws-shadow-light');
+    shadowLight.setAttribute('x', '-15%'); shadowLight.setAttribute('y', '-15%');
+    shadowLight.setAttribute('width', '130%'); shadowLight.setAttribute('height', '130%');
+    shadowLight.innerHTML = `
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+      <feOffset dx="0" dy="6" result="off"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.12"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    `;
+    defs.appendChild(shadowLight);
+
+    // --- Modern arrowhead markers per stroke colour ---------------------
+    const markerColors = {
+      'rose':   '#E11D48',
+      'blue':   '#2563EB',
+      'indigo': '#1D4ED8',
+      'amber':  '#F59E0B',
+      'orange': '#FF6600',
+      'slate':  '#1E293B',
+      'white':  '#FFFFFF',
+    };
+    Object.entries(markerColors).forEach(([name, col]) => {
+      defs.appendChild(makeMarker(svg, 'arr-' + name + '-end', col, 'end'));
+      defs.appendChild(makeMarker(svg, 'arr-' + name + '-start', col, 'start'));
+    });
+    const colToKey = (c) => {
+      const m = (c || '').toUpperCase();
+      if (m === '#E11D48' || m === '#C9302C' || m === '#FF0000') return 'rose';
+      if (m === '#2563EB' || m === '#0073E6') return 'blue';
+      if (m === '#1D4ED8' || m === '#024AD8') return 'indigo';
+      if (m === '#F59E0B' || m === '#F2B600') return 'amber';
+      if (m === '#FF6600') return 'orange';
+      if (m === '#FFFFFF') return 'white';
+      return 'slate';
+    };
+
+    // --- Recolour: refine flat fills / strokes throughout --------------
+    svg.querySelectorAll('[fill], [stroke]').forEach(el => {
+      if (el === svg) return;
+      const f = el.getAttribute('fill');
+      const s = el.getAttribute('stroke');
+      const rf = refineColor(f);
+      const rs = refineColor(s);
+      if (rf && rf !== f) el.setAttribute('fill', rf);
+      if (rs && rs !== s) el.setAttribute('stroke', rs);
+    });
+
+    // Refine text fills too (text uses fill="..."): already handled above.
+    // Strip the SVG's hard white background so the wash shows.
+    if ((svg.getAttribute('style') || '').includes('background')) {
+      svg.setAttribute('style', svg.getAttribute('style').replace(/background\s*:\s*[^;]+;?/i, ''));
+    }
+
+    // --- Modernise rectangles ------------------------------------------
+    svg.querySelectorAll('rect').forEach(r => {
+      const fill = (r.getAttribute('fill') || '').toUpperCase();
+      const stroke = (r.getAttribute('stroke') || '').toUpperCase();
+      const w = parseFloat(r.getAttribute('width')) || 0;
+      const h = parseFloat(r.getAttribute('height')) || 0;
+      // Ignore tiny rects (likely connector caps) and full-bleed background plates
+      const isTiny = w < 18 || h < 14;
+      const isBleed = w > 1500 && h > 900;
+      // Add gentle rounded corners if missing on a reasonable-sized rect
+      const hasRx = parseFloat(r.getAttribute('rx')) > 0;
+      if (!hasRx && !isTiny && !isBleed) {
+        const radius = Math.max(6, Math.min(16, Math.min(w, h) * 0.06));
+        r.setAttribute('rx', radius.toFixed(2));
+        r.setAttribute('ry', radius.toFixed(2));
+      }
+      // Soft drop shadow for filled cards (not stroke-only outlines, not pure-white fill plates)
+      const isFilled = fill && fill !== 'NONE' && fill !== '#FFFFFF';
+      const isWhiteCard = fill === '#FFFFFF' && stroke && stroke !== 'NONE' && stroke !== '#FFFFFF';
+      if (isFilled && !isTiny && !isBleed) {
+        r.setAttribute('filter', 'url(#ws-shadow)');
+      } else if (isWhiteCard && !isTiny && !isBleed) {
+        r.setAttribute('filter', 'url(#ws-shadow-light)');
+      }
+      // Sharpen stroke widths and add round joins
+      const sw = parseFloat(r.getAttribute('stroke-width') || '0');
+      if (stroke && stroke !== 'NONE') {
+        if (sw && sw < 1.2) r.setAttribute('stroke-width', '1.4');
+        r.setAttribute('stroke-linejoin', 'round');
+      }
+    });
+
+    // --- Modernise lines & paths (connectors) --------------------------
+    const arrowReRose  = /url\(#arrow\)/g;
+    function upgradeStrokeNode(el) {
+      const stroke = el.getAttribute('stroke');
+      if (!stroke || stroke.toUpperCase() === 'NONE') return;
+      // Round caps/joins for everything
+      el.setAttribute('stroke-linecap', 'round');
+      el.setAttribute('stroke-linejoin', 'round');
+      // Slightly thicker line for legibility
+      const sw = parseFloat(el.getAttribute('stroke-width') || '0');
+      if (sw && sw <= 2.2) el.setAttribute('stroke-width', (sw * 1.4).toFixed(2));
+      // Softer dash pattern
+      const dash = el.getAttribute('stroke-dasharray');
+      if (dash) el.setAttribute('stroke-dasharray', '5,6');
+      // Swap the universal "arrow" marker for the colour-matched modern marker
+      const key = colToKey(stroke);
+      ['marker-start', 'marker-end'].forEach(attr => {
+        const m = el.getAttribute(attr);
+        if (!m) return;
+        const which = attr === 'marker-end' ? 'end' : 'start';
+        el.setAttribute(attr, `url(#arr-${key}-${which})`);
+      });
+    }
+    svg.querySelectorAll('line').forEach(upgradeStrokeNode);
+    svg.querySelectorAll('path').forEach(p => {
+      // Skip the inline arrow marker path itself (lives inside <defs>)
+      if (p.closest('marker')) return;
+      upgradeStrokeNode(p);
+    });
+
+    // --- Text polish ---------------------------------------------------
+    svg.querySelectorAll('text').forEach(t => {
+      // Better rendering on retina
+      if (!t.getAttribute('text-rendering')) {
+        t.setAttribute('text-rendering', 'geometricPrecision');
+      }
+      // Refine text colour mapping (already done above), and slightly tighten kerning
+      if (!t.getAttribute('letter-spacing')) t.setAttribute('letter-spacing', '-0.2');
     });
   }
 
