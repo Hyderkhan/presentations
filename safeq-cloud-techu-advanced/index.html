@@ -1876,12 +1876,20 @@ window.workshopTimelines = {
        • Subtle inner highlight on dark-filled cards
      ==================================================================== */
   const SVG_NS = 'http://www.w3.org/2000/svg';
-  // PowerPoint export hex → modern palette
+  // PowerPoint export hex → HP-themed palette. The deck's primary blue
+  // (#0073E6) already appears 11 times elsewhere in this file, so the
+  // workshop slides now share that exact accent — visually unified with
+  // the rest of the TechU Advanced deck and HP's brand language. Y Soft
+  // orange (the SAFEQ Cloud brand colour) is preserved as the centrepiece
+  // accent so the cloud logo and key labels still pop.
   const COLOR_MAP = {
-    '#C9302C': '#E11D48',  // dusty brick → vibrant rose
-    '#FF0000': '#E11D48',  // pure red    → vibrant rose
-    '#0073E6': '#2563EB',  // flat blue   → indigo-blue
-    '#024AD8': '#1D4ED8',  // royal       → deeper indigo
+    '#C9302C': '#0073E6',  // brick red   → HP blue (primary accent)
+    '#FF0000': '#0073E6',  // pure red    → HP blue
+    '#E11D48': '#0073E6',  // (legacy modernised rose if present) → HP blue
+    '#0073E6': '#0073E6',  // already HP blue — keep
+    '#024AD8': '#0B5394',  // royal       → deeper HP blue
+    '#1D4ED8': '#0B5394',  // (legacy modernised indigo) → deeper HP blue
+    '#2563EB': '#0073E6',  // (legacy modernised indigo) → HP blue
     '#F2B600': '#F59E0B',  // gold        → amber-500
     '#37474F': '#1E293B',  // grey-blue   → slate-800
     '#FF6600': '#FF6600',  // Y Soft orange — keep
@@ -1969,23 +1977,25 @@ window.workshopTimelines = {
     defs.appendChild(dotGlow);
 
     // --- Modern arrowhead markers per stroke colour ---------------------
+    /* HP-themed palette: the primary accent (used everywhere the source
+       PowerPoint had brick-red) is the deck's existing #0073E6 blue. */
     const markerColors = {
-      'rose':   '#E11D48',
-      'blue':   '#2563EB',
-      'indigo': '#1D4ED8',
-      'amber':  '#F59E0B',
-      'orange': '#FF6600',
-      'slate':  '#1E293B',
-      'white':  '#FFFFFF',
+      'primary': '#0073E6',  // HP / deck blue — dominant accent
+      'deep':    '#0B5394',  // deeper HP blue — for the few royal-blue source elements
+      'amber':   '#F59E0B',  // secondary connector colour
+      'orange':  '#FF6600',  // Y Soft / SAFEQ Cloud brand
+      'slate':   '#1E293B',  // utility / text
+      'white':   '#FFFFFF',
     };
     Object.entries(markerColors).forEach(([name, col]) => {
       defs.appendChild(makeMarker(svg, 'arr-' + name, col));
     });
     const colToKey = (c) => {
       const m = (c || '').toUpperCase();
-      if (m === '#E11D48' || m === '#C9302C' || m === '#FF0000') return 'rose';
-      if (m === '#2563EB' || m === '#0073E6') return 'blue';
-      if (m === '#1D4ED8' || m === '#024AD8') return 'indigo';
+      // All blues + legacy reds collapse into primary
+      if (m === '#0073E6' || m === '#C9302C' || m === '#FF0000' ||
+          m === '#E11D48' || m === '#2563EB') return 'primary';
+      if (m === '#0B5394' || m === '#024AD8' || m === '#1D4ED8') return 'deep';
       if (m === '#F59E0B' || m === '#F2B600') return 'amber';
       if (m === '#FF6600') return 'orange';
       if (m === '#FFFFFF') return 'white';
