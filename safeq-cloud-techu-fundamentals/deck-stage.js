@@ -326,6 +326,38 @@
           this._requestWakeLock();
         }
       };
+
+      // ── Silent-video fallback ───────────────────────────────────────
+      // The Screen Wake Lock above covers Chrome's default policy, but
+      // macOS in Low Power Mode (and some Safari versions) still dims
+      // the display. A muted 1×1 looping <video> is the long-standing
+      // NoSleep.js trick that survives those paths — browsers treat
+      // media playback as "user is engaged" and don't dim.
+      try {
+        this._noSleepVideo = document.createElement('video');
+        const v = this._noSleepVideo;
+        v.setAttribute('playsinline', '');
+        v.setAttribute('muted', '');
+        v.setAttribute('loop', '');
+        v.muted = true;
+        v.loop = true;
+        v.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:1px;opacity:0.001;pointer-events:none;z-index:-1';
+        v.src = 'data:video/mp4;base64,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';
+        document.body.appendChild(v);
+        // Try to play immediately — most browsers allow muted autoplay.
+        // If it's blocked, the first key/click/touch will start it.
+        const startVideo = () => {
+          v.play().then(() => {
+            ['keydown','click','touchstart','pointerdown'].forEach(ev =>
+              document.removeEventListener(ev, startVideo, true));
+          }).catch(() => { /* will retry on next interact */ });
+        };
+        startVideo();
+        // Belt-and-suspenders: also start on first user input in case autoplay was blocked.
+        ['keydown','click','touchstart','pointerdown'].forEach(ev =>
+          document.addEventListener(ev, startVideo, { once: false, capture: true }));
+      } catch (e) { /* DOM not ready / unsupported — fail silent */ }
+
       document.addEventListener('visibilitychange', this._onVisibilityChange);
       this._requestWakeLock();
       // Initial collection + layout happens via slotchange, which fires on mount.
@@ -337,6 +369,7 @@
       window.removeEventListener('mousemove', this._onMouseMove);
       document.removeEventListener('visibilitychange', this._onVisibilityChange);
       if (this._wakeLock) { this._wakeLock.release().catch(()=>{}); this._wakeLock = null; }
+      if (this._noSleepVideo) { try { this._noSleepVideo.pause(); this._noSleepVideo.remove(); } catch (e) {} this._noSleepVideo = null; }
       if (this._hideTimer) clearTimeout(this._hideTimer);
       if (this._mouseIdleTimer) clearTimeout(this._mouseIdleTimer);
     }
