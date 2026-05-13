@@ -304,6 +304,30 @@
       window.addEventListener('keydown', this._onKey);
       window.addEventListener('resize', this._onResize);
       window.addEventListener('mousemove', this._onMouseMove, { passive: true });
+      // Screen Wake Lock — keep the display awake while the deck is on
+      // screen. Without this, presenters often have the laptop sleep
+      // mid-presentation when no keyboard / mouse activity is detected
+      // (default macOS / Windows behaviour kicks in after 1–2 minutes
+      // on battery). The wake lock is released automatically when the
+      // tab is hidden, so we re-acquire on visibilitychange.
+      this._wakeLock = null;
+      this._requestWakeLock = async () => {
+        if (!('wakeLock' in navigator)) return;
+        if (document.visibilityState !== 'visible') return;
+        try {
+          this._wakeLock = await navigator.wakeLock.request('screen');
+          this._wakeLock.addEventListener('release', () => { this._wakeLock = null; });
+        } catch (e) {
+          // Permission denied, low-power mode, or unsupported — fail silent.
+        }
+      };
+      this._onVisibilityChange = () => {
+        if (document.visibilityState === 'visible' && !this._wakeLock) {
+          this._requestWakeLock();
+        }
+      };
+      document.addEventListener('visibilitychange', this._onVisibilityChange);
+      this._requestWakeLock();
       // Initial collection + layout happens via slotchange, which fires on mount.
     }
 
@@ -311,6 +335,8 @@
       window.removeEventListener('keydown', this._onKey);
       window.removeEventListener('resize', this._onResize);
       window.removeEventListener('mousemove', this._onMouseMove);
+      document.removeEventListener('visibilitychange', this._onVisibilityChange);
+      if (this._wakeLock) { this._wakeLock.release().catch(()=>{}); this._wakeLock = null; }
       if (this._hideTimer) clearTimeout(this._hideTimer);
       if (this._mouseIdleTimer) clearTimeout(this._mouseIdleTimer);
     }
