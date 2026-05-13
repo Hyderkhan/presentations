@@ -3144,9 +3144,14 @@ window.workshopTimelines = {
     const t = e.target;
     if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
     const k = e.key;
-    if (k === 'ArrowRight' || k === 'PageDown' || k === ' ' || k === 'Spacebar') {
+    // Match the key set in deck-stage._onKey so presenter remotes
+    // (Enter / Backspace / MediaTrackNext-Previous) also drive
+    // click-by-click reveals on workshop-step slides.
+    if (k === 'ArrowRight' || k === 'PageDown' || k === ' ' || k === 'Spacebar'
+        || k === 'Enter' || k === 'MediaTrackNext') {
       if (tryAdvance(1)) { e.stopImmediatePropagation(); e.preventDefault(); }
-    } else if (k === 'ArrowLeft' || k === 'PageUp') {
+    } else if (k === 'ArrowLeft' || k === 'PageUp'
+               || k === 'Backspace' || k === 'MediaTrackPrevious') {
       if (tryAdvance(-1)) { e.stopImmediatePropagation(); e.preventDefault(); }
     }
   }, true);

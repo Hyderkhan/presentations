@@ -563,17 +563,29 @@
     }
 
     _onKey(e) {
-      // Ignore when the user is typing.
+      // Ignore when the user is typing OR has focus on an interactive
+      // control (button / link). Skipping BUTTON and A means a user can
+      // still tab to the font-size +/- chips or chapter-rail chips and
+      // press Enter to activate them without us hijacking the key.
       const t = e.target;
-      if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
+      if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT|BUTTON|A)$/.test(t.tagName))) return;
       if (e.metaKey || e.ctrlKey || e.altKey) return;
 
       const key = e.key;
       let handled = true;
 
-      if (key === 'ArrowRight' || key === 'PageDown' || key === ' ' || key === 'Spacebar') {
+      // Forward keys — Arrow Right, Page Down, Space, Enter, Media Next.
+      // Enter and Backspace are added for compatibility with presenter
+      // remotes (Logitech, Kensington, generic USB clickers) that often
+      // send those instead of arrow keys in 'browser' / 'slide' mode.
+      // MediaTrackNext / MediaTrackPrevious cover HID consumer-key
+      // remotes (Logitech Spotlight, some Targus models).
+      if (key === 'ArrowRight' || key === 'PageDown' || key === ' '
+          || key === 'Spacebar' || key === 'Enter'
+          || key === 'MediaTrackNext') {
         this._go(this._index + 1, 'keyboard');
-      } else if (key === 'ArrowLeft' || key === 'PageUp') {
+      } else if (key === 'ArrowLeft' || key === 'PageUp'
+                 || key === 'Backspace' || key === 'MediaTrackPrevious') {
         this._go(this._index - 1, 'keyboard');
       } else if (key === 'Home') {
         this._go(0, 'keyboard');
